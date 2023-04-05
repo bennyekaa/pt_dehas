@@ -52,6 +52,13 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link" href="{{ url('register') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Register</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="#">
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             <span>Logout</span>
