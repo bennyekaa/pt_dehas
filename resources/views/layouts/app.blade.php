@@ -23,7 +23,11 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <!-- TopBar -->
-                @include('layouts.topbar')
+                @if (Request::segment(1)=='map')
+                    @include('layouts.topbar_nopadding')
+                @else
+                    @include('layouts.topbar')
+                @endif
                 <!-- Topbar -->
                 @yield('content')
             </div>

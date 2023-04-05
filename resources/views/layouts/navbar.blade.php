@@ -7,14 +7,14 @@
     </a>
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item active">
+    <li class="nav-item {{Request::segment(1)=='/' ? 'active' : ''}}">
         <a class="nav-link" href="{{url('/')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{url('map')}}">
+        <a class="nav-link {{Request::segment(1)=='map' ? 'active' : ''}}" href="{{url('map')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Kelola Maps</span>
         </a>
