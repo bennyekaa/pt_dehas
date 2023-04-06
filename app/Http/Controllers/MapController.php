@@ -9,6 +9,7 @@ class MapController extends Controller
 {
     public function index(){
         $data['custom'] = Web_custom::all()->first();
+        // dd($data);
         return view('map.map',$data);
     }
 }
