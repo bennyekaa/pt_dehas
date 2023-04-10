@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Web_custom extends Model
 {
-    protected $connection = 'pgsql';
-    protected $table = 'ref.web';
+    // protected $connection = 'pgsql';
+    protected $table = 'ref_web';
     //---Set Primary Key---
     protected $primaryKey = 'id_web';
 
