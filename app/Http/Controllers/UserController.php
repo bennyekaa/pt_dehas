@@ -32,6 +32,7 @@ class UserController extends Controller
 		$data->username = $request->username;
 		$data->password = $request->password;
 		$data->role = $request->role;
+		$data->updated_by = 'Benny';
 		$data->save();
 		return redirect('/user');
 	}
@@ -50,7 +51,9 @@ class UserController extends Controller
 			'hp' => $request->no_hp,
 			'username' => $request->username,
 			'password' => $request->password,
-			'role' => $request->jabatan
+			'role' => $request->jabatan,
+			'created_at' => date('Y-m-d H:i:s.U'),
+			'created_by' => 'adit'
 		]);
 		return redirect('/user');
 	}

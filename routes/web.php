@@ -35,6 +35,9 @@ Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 Route::get('/desa', [DesaController::class, 'index']);
 Route::get('/desa/tambah', [DesaController::class, 'tambah']);
 Route::post('/desa/tambahproses', [DesaController::class, 'tambahproses']);
+Route::get('/desa/edit/{id}', [DesaController::class, 'edit']);
+Route::post('/prosesdesa', [DesaController::class, 'prosesdesa']);
+Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
 
 
 //form login
