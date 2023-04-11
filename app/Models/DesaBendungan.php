@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserBendungan extends Model
+class DesaBendungan extends Model
 {
     protected $connection = 'mysql';
-    protected $table = 'ref_user';
+    protected $table = 'ref_desa';
     //---Set Primary Key---
-    protected $primaryKey = 'id_user';
+    protected $primaryKey = 'id_desa';
 
     public $incrementing = false;
 }
