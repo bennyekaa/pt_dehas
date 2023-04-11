@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form action="/desa/tambah" method="post">
+                    <form action="/desa/tambahproses" method="post">
 
                         @csrf
 

@@ -43,10 +43,9 @@
 									<th>Action</th>
 								</tr>
 							</thead>
-							@foreach($desa as $p)
-							<thead class="thead-light">
+							<tbody class="thead-light">
+								@foreach($desa as $p)
 								<tr>
-
 									<td>{{ $p->kode_pengungsian }} </td>
 									<td>{{ $p->desa }} </td>
 									<td>{{ $p->titik_kumpul }} </td>
@@ -65,7 +64,7 @@
 									<td>{{ $p->updated_by }}</td>
 									<th>Action</th>
 								</tr>
-							</thead>
+							</tbody>
 							@endforeach
 						</table>
 					</div>
