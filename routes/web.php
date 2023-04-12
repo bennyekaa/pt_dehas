@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WadukController;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -25,4 +26,8 @@ route::get('/map',[MapController::class, 'index']);
 
 //form register
 route::get('/register',[RegisterController::class, 'daftar']);
+
+// waduk 
+route::get('/waduk/data',[WadukController::class, 'data']);
+route::resource('/waduk',WadukController::class);
 

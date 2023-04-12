@@ -30,7 +30,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Master</h6>
                 <a class="collapse-item" href="{{ url('tabel') }}">User</a>
-                <a class="collapse-item" href="buttons.html">Waduk</a>
+                <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                 <a class="collapse-item" href="dropdowns.html">Bendungan</a>
                 <a class="collapse-item" href="modals.html">Desa</a>
             </div>
