@@ -43,6 +43,10 @@ Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
 //form login
 Route::get('/login', [HomeController::class, 'login']);
 
+//EXPORT DESA
+Route::get('/desa', [DesaController::class, 'index']);
+Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
+Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
 
 //Auth::routes();
 

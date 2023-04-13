@@ -11,6 +11,46 @@
 
 	@section('content')
 
+	@if ($errors->has('file'))
+	<span class="invalid-feedback" role="alert">
+		<strong>{{ $errors->first('file') }}</strong>
+	</span>
+	@endif
+
+	@if ($sukses = Session::get('sukses'))
+	<div class="alert alert-success alert-block">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<strong>{{ $sukses }}</strong>
+	</div>
+	@endif
+
+	<!-- Import Excel -->
+	<div class="modal fade" id="importExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<form method="post" action="/desa/import_excel" enctype="multipart/form-data">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
+					</div>
+					<div class="modal-body">
+
+						{{ csrf_field() }}
+
+						<label>Pilih file excel</label>
+						<div class="form-group">
+							<input type="file" name="file" required="required">
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Import</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
 	<div class="container-fluid" id="container-wrapper">
 		<div class="d-sm-flex align-items-center justify-content-between mb-4">
 			<h1 class="h3 mb-0 text-gray-800">Data Desa</h1>
@@ -20,7 +60,15 @@
 			<div class="card mb-4">
 				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 					<a class="btn btn-primary" href="/desa/tambah" style="float: left;"> + Tambah Desa Baru</a>
+
 				</div>
+				<div class="card-header">
+					<a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT EXCEL</a>
+					<button type=" button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
+						IMPORT EXCEL
+						</button>
+				</div>
+
 				<div class="table-responsive p-3">
 					<table class="table align-items-center table-flush" id="dataTable">
 						<thead class="thead-light">
@@ -81,8 +129,6 @@
 			</div>
 		</div>
 		@endsection
-
-
 </body>
 
 </html>
