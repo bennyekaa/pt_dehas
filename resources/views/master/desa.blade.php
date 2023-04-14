@@ -4,7 +4,7 @@
 <html>
 
 <head>
-	<title>PT DEHAS - Desa</title>
+	<title>PT Dehas Inframedia Karsa - Desa</title>
 </head>
 
 <body>

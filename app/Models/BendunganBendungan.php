@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserBendungan extends Model
+class BendunganBendungan extends Model
 {
     protected $connection = 'mysql';
-    protected $table = 'ref_user';
+    protected $table = 'ref_bendungan';
     //---Set Primary Key---
-    protected $primaryKey = 'id_user';
+    protected $primaryKey = 'id_bendungan';
 
     public $incrementing = false;
 
-    public function banjir()
-    {
-        return $this->belongsTo('App\banjir');
-    }
+
 }

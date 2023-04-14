@@ -16,7 +16,6 @@ class DesaController extends Controller
 {
     public function index()
     {
-        // mengambil data dari table user
         $data['desa'] = DB::table('ref_desa')->get();
         return view('master.desa', $data);
     }
