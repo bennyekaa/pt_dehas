@@ -19,7 +19,7 @@
         <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <a class="btn btn-primary" href="/user/tambah" style="float: left;"> + Tambah Data Bendungan</a>
+                    <a class="btn btn-primary" href="/bendungan/tambah" style="float: left;"> + Tambah Data Bendungan</a>
                 </div>
                 <div class="table-responsive p-3">
                     <table class="table align-items-center table-flush" id="dataTable">

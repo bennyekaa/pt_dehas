@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\DesaBendungan;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Str;
 
 class DesaImport implements ToModel
 {
@@ -14,8 +15,8 @@ class DesaImport implements ToModel
     */
     public function model(array $row)
     {
-        return new DesaBendungan([
-            'id_desa' => $row[0],
+        DesaBendungan::create([
+            'id_desa' => Str::uuid(),
             'kode_pengungsian' => $row[1],
             'desa' => $row[2],
             'titik_kumpul' => $row[3],
