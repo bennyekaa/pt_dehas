@@ -50,12 +50,12 @@
         </a>
     </li>
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('user/tambah') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Register</span>
         </a>
-    </li>
+    </li> --}}
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url('logout') }}">
