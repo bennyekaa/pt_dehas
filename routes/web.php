@@ -7,6 +7,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,46 +21,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class, 'logout']);
+Route::post('/actionlogin', [LoginController::class, 'actionlogin']);
 
-// map
-route::get('/map', [MapController::class, 'index']);
+Route::middleware('checklogin')->group(function () {
+    Route::get('/', [HomeController::class, 'index']);
 
-//route CRUD USER
-Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/tambah', [UserController::class, 'tambah']);
-Route::post('/user/store', [UserController::class, 'store']);
-Route::get('/user/edit/{id}', [UserController::class, 'edit']);
-Route::post('/proses', [UserController::class, 'proses']);
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+    // map
+    route::get('/map', [MapController::class, 'index']);
 
-//route CRUD DESA
-Route::get('/desa', [DesaController::class, 'index']);
-Route::get('/desa/tambah', [DesaController::class, 'tambah']);
-Route::post('/desa/tambahproses', [DesaController::class, 'tambahproses']);
-Route::get('/desa/edit/{id}', [DesaController::class, 'edit']);
-Route::post('/prosesdesa', [DesaController::class, 'prosesdesa']);
-Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
+    //route CRUD USER
+    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user/tambah', [UserController::class, 'tambah']);
+    Route::post('/user/store', [UserController::class, 'store']);
+    Route::get('/user/edit/{id}', [UserController::class, 'edit']);
+    Route::post('/proses', [UserController::class, 'proses']);
+    Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-//route CRUD BENDUNGAN
-Route::get('/bendungan', [BendunganController::class, 'index']);
-//Route::get('/user/tambah', [UserController::class, 'tambah']);
-//Route::post('/user/store', [UserController::class, 'store']);
-Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
-Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
-//Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+    //route CRUD DESA
+    Route::get('/desa', [DesaController::class, 'index']);
+    Route::get('/desa/tambah', [DesaController::class, 'tambah']);
+    Route::post('/desa/tambahproses', [DesaController::class, 'tambahproses']);
+    Route::get('/desa/edit/{id}', [DesaController::class, 'edit']);
+    Route::post('/prosesdesa', [DesaController::class, 'prosesdesa']);
+    Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
 
-//View DATA DESA
-Route::get('/banjir', [BanjirController::class, 'index']);
+    //route CRUD BENDUNGAN
+    Route::get('/bendungan', [BendunganController::class, 'index']);
+    //Route::get('/user/tambah', [UserController::class, 'tambah']);
+    //Route::post('/user/store', [UserController::class, 'store']);
+    Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
+    Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
+    //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-//form login
-Route::get('/login', [HomeController::class, 'login']);
+    //View DATA DESA
+    Route::get('/banjir', [BanjirController::class, 'index']);
 
-//EXPORT DESA
-Route::get('/desa', [DesaController::class, 'index']);
-Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
-Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
+    //form login
 
-//Auth::routes();
+    //EXPORT DESA
+    Route::get('/desa', [DesaController::class, 'index']);
+    Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
+    Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    //Auth::routes();
+
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});
