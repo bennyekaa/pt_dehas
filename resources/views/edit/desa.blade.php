@@ -69,12 +69,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="tk_x" class="col-md-4 col-form-label text-md-end">{{ __('TK X') }}</label>
+                            <label for="tk_long" class="col-md-4 col-form-label text-md-end">{{ __('Titik Longitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tk_x" type="text" class="form-control @error('tk_x') is-invalid @enderror" name="tk_x" value="{{$data->tk_x}}" required autocomplete="new-tk_x">
+                                <input id="tk_long" type="text" class="form-control @error('tk_long') is-invalid @enderror" name="tk_long" value="{{$data->tk_long}}" required autocomplete="new-tk_long">
 
-                                @error('tk_x')
+                                @error('tk_long')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -83,12 +83,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="tk_y" class="col-md-4 col-form-label text-md-end">{{ __('TK Y') }}</label>
+                            <label for="tk_lat" class="col-md-4 col-form-label text-md-end">{{ __('Titik Latitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tk_y" type="text" class="form-control @error('tk_y') is-invalid @enderror" name="tk_y" value="{{$data->tk_y}}" required autocomplete="new-tk_y">
+                                <input id="tk_lat" type="text" class="form-control @error('tk_lat') is-invalid @enderror" name="tk_lat" value="{{$data->tk_lat}}" required autocomplete="new-tk_lat">
 
-                                @error('tk_y')
+                                @error('tk_lat')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -125,12 +125,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="p_x" class="col-md-4 col-form-label text-md-end">{{ __('PX') }}</label>
+                            <label for="p_long " class="col-md-4 col-form-label text-md-end">{{ __('Pengungsian Longitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="p_x" type="text" class="form-control @error('p_x') is-invalid @enderror" name="p_x" value="{{$data->p_x}}" required autocomplete="new-p_x">
+                                <input id="p_long" type="text" class="form-control @error('p_long') is-invalid @enderror" name="p_long" value="{{$data->p_long}}" required autocomplete="new-p_long">
 
-                                @error('p_x')
+                                @error('p_long')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -139,12 +139,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="p_y" class="col-md-4 col-form-label text-md-end">{{ __('PY') }}</label>
+                            <label for="p_lat" class="col-md-4 col-form-label text-md-end">{{ __('Pengungsian Latitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="p_y" type="text" class="form-control @error('p_y') is-invalid @enderror" name="p_y" value="{{$data->p_y}}" required autocomplete="new-p_y">
+                                <input id="p_lat" type="text" class="form-control @error('p_lat') is-invalid @enderror" name="p_lat" value="{{$data->p_lat}}" required autocomplete="new-p_lat">
 
-                                @error('p_y')
+                                @error('p_lat')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -153,12 +153,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="e_x" class="col-md-4 col-form-label text-md-end">{{ __('EX') }}</label>
+                            <label for="e_lat" class="col-md-4 col-form-label text-md-end">{{ __('Evakuasi Longitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="e_x" type="text" class="form-control @error('e_x') is-invalid @enderror" name="e_x" value="{{$data->e_x}}" required autocomplete="e_x">
+                                <input id="e_lat" type="text" class="form-control @error('e_lat') is-invalid @enderror" name="e_lat" value="{{$data->e_lat}}" required autocomplete="e_lat">
 
-                                @error('e_x')
+                                @error('e_lat')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -167,12 +167,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="e_y" class="col-md-4 col-form-label text-md-end">{{ __('EY') }}</label>
+                            <label for="e_long" class="col-md-4 col-form-label text-md-end">{{ __('Evakuasi Latitude') }}</label>
 
                             <div class="col-md-6">
-                                <input id="e_y" type="text" class="form-control @error('e_y') is-invalid @enderror" name="e_y" value="{{$data->e_y}}" required autocomplete="e_y">
+                                <input id="e_long" type="text" class="form-control @error('e_long') is-invalid @enderror" name="e_long" value="{{$data->e_long}}" required autocomplete="e_long">
 
-                                @error('e_y')
+                                @error('e_long')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

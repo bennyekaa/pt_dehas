@@ -43,8 +43,8 @@ Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
 
 //route CRUD BENDUNGAN
 Route::get('/bendungan', [BendunganController::class, 'index']);
-//Route::get('/user/tambah', [UserController::class, 'tambah']);
-//Route::post('/user/store', [UserController::class, 'store']);
+Route::get('/bendungan/tambah', [BendunganController::class, 'tambah']);
+Route::post('/bendungan/tambahproses', [BendunganController::class, 'tambahproses']);
 Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
 Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
 //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);

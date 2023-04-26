@@ -34,14 +34,14 @@ class DesaController extends Controller
             'desa' => $request->desa,
             'titik_kumpul' => $request->titik_kumpul,
             'jarak_titik_kumpul' => $request->jarak_tk,
-            'tk_x' => $request->tk_x,
-            'tk_y' => $request->tk_y,
+            'tk_long' => $request->tk_long,
+            'tk_lat' => $request->tk_lat,
             'lokasi_pengungsian' => $request->lokasi_pengungsian,
             'jarak_pengungsian' => $request->jarak_pengungsian,
-            'p_x' => $request->p_x,
-            'p_y' => $request->p_y,
-            'e_x' => $request->e_x,
-            'e_y' => $request->e_y,
+            'p_long' => $request->p_long,
+            'p_lat' => $request->p_lat,
+            'e_long' => $request->e_long,
+            'e_lat' => $request->e_lat,
             'created_at' => date('Y-m-d H:i:s.U'),
             'created_by' => 'Adit'
         ]);
@@ -63,15 +63,14 @@ class DesaController extends Controller
         $data->desa = $request->desa;
         $data->titik_kumpul = $request->titik_kumpul;
         $data->jarak_titik_kumpul = $request->jarak_tk;
-        $data->tk_x = $request->tk_x;
-        $data->tk_y = $request->tk_y;
-        $data->tk_y = $request->tk_y;
+        $data->tk_long = $request->tk_long;
+        $data->tk_lat = $request->tk_lat;
         $data->lokasi_pengungsian = $request->lokasi_pengungsian;
         $data->jarak_pengungsian = $request->jarak_pengungsian;
-        $data->p_x = $request->p_x;
-        $data->p_y = $request->p_y;
-        $data->e_x = $request->e_x;
-        $data->e_y = $request->e_y;
+        $data->p_long = $request->p_long;
+        $data->p_lat = $request->p_lat;
+        $data->e_long = $request->e_long;
+        $data->e_lat = $request->e_lat;
         $data->updated_by = 'Benny';
         $data->save();
         return redirect('/desa');

@@ -61,6 +61,49 @@ class BendunganController extends Controller
         return redirect('/bendungan');
     }
 
+    public function tambah()
+    {
+        return view('register.bendungan');
+    }
+
+    public function tambahproses(Request $request)
+    {
+        DB::table('ref_bendungan')->insert([
+            'nama_bendungan' => $request->nama_bendungan,
+            'lokasi_bendungan' => $request->lokasi_bendungan,
+            'nama_sungai' => $request->nama_sungai,
+            'koordinat_bendungan_x' => $request->koordinat_bendungan_x,
+            'koordinat_bendungan_y' => $request->koordinat_bendungan_y,
+            'pengelola_bendungan' => $request->pengelola_bendungan,
+            'telp_pengelola_bendungan' => $request->telp_pengelola_bendungan,
+            'alamat_pengelola_bendungan' => $request->alamat_pengelola_bendungan,
+            'type_tubuh_bendungan' => $request->type_tubuh_bendungan,
+            'panjang_puncak_tubuh_bendungan' => $request->panjang_puncak_tubuh_bendungan,
+            'tinggi_dari_sungai_tubuh_bendungan' => $request->tinggi_dari_sungai_tubuh_bendungan,
+            'tinggi_dari_fondasi_tubuh_bendungan' => $request->tinggi_dari_fondasi_tubuh_bendungan,
+            'lebar_puncak_tubuh_bendungan' => $request->lebar_puncak_tubuh_bendungan,
+            'elevasi_puncak_tubuh_bendungan' => $request->elevasi_puncak_tubuh_bendungan,
+            'daerah_tangkapan_tubuh_bendungan' => $request->daerah_tangkapan_tubuh_bendungan,
+            'tipe_bangunan_pelimpah' => $request->tipe_bangunan_pelimpah,
+            'lokasi_bangunan_pelimpah' => $request->lokasi_bangunan_pelimpah,
+            'lebar_bangunan_pelimpah' => $request->lebar_bangunan_pelimpah,
+            'elevasi_bangunan_pelimpah' => $request->elevasi_bangunan_pelimpah,
+            'debit_inflow_qin_bangunan_pelimpah' => $request->debit_inflow_qin_bangunan_pelimpah,
+            'debit_inflow_q1000_bangunan_pelimpah' => $request->debit_inflow_q1000_bangunan_pelimpah,
+            'tipe_bangunan_pengambilan' => $request->tipe_bangunan_pengambilan,
+            'lokasi_bangunan_pengambilan' => $request->lokasi_bangunan_pengambilan,
+            'saluran_hantar_bangunan_pengambilan' => $request->saluran_hantar_bangunan_pengambilan,
+            'diameter_terowongan_bangunan_pengambilan' => $request->diameter_terowongan_bangunan_pengambilan,
+            'kapasitas_max_bangunan_pengambilan' => $request->kapasitas_max_bangunan_pengambilan,
+            'elev_muka_air_waduk' => $request->elev_muka_air_waduk,
+            'kapasitas_waduk' => $request->kapasitas_waduk,
+            'luas_genangan_waduk' => $request->luas_genangan_waduk,
+            'created_at' => date('Y-m-d H:i:s.U'),
+            'created_by' => 'Admin'
+        ]);
+        return redirect('/bendungan');
+    }
+
     public function hapus($id)
     {
         try {

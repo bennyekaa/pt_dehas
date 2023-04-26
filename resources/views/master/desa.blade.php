@@ -66,7 +66,7 @@
 					<a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT EXCEL</a>
 					<button type=" button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
 						IMPORT EXCEL
-						</button>
+					</button>
 				</div>
 
 				<div class="table-responsive p-3">
@@ -77,14 +77,14 @@
 								<th>Desa</th>
 								<th>Titik Kumpul</th>
 								<th>Jarak Titik Kumpul</th>
-								<th>TK X</th>
-								<th>TK Y</th>
+								<th>Titik Longitude</th>
+								<th>Titik Latitude</th>
 								<th>Lokasi Pengungsian</th>
 								<th>Jarak Pengungsian</th>
-								<th>P X</th>
-								<th>P Y</th>
-								<th>E X</th>
-								<th>E Y</th>
+								<th>Pengungsian Longitude</th>
+								<th>Pengungsian Latitude</th>
+								<th>Evakuasi Longitude</th>
+								<th>Evakuasi Latitude</th>
 								<th>Dibuat Pada</th>
 								<th>Dibuat Oleh</th>
 								<th>Diupdate Pada</th>
@@ -99,14 +99,14 @@
 								<td>{{ $p->desa }} </td>
 								<td>{{ $p->titik_kumpul }} </td>
 								<td>{{ $p->jarak_titik_kumpul }} </td>
-								<td>{{ $p->tk_x }} </td>
-								<td>{{ $p->tk_y }} </td>
+								<td>{{ $p->tk_long }} </td>
+								<td>{{ $p->tk_lat }} </td>
 								<td>{{ $p->lokasi_pengungsian }} </td>
 								<td>{{ $p->jarak_pengungsian }} </td>
-								<td>{{ $p->p_x }} </td>
-								<td>{{ $p->p_y }} </td>
-								<td>{{ $p->e_x }} </td>
-								<td>{{ $p->e_y }} </td>
+								<td>{{ $p->p_long }} </td>
+								<td>{{ $p->p_lat }} </td>
+								<td>{{ $p->e_long }} </td>
+								<td>{{ $p->e_lat }} </td>
 								<td>{{ $p->created_at }}</td>
 								<td>{{ $p->created_by }}</td>
 								<td>{{ $p->updated_at }}</td>

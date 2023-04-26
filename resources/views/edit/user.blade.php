@@ -85,14 +85,6 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Ulangi Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="ulangi_password" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
                             <label 
                                 for="jabatan" class="col-md-4 col-form-label text-md-end">{{ __('Jabatan') }}
                             </label>
