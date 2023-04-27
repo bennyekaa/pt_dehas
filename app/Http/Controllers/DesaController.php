@@ -43,7 +43,7 @@ class DesaController extends Controller
             'e_long' => $request->e_long,
             'e_lat' => $request->e_lat,
             'created_at' => date('Y-m-d H:i:s.U'),
-            'created_by' => 'Adit'
+            'created_by' => session('nama')
         ]);
         return redirect('/desa');
     }

@@ -11,14 +11,14 @@ class BendunganController extends Controller
 {
     public function index()
     {
-        // mengambil data dari table user
+        // mengambil data dari table bendungan
         $data['bendungan'] = DB::table('ref_bendungan')->get();
         return view('master.bendungan', $data);
     }
 
     public function detailbendungan()
     {
-        // mengambil data dari table user
+        // mengambil data dari table bendungan
         $data['bendungan'] = DB::table('ref_bendungan')->first();
         return view('beranda.detailbendungan', $data);
     }
@@ -63,7 +63,7 @@ class BendunganController extends Controller
         $data->elev_muka_air_waduk = $request->elev_muka_air_waduk;
         $data->kapasitas_waduk = $request->kapasitas_waduk;
         $data->luas_genangan_waduk = $request->luas_genangan_waduk;
-        $data->updated_by = 'Admin';
+        $data->updated_by = session('nama');
         $data->save();
         return redirect('/bendungan');
     }
@@ -115,9 +115,9 @@ class BendunganController extends Controller
     {
         try {
             DB::table('ref_bendungan')->where('id_bendungan', $id)->delete();
-            return redirect(session('/user'))->with('success', 'Data Terhapus');
+            return redirect(('/user'))->with('success', 'Data Terhapus');
         } catch (Exception $e) {
-            return redirect(session('/user'))->with('error', $e->getMessage());
+            return redirect(('/user'))->with('error', $e->getMessage());
         }
     }
 

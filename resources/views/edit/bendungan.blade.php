@@ -12,20 +12,7 @@
 
                         @csrf
                         <input type="hidden" name="id_bendungan" value="{{$data->id_bendungan}}">
-                        <div class="row mb-3">
-                            <label for="id_bendungan" class="col-md-4 col-form-label text-md-end">{{ __('ID Bendungan') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('id_bendungan') is-invalid @enderror" name="id_bendungan" value="{{$data->id_bendungan}}" required autocomplete="name" autofocus>
-
-                                @error('bendungan')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
+                        
                         <div class="row mb-3">
                             <label for="nama_bendungan" class="col-md-4 col-form-label text-md-end">{{ __('Nama Bendungan') }}</label>
 

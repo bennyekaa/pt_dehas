@@ -16,7 +16,7 @@ class UserController extends Controller
 		// mengambil data dari table user
 		$data['user'] = DB::table('ref_user')->get();
 		return view('master.user', $data);
-	}
+	}	 
 
 	public function edit($id_user)
 	{
@@ -34,7 +34,7 @@ class UserController extends Controller
 		$data->username = $request->username;
 		$data->password = $request->password;
 		$data->role = $request->role;
-		$data->updated_by = session('id_user');
+		$data->updated_by = session('nama');
 		$data->save();
 		return redirect('/user');
 	}

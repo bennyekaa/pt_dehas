@@ -34,6 +34,7 @@
                                 <th>Telpon Pengelola Bendungan</th>
                                 <th>Alamat Pengelola Bendungan</th>
                                 <th>Type Tubuh Bendungan</th>
+                                <th>Tinggi Bendungan diukur dari dasar sungai</th>
                                 <th>Panjang Puncak Tubuh Bendungan</th>
                                 <th>Tinggi Dari Fondasi Tubuh Bendungan</th>
                                 <th>Lebar Puncak Tubuh Bendungan</th>
