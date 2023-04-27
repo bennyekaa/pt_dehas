@@ -5,8 +5,9 @@ namespace App\Imports;
 use App\Models\DesaBendungan;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class DesaImport implements ToModel
+class DesaImport implements ToModel, WithStartRow
 {
     /**
     * @param array $row
@@ -32,5 +33,13 @@ class DesaImport implements ToModel
             'created_at' => now(),
             'created_by' => $row[14],
         ]);
+
     }
+    
+
+    public function startRow(): int
+    {
+        return 1;
+    }
+
 }

@@ -71,7 +71,7 @@ class DesaController extends Controller
         $data->p_lat = $request->p_lat;
         $data->e_long = $request->e_long;
         $data->e_lat = $request->e_lat;
-        $data->updated_by = 'Benny';
+        $data->updated_by = session('nama');
         $data->save();
         return redirect('/desa');
     }
@@ -92,7 +92,7 @@ class DesaController extends Controller
 
         // menangkap file excel
         $file = $request->file('file');
-
+        //dd($request->file('file')->getClientOriginalName());
         // membuat nama file unik
         $nama_file = rand() . $file->getClientOriginalName();
 

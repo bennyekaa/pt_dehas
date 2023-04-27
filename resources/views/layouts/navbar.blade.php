@@ -14,6 +14,13 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link" href="{{ url('detailbendungan') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Detail Bendungan</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link {{Request::segment(1)=='map' ? 'active' : ''}}" href="{{url('map')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Kelola Maps</span>
@@ -51,14 +58,21 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('user/tambah') }}">
+        <a class="nav-link" href="#">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Register</span>
+            <span>Import</span>
         </a>
     </li>
 
+    {{-- <li class="nav-item">
+        <a class="nav-link" href="{{ url('user/tambah') }}">
+    <i class="fas fa-fw fa-tachometer-alt"></i>
+    <span>Register</span>
+    </a>
+    </li> --}}
+
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('login') }}">
+        <a class="nav-link" href="{{ url('logout') }}">
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             <span>Logout</span>
         </a>

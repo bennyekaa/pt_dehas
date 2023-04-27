@@ -12,7 +12,7 @@ class BanjirController extends Controller
     public function index()
     {
         // mengambil data dari table user
-        $data['banjir'] = DB::table('data_banjir')->get();
+        $data['banjir'] = DB::table('data_banjir_muka_air')->get();
         return view('transaksi.banjir', $data);
     }
 

@@ -16,6 +16,13 @@ class BendunganController extends Controller
         return view('master.bendungan', $data);
     }
 
+    public function detailbendungan()
+    {
+        // mengambil data dari table user
+        $data['bendungan'] = DB::table('ref_bendungan')->first();
+        return view('beranda.detailbendungan', $data);
+    }
+
     public function edit($id_bendungan)
     {
         $id = decrypt($id_bendungan);
@@ -99,7 +106,7 @@ class BendunganController extends Controller
             'kapasitas_waduk' => $request->kapasitas_waduk,
             'luas_genangan_waduk' => $request->luas_genangan_waduk,
             'created_at' => date('Y-m-d H:i:s.U'),
-            'created_by' => 'Admin'
+            'created_by' => session('nama')
         ]);
         return redirect('/bendungan');
     }

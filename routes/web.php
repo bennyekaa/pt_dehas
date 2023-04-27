@@ -7,6 +7,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,10 +21,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class, 'logout']);
+Route::post('/actionlogin', [LoginController::class, 'actionlogin']);
 
-// map
-route::get('/map', [MapController::class, 'index']);
+Route::middleware('checklogin')->group(function () {
+    Route::get('/', [HomeController::class, 'index']);
+
+    // map
+    route::get('/map', [MapController::class, 'index']);
+
+    // detail Bendungan
+    route::get('/detailbendungan', [BendunganController::class, 'detailbendungan']);
 
 //route CRUD USER
 Route::get('/user', [UserController::class, 'index']);
@@ -49,17 +58,16 @@ Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
 Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
 //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-//View DATA DESA
-Route::get('/banjir', [BanjirController::class, 'index']);
+    //View DATA DESA
+    Route::get('/banjir', [BanjirController::class, 'index']);
 
-//form login
-Route::get('/login', [HomeController::class, 'login']);
 
-//EXPORT DESA
-Route::get('/desa', [DesaController::class, 'index']);
-Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
-Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
+    //EXPORT DESA
+    Route::get('/desa', [DesaController::class, 'index']);
+    Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
+    Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
 
-//Auth::routes();
+    //Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});

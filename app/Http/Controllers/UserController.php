@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Userbendungan;
 use Exception;
+use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -32,7 +34,7 @@ class UserController extends Controller
 		$data->username = $request->username;
 		$data->password = $request->password;
 		$data->role = $request->role;
-		$data->updated_by = 'Benny';
+		$data->updated_by = session('id_user');
 		$data->save();
 		return redirect('/user');
 	}
@@ -50,11 +52,14 @@ class UserController extends Controller
 			'email' => $request->email,
 			'hp' => $request->no_hp,
 			'username' => $request->username,
-			'password' => $request->password,
+			'password' => Hash::make($request->password),
 			'role' => $request->jabatan,
 			'created_at' => date('Y-m-d H:i:s.U'),
-			'created_by' => 'adit'
+			'created_by' => session('nama')
 		]);
+
+        // $this->whatsappNotification($request->no_hp);
+
 		return redirect('/user');
 	}
 
@@ -63,9 +68,22 @@ class UserController extends Controller
 	{
 		try {
 			DB::table('ref_user')->where('id_user', $id)->delete();
-			return redirect(session('/user'))->with('success', 'Data Terhapus');
+			return redirect(('/user'))->with('success', 'Data Terhapus');
 		} catch (Exception $e) {
-			return redirect(session('/user'))->with('error', $e->getMessage());
+			return redirect(('/user'))->with('error', $e->getMessage());
 		}
 	}
+
+    private function whatsappNotification(string $recipient)
+    {
+        $sid    = getenv("TWILIO_AUTH_SID");
+        $token  = getenv("TWILIO_AUTH_TOKEN");
+        $wa_from = getenv("TWILIO_WHATSAPP_FROM");
+        $twilio = new Client($sid, $token);
+
+        $body = "Halo ini DoIT from Benny Eka.";
+        dd($twilio->messages->create("whatsapp:$recipient", ["from" => "whatsapp:$wa_from", "body" => $body]));
+
+        return $twilio->messages->create("whatsapp:$recipient", ["from" => "whatsapp:$wa_from", "body" => $body]);
+    }
 }
