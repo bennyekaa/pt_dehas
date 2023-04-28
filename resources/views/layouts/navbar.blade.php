@@ -21,18 +21,19 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
-            aria-expanded="true" aria-controls="collapseBootstrap">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap" aria-expanded="true" aria-controls="collapseBootstrap">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Master</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Master</h6>
+                <a class="collapse-item" href="{{ url('user') }}">User</a>
+                <a class="collapse-item" href="buttons.html">Waduk</a>
                 <a class="collapse-item" href="{{ url('tabel') }}">User</a>
                 <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                 <a class="collapse-item" href="dropdowns.html">Bendungan</a>
-                <a class="collapse-item" href="modals.html">Desa</a>
+                <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
             </div>
         </div>
     </li>
@@ -52,14 +53,14 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('register') }}">
+        <a class="nav-link" href="{{ url('user/tambah') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Register</span>
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ url('login') }}">
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             <span>Logout</span>
         </a>

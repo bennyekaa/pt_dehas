@@ -19,4 +19,9 @@ class HomeController extends Controller
  //       $data['nama_user'] = UserBendungan::find($id);
         return view('master.tabel');
     }
+
+    public function login()
+    {
+        return view('login.masuk');
+    }
 }
