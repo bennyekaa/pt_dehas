@@ -13,7 +13,7 @@
 
     <div class="container-fluid" id="container-wrapper">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Bendungan Tamblang</h1>
+            <h1 class="h3 mb-0 text-gray-800">Detail {{$bendungan->nama_bendungan}}</h1>
         </div>
 
         <div class="col-lg-11">
@@ -23,9 +23,9 @@
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <td>Nama bendungan</td>
-                                <td>:</td>
-                                <td>{{ $bendungan->nama_bendungan }} </td>
+                                <td style="width: 35%">Nama bendungan</td>
+                                <td style="width: 5%">:</td>
+                                <td style="width: 60%; text-align: left">{{ $bendungan->nama_bendungan }} </td>
                             </tr>
                             <tr>
                                 <td>Lokasi bendungan</td>
@@ -70,9 +70,9 @@
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <td>Tipe Bendungan</td>
-                                <td>:</td>
-                                <td>{{ $bendungan->type_tubuh_bendungan }} </td>
+                                <td style="width: 35%">Tipe Bendungan</td>
+                                <td style="width: 5%">:</td>
+                                <td style="width: 60%;text-align: left">{{ $bendungan->type_tubuh_bendungan }} </td>
                             </tr>
                             <tr>
                                 <td>Panjang Puncak Bendungan</td>
@@ -118,9 +118,9 @@
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <td>Tipe</td>
-                                <td>:</td>
-                                <td>{{ $bendungan->tipe_bangunan_pelimpah }} </td>
+                                <td style="width: 35%">Tipe</td>
+                                <td style="width: 5%">:</td>
+                                <td style="width: 60%;text-align: left">{{ $bendungan->tipe_bangunan_pelimpah }} </td>
                             </tr>
                             <tr>
                                 <td>Lokasi</td>
@@ -161,9 +161,9 @@
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <td>Tipe</td>
-                                <td>:</td>
-                                <td>{{ $bendungan->tipe_bangunan_pengambilan }} </td>
+                                <td style="width: 35%">Tipe</td>
+                                <td style="width: 5%">:</td>
+                                <td style="width: 60%;text-align: left">{{ $bendungan->tipe_bangunan_pengambilan }} </td>
                             </tr>
                             <tr>
                                 <td>Lokasi</td>
@@ -199,9 +199,9 @@
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <td>Elev. muka air banjir, PMF</td>
-                                <td>:</td>
-                                <td>EL. {{ $bendungan->elev_muka_air_waduk }} m</td>
+                                <td style="width: 35%">Elev. muka air banjir, PMF</td>
+                                <td style="width: 5%">:</td>
+                                <td style="width: 60%;text-align: left">EL. {{ $bendungan->elev_muka_air_waduk }} m</td>
                             </tr>
                             <tr>
                                 <td>Kapasitas Tampungan Waduk (NWL)</td>
