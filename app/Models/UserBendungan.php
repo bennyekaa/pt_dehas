@@ -14,8 +14,10 @@ class UserBendungan extends Model
 
     public $incrementing = false;
 
-    public function banjir()
-    {
-        return $this->belongsTo('App\banjir');
-    }
+    protected $fillable = [
+        'nama',
+        'email',
+        'hp',
+        'password',
+    ];
 }
