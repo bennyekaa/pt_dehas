@@ -14,35 +14,33 @@
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 </head>
-<section class="vh-100" style="background-color: #508bfc;">
+<section class="vh-100" style="background-image: url('assets/img/bendungan.jpg')">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                 <div class="card shadow-2-strong" style="border-radius: 1rem;">
                     <div class="card-body p-5 text-center">
                         @if (session()->has('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                            </div>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                        </div>
                         @endif
                         @if (session()->has('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ session('error') }}
-                            </div>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                        </div>
                         @endif
                         <h3 class="mb-5" style="text-align: left">Log in</h3>
                         <form action="{{ url('actionlogin') }}" method="post">
                             @csrf
                             <div class="form-outline mb-4" style="text-align: left">
                                 <label class="form-label">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-lg"
-                                    placeholder="Masukkan Email" />
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Masukkan Email" />
                             </div>
 
                             <div class="form-outline mb-4" style="text-align: left">
                                 <label class="form-label">Password</label>
-                                <input type="password" id="password" name="password"
-                                    class="form-control form-control-lg" placeholder="Masukkan Password" />
+                                <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Masukkan Password" />
                                 <br>
                                 <input type="checkbox" onclick="myFunction()"> Lihat Password
                             </div>

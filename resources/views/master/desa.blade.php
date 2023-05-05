@@ -74,17 +74,35 @@
 						<thead class="thead-light">
 							<tr>
 								<th>Kode Pengungsian</th>
-								<th>Desa</th>
-								<th>Titik Kumpul</th>
-								<th>Jarak Titik Kumpul</th>
-								<th>Titik Longitude</th>
-								<th>Titik Latitude</th>
-								<th>Lokasi Pengungsian</th>
-								<th>Jarak Pengungsian</th>
-								<th>Pengungsian Longitude</th>
-								<th>Pengungsian Latitude</th>
-								<th>Evakuasi Longitude</th>
-								<th>Evakuasi Latitude</th>
+								<th>Latitude</th>
+								<th>Longitude</th>
+								<th>Kelurahan</th>
+								<th>Kecamatan</th>
+								<th>Kabupaten</th>
+								<th>Jarak Dari Bendungan</th>
+								<th>Banjir (m)</th>
+								<th>Kecamatan Max</th>
+								<th>Waktu Tiba (jam)</th>
+								<th>Waktu Surut (jam)</th>
+								<th>Durasi Banjir (jam)</th>
+								<th>Jumlah Jiwa</th>
+								<th>Jumlah KK</th>
+								<th>Rendah</th>
+								<th>Sedang</th>
+								<th>Tinggi</th>
+								<th>Total</th>
+								<th>KK</th>
+								<th>Tidak Terdampak</th>
+								<th>Zona Bahaya</th>
+								<th>Balita</th>
+								<th>Anak</th>
+								<th>Muda</th>
+								<th>Dewasa</th>
+								<th>Manula</th>
+								<th>Total Jiwa</th>
+								<th>Laki - Laki</th>
+								<th>Perempuan</th>
+								<th>Total L/P</th>
 								<th>Dibuat Pada</th>
 								<th>Dibuat Oleh</th>
 								<th>Diupdate Pada</th>
@@ -95,18 +113,36 @@
 						<tbody class="thead-light">
 							@foreach($desa as $p)
 							<tr>
-								<td>{{ $p->kode_pengungsian }} </td>
-								<td>{{ $p->desa }} </td>
-								<td>{{ $p->titik_kumpul }} </td>
-								<td>{{ $p->jarak_titik_kumpul }} </td>
-								<td>{{ $p->tk_long }} </td>
-								<td>{{ $p->tk_lat }} </td>
-								<td>{{ $p->lokasi_pengungsian }} </td>
-								<td>{{ $p->jarak_pengungsian }} </td>
-								<td>{{ $p->p_long }} </td>
-								<td>{{ $p->p_lat }} </td>
-								<td>{{ $p->e_long }} </td>
-								<td>{{ $p->e_lat }} </td>
+								<td>{{ $p->kode_desa }} </td>
+								<td>{{ $p->desa_lat }} </td>
+								<td>{{ $p->desa_long }} </td>
+								<td>{{ $p->kelurahan_desa }} </td>
+								<td>{{ $p->kecamatan_desa }} </td>
+								<td>{{ $p->kabupaten_desa }} </td>
+								<td>{{ $p->jarak_dari_bendungan }} </td>
+								<td>{{ $p->banjir }} </td>
+								<td>{{ $p->kec_max }} </td>
+								<td>{{ $p->waktu_tiba }} </td>
+								<td>{{ $p->waktu_surut }} </td>
+								<td>{{ $p->durasi_banjir }} </td>
+								<td>{{ $p->jumlah_jiwa }} </td>
+								<td>{{ $p->jumlah_kk }} </td>
+								<td>{{ $p->rendah }} </td>
+								<td>{{ $p->sedang }} </td>
+								<td>{{ $p->tinggi }} </td>
+								<td>{{ $p->total }} </td>
+								<td>{{ $p->kk }} </td>
+								<td>{{ $p->tidak_terdampak }} </td>
+								<td>{{ $p->zona_bahaya }} </td>
+								<td>{{ $p->balita }} </td>
+								<td>{{ $p->anak }} </td>
+								<td>{{ $p->muda }} </td>
+								<td>{{ $p->dewasa }} </td>
+								<td>{{ $p->manula }} </td>
+								<td>{{ $p->total_jiwa }} </td>
+								<td>{{ $p->laki-laki }} </td>
+								<td>{{ $p->perempuan }} </td>
+								<td>{{ $p->total_LP }} </td>
 								<td>{{ $p->created_at }}</td>
 								<td>{{ $p->created_by }}</td>
 								<td>{{ $p->updated_at }}</td>

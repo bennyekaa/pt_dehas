@@ -58,7 +58,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ url('import') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Import</span>
         </a>
@@ -70,6 +70,13 @@
     <span>Register</span>
     </a>
     </li> --}}
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('logout') }}">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            <span>Logout</span>
+        </a>
+    </li>
 
     <hr class="sidebar-divider">
     <div class="version" id="version-ruangadmin"></div>
