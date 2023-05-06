@@ -1,65 +1,71 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
+use App\Models\WadukBendungan;
 use Illuminate\Http\Request;
-use App\Models\Waduk;
 
 class WadukController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('waduk.index');
+        // mengambil data dari table waduk
+        $data['waduk'] = WadukBendungan::all();
+        // $data['waduk'] = WadukBendungan::table('ref_waduk')->get();
+        return view('master.waduk', $data);
+    }
+    // TAMBAH
+
+    public function tambah()
+    {
+        return view('register.waduk');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function tambahproses(Request $request)
     {
-        //
+        DB::table('ref_waduk')->insert([
+            'Batas_Atas_Muka_air' => $request->Batas_Atas_Muka_air,
+            'Batas_Bawah_Muka_air' => $request->Batas_Bawah_Muka_air,
+            'Muka_air' => $request->Muka_air,
+            'Tinggi_air' => $request->Tinggi_air,
+            'Debit_keluar' => $request->Debit_keluar,
+            'status' => $request->status,
+            'keterangan' => $request->keterangan,
+            'created_at' => date('Y-m-d H:i:s.U'),
+            'created_by' => 'Hendri'
+        ]);
+
+        return redirect('/waduk')->with('success', 'Data berhasil disimpan!');
+    }
+    //EDIT
+    public function edit($id_waduk)
+    {
+        $id = decrypt($id_waduk);
+        $data = WadukBendungan::find($id);
+        return view('edit.waduk', compact(['data']));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function proseswaduk(Request $request)
     {
-        //
+        $data = WadukBendungan::find($request->id_waduk);
+        $data->Batas_Atas_Muka_air = $request->Batas_Atas_Muka_air;
+        $data->Batas_Bawah_Muka_air = $request->Batas_Bawah_Muka_air;
+        $data->Muka_air = $request->Muka_air;
+        $data->Tinggi_air = $request->Tinggi_air;
+        $data->Debit_keluar = $request->Debit_keluar;
+        $data->status = $request->status;
+        $data->keterangan = $request->keterangan;
+        $data->updated_by = 'Benny';
+        $data->save();
+        return redirect('/waduk');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // HAPUS
+    public function hapus($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        DB::table('ref_waduk')->where('id_waduk', $id)->delete();
+        return redirect('/waduk');
     }
 }
+
+
