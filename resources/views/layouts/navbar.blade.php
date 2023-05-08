@@ -40,6 +40,7 @@
                 <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
                 <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
                 <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
+                <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
                 <a class="collapse-item" href="{{ url('web') }}">Website</a>
             </div>
         </div>
