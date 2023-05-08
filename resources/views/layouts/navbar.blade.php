@@ -73,7 +73,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                 aria-expanded="true" aria-controls="collapseBootstrap">
-                <i class="far fa-fw fa-tablet"></i>
+                <i class="far fa-fw fa-window-maximize"></i>
                 <span>Master</span>
             </a>
             <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
@@ -85,9 +85,9 @@
                     <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
                     <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
                     <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
+                    <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>
                 </div>
-            </div>
         </li>
 
         <li class="nav-item">
