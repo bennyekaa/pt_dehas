@@ -16,7 +16,7 @@ class UserController extends Controller
 		// mengambil data dari table user
 		$data['user'] = DB::table('ref_user')->get();
 		return view('master.user', $data);
-	}	 
+	}
 
 	public function edit($id_user)
 	{
@@ -58,7 +58,7 @@ class UserController extends Controller
 			'created_by' => session('nama')
 		]);
 
-        $this->whatsappNotification($request->no_hp);
+        // $this->whatsappNotification($request->no_hp);
 
 		return redirect('/user');
 	}
