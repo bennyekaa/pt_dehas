@@ -39,6 +39,7 @@
                 <a class="collapse-item" href="buttons.html">Waduk</a>
                 <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
                 <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
+                <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
             </div>
         </div>
     </li>

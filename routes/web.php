@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TitikKumpulController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +54,14 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/desa/edit/{id}', [DesaController::class, 'edit']);
     Route::post('/prosesdesa', [DesaController::class, 'prosesdesa']);
     Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
+
+    //route CRUD Titik Kumpul
+    Route::get('/titikkumpul', [TitikKumpulController::class, 'index']);
+   // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
+   // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
+   // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
+   // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+   // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
 
     //route CRUD BENDUNGAN
     Route::get('/bendungan', [BendunganController::class, 'index']);

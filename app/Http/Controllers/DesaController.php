@@ -96,7 +96,7 @@ class DesaController extends Controller
         // membuat nama file unik
         $nama_file = rand() . $file->getClientOriginalName();
 
-        // upload ke folder file_siswa di dalam folder public
+        // upload ke folder file_desa di dalam folder public
         $file->move('file_desa', $nama_file);
 
         // import data
