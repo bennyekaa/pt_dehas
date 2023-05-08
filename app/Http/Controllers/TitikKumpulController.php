@@ -12,7 +12,9 @@ class TitikKumpulController extends Controller
     public function index()
     {
         // mengambil data dari table Titik Kumpul
-        $data['titikkumpul'] = DB::table('ref_titik_kumpul')->get();
+      //  $data['titikkumpul'] = DB::table('ref_titik_kumpul')->get();
+        $data['titikkumpul'] = DB::table('ref_titik_kumpul')->orderBy('kode_tk', 'asc')->get();
+
         return view('master.titikkumpul', $data);
     }
 

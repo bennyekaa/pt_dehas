@@ -11,7 +11,7 @@ class PengungsianController extends Controller
     public function index()
     {
         // mengambil data dari table Titik Kumpul
-        $data['pengungsian'] = DB::table('ref_pengungsian')->get();
+        $data['pengungsian'] = DB::table('ref_pengungsian')->orderBy('kode_pengungsian', 'asc')->get();
         return view('master.pengungsian', $data);
     }
 

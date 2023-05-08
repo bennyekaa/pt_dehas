@@ -11,6 +11,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\TitikKumpulController;
+use App\Http\Controllers\WadukController;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,14 @@ Route::middleware('checklogin')->group(function () {
 
     //route CRUD Titik Kumpul
     Route::get('/titikkumpul', [TitikKumpulController::class, 'index']);
+    // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
+    // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
+    // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
+    // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+    // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+
+    //route CRUD waduk
+    Route::get('/waduk', [WadukController::class, 'index']);
     // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
     // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
     // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
