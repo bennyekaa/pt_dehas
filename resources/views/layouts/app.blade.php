@@ -18,6 +18,7 @@
 
 <body id="page-top">
     <div id="wrapper">
+        @include('sweetalert::alert')
         <!-- Sidebar -->
         @include('layouts.navbar')
         <!-- Sidebar -->
@@ -52,6 +53,8 @@
 
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js')}}'"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 
     @yield('tambahanjs')
 </body>

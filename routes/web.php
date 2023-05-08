@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +62,12 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
     Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
     //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+    Route::get('web', [WebController::class, 'index']);
+    Route::get('/web/tambah', [WebController::class, 'tambah']);
+    Route::get('/web/edit/{id}', [WebController::class, 'edit']);
+    Route::post('web/proses', [WebController::class, 'proses']);
+    Route::get('web/hapus/{id}', [WebController::class, 'hapus']);
 
     //View DATA DESA
     Route::get('/banjir', [BanjirController::class, 'index']);
