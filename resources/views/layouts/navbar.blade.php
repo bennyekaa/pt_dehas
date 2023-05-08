@@ -11,19 +11,26 @@
         <a class="nav-link" href="{{url('/')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
-    </li>
+        </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('detailbendungan') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Detail Bendungan</span>
-        </a>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('detailbendungan') }}">
+                <i class="fas fa-fw fa-bookmark"></i>
+                <span>Detail Bendungan</span>
+            </a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link {{Request::segment(1)=='map' ? 'active' : ''}}" href="{{url('map')}}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-map-marked"></i>
             <span>Kelola Maps</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('import') }}">
+            <i class="fas fa-fw fa-file-import"></i>
+            <span>Import</span>
         </a>
     </li>
 
@@ -45,24 +52,19 @@
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url('banjir') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-tablet"></i>
             <span>Transaksi</span>
         </a>
     </li>
 
+
     <li class="nav-item">
         <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-book"></i>
             <span>Laporan</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('import') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Import</span>
-        </a>
-    </li>
 
     {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('user/tambah') }}">
@@ -71,12 +73,12 @@
     </a>
     </li> --}}
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('logout') }}">
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             <span>Logout</span>
         </a>
-    </li>
+    </li> --}}
 
     <hr class="sidebar-divider">
     <div class="version" id="version-ruangadmin"></div>
