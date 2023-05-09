@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="{{ asset('assets/img/logo/logo.png') }}" rel="icon">
-    <title>RuangAdmin - Dashboard</title>
+    <link href="{{ asset('assets/img/logo/pt_dehas.jpg') }}" rel="icon">
+    <title>PT Dehas Inframedia Karsa - Deshboard</title>
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">
@@ -49,7 +49,7 @@
 
     <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
     <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script>
-    
+
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js')}}'"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
