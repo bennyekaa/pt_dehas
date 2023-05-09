@@ -113,12 +113,8 @@ class BendunganController extends Controller
 
     public function hapus($id)
     {
-        try {
             DB::table('ref_bendungan')->where('id_bendungan', $id)->delete();
             return redirect(('/user'))->with('success', 'Data Terhapus');
-        } catch (Exception $e) {
-            return redirect(('/user'))->with('error', $e->getMessage());
-        }
     }
 
 }

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\BanjirController;
 use App\Http\Controllers\BendunganController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WadukController;
@@ -11,7 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
-
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +63,30 @@ Route::middleware('checklogin')->group(function () {
     Route::post('/prosesdesa', [DesaController::class, 'prosesdesa']);
     Route::get('/desa/hapus/{id}', [DesaController::class, 'hapus']);
 
+    //route CRUD Titik Kumpul
+    Route::get('/titikkumpul', [TitikKumpulController::class, 'index']);
+    // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
+    // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
+    // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
+    // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+    // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+
+    //route CRUD waduk
+    Route::get('/waduk', [WadukController::class, 'index']);
+    // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
+    // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
+    // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
+    // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+    // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+
+    //route CRUD Pengungsian
+    Route::get('/pengungsian', [PengungsianController::class, 'index']);
+   // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
+   // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
+   // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
+   // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+   // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+
     //route CRUD BENDUNGAN
     Route::get('/bendungan', [BendunganController::class, 'index']);
     Route::get('/bendungan/tambah', [BendunganController::class, 'tambah']);
@@ -71,6 +94,12 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
     Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
     //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+    Route::get('web', [WebController::class, 'index']);
+    Route::get('/web/tambah', [WebController::class, 'tambah']);
+    Route::get('/web/edit/{id}', [WebController::class, 'edit']);
+    Route::post('web/proses', [WebController::class, 'proses']);
+    Route::get('web/hapus/{id}', [WebController::class, 'hapus']);
 
     //View DATA DESA
     Route::get('/banjir', [BanjirController::class, 'index']);

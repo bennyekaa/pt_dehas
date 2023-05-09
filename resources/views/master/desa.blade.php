@@ -73,9 +73,9 @@
 					<table class="table align-items-center table-flush" id="dataTable">
 						<thead class="thead-light">
 							<tr>
-								<th>Kode Pengungsian</th>
-								<th>Latitude</th>
-								<th>Longitude</th>
+								<th>Kode Desa</th>
+								<th>Desa Latitude</th>
+								<th>Desa Longitude</th>
 								<th>Kelurahan</th>
 								<th>Kecamatan</th>
 								<th>Kabupaten</th>
@@ -140,7 +140,7 @@
 								<td>{{ $p->dewasa }} </td>
 								<td>{{ $p->manula }} </td>
 								<td>{{ $p->total_jiwa }} </td>
-								<td>{{ $p->laki-laki }} </td>
+								<td>{{ $p->laki_laki }} </td>
 								<td>{{ $p->perempuan }} </td>
 								<td>{{ $p->total_LP }} </td>
 								<td>{{ $p->created_at }}</td>

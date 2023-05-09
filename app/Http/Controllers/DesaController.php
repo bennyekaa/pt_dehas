@@ -16,7 +16,9 @@ class DesaController extends Controller
 {
     public function index()
     {
-        $data['desa'] = DB::table('ref_desa')->get();
+    //  $data['desa'] = DB::table('ref_desa')->get();
+        $data['desa'] = DB::table('ref_desa')->orderBy('kode_desa', 'asc')->get();
+
         return view('master.desa', $data);
     }
 
@@ -30,7 +32,7 @@ class DesaController extends Controller
     public function tambahproses(Request $request)
     {
         DB::table('ref_desa')->insert([
-            'kode_pengungsian' => $request->kode_pengungsian,
+            'kode_desa' => $request->kode_desa,
             'desa' => $request->desa,
             'titik_kumpul' => $request->titik_kumpul,
             'jarak_titik_kumpul' => $request->jarak_tk,
@@ -59,7 +61,7 @@ class DesaController extends Controller
     public function prosesdesa(Request $request)
     {
         $data = DesaBendungan::find($request->id_desa);
-        $data->kode_pengungsian = $request->kode_pengungsian;
+        $data->kode_desa = $request->kode_desa;
         $data->desa = $request->desa;
         $data->titik_kumpul = $request->titik_kumpul;
         $data->jarak_titik_kumpul = $request->jarak_tk;
@@ -96,7 +98,7 @@ class DesaController extends Controller
         // membuat nama file unik
         $nama_file = rand() . $file->getClientOriginalName();
 
-        // upload ke folder file_siswa di dalam folder public
+        // upload ke folder file_desa di dalam folder public
         $file->move('file_desa', $nama_file);
 
         // import data
