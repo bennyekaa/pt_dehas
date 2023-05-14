@@ -10,13 +10,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
-<<<<<<< HEAD
 use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\TitikKumpulController;
 use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\WebController;
-=======
->>>>>>> 95f68ac909c43df2b7befb8920c1f76b4606cbd5
 use Illuminate\Support\Facades\Route;
 
 /*
