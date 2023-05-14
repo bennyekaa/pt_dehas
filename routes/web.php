@@ -11,6 +11,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\TitikKumpulController;
+use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,7 +80,7 @@ Route::middleware('checklogin')->group(function () {
     Route::post('/bendungan/tambahproses', [BendunganController::class, 'tambahproses']);
     Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
     Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
-    //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+    Route::get('/bendungan/hapus/{id}', [BendunganController::class, 'hapus']);
 
     Route::get('web', [WebController::class, 'index']);
     Route::get('/web/tambah', [WebController::class, 'tambah']);
@@ -97,6 +98,14 @@ Route::middleware('checklogin')->group(function () {
     Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
 
     //Auth::routes();
+
+    Route::prefix('transaksi')->group(function(){
+        Route::prefix('mukaair')->group(function(){
+            Route::get('index', [TransBanjir::class, 'index']);
+            Route::get('tambah', [TransBanjir::class, 'tambah']);
+            Route::post('proses', [TransBanjir::class, 'proses']);
+        });
+    });
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });

@@ -37,14 +37,15 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Input Data Waduk</h6>
-                    <a class="collapse-item" href="{{ url('user') }}">Waduk Banjir</a>
+                    <a class="collapse-item" href="{{ url('transaksi/mukaair/index') }}">Waduk Banjir</a>
                     <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
                 </div>
             </div>
         </li>
     @elseif(session('role') == 1)
+
         <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-            <i class="nav-link" href="{{ url('/') }}">
+            <a class="nav-link" href="{{ url('/') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
@@ -96,7 +97,6 @@
                 <span>Transaksi</span>
             </a>
         </li>
-
 
         <li class="nav-item">
             <a class="nav-link" href="#">
