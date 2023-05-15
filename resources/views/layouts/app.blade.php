@@ -85,6 +85,26 @@
                 todayHighlight: true,
             });
         });
+        $('.alert_notif').on('click', function() {
+            var getLink = $(this).attr('href');
+            Swal.fire({
+                title: "Yakin hapus data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya',
+                cancelButtonColor: '#3085d6',
+                cancelButtonText: "Batal"
+
+            }).then(result => {
+                //jika klik ya maka arahkan ke proses.php
+                // console.log(result);
+                if (result.value) {
+                    window.location.href = getLink
+                }
+            })
+            return false;
+        });
     </script>
     @yield('tambahanjs')
 </body>

@@ -9,8 +9,10 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\KategoriBocorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PengungsianController;
+use App\Http\Controllers\StatusBocorController;
 use App\Http\Controllers\TitikKumpulController;
 use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\WebController;
@@ -113,6 +115,18 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/desa', [DesaController::class, 'index']);
     Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
     Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
+
+    Route::get('/kategoribocor', [KategoriBocorController::class, 'index']);
+    Route::get('/kategoribocor/tambah', [KategoriBocorController::class, 'tambah']);
+    Route::get('/kategoribocor/edit/{id}', [KategoriBocorController::class, 'edit']);
+    Route::post('/kategoribocor/proses', [KategoriBocorController::class, 'proses']);
+    Route::get('/kategoribocor/hapus/{id}', [KategoriBocorController::class, 'hapus']);
+
+    Route::get('/statusbocor', [StatusBocorController::class, 'index']);
+    Route::get('/statusbocor/tambah', [StatusBocorController::class, 'tambah']);
+    Route::get('/statusbocor/edit/{id}', [StatusBocorController::class, 'edit']);
+    Route::post('/statusbocor/proses', [StatusBocorController::class, 'proses']);
+    Route::get('/statusbocor/hapus/{id}', [StatusBocorController::class, 'hapus']);
 
     //Auth::routes();
 
