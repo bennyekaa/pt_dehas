@@ -27,19 +27,21 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap" aria-expanded="true" aria-controls="collapseBootstrap">
-            <i class="far fa-fw fa-window-maximize"></i>
-            <span>Input Data Waduk</span>
-        </a>
-        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Input Data Waduk</h6>
-                <a class="collapse-item" href="{{ url('user') }}">Waduk Banjir</a>
-                <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
+                aria-expanded="true" aria-controls="collapseBootstrap">
+                <i class="far fa-fw fa-window-maximize"></i>
+                <span>Input Data Waduk</span>
+            </a>
+            <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Input Data Waduk</h6>
+                    <a class="collapse-item" href="{{ url('transaksi/mukaair/index') }}">Waduk Banjir</a>
+                    <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
     @elseif(session('role') == 1)
     <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/') }}">
@@ -68,30 +70,34 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap" aria-expanded="true" aria-controls="collapseBootstrap">
-            <i class="far fa-fw fa-window-maximize"></i>
-            <span>Master</span>
-        </a>
-        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Master</h6>
-                <a class="collapse-item" href="{{ url('user') }}">User</a>
-                <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
-                <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
-                <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
-                <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
-                <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
-                <a class="collapse-item" href="{{ url('web') }}">Website</a>
-            </div>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
+                aria-expanded="true" aria-controls="collapseBootstrap">
+                <i class="far fa-fw fa-window-maximize"></i>
+                <span>Master</span>
+            </a>
+            <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Master</h6>
+                    <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
+                    <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
+                    <a class="collapse-item" href="{{ url('kategoribocor') }}">Kategori Bocor</a>
+                    <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
+                    <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
+                    <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
+                    <a class="collapse-item" href="{{ url('user') }}">User</a>
+                    <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
+                    <a class="collapse-item" href="{{ url('web') }}">Website</a>
+                </div>
+        </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('banjir') }}">
-            <i class="fas fa-fw fa-window-maximize"></i>
-            <span>Transaksi</span>
-        </a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('banjir') }}">
+                <i class="fas fa-fw fa-window-maximize"></i>
+                <span>Transaksi</span>
+            </a>
+        </li>
 
 
     <li class="nav-item">

@@ -14,6 +14,8 @@
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+
     {{-- select2 --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/select2/css/select2.css') }}">
 </head>
@@ -55,13 +57,15 @@
 
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
 
-    <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('assets/js/demo/chart-area-demo.js') }}"></script> --}}
 
-    <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}'"></script>
-    <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}'"></script>
+    <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -78,12 +82,10 @@
                 $(this).siblings('select').select2('open');
             });
         })
-        $(function() {
-            $(".datepicker").datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true,
-            });
+        $(".datepicker").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
         });
         $('.alert_notif').on('click', function() {
             var getLink = $(this).attr('href');
