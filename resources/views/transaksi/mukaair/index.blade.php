@@ -1,14 +1,5 @@
 @extends('layouts.app')
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>PT Dehas Inframedia Karsa - Banjir</title>
-</head>
-
-<body>
-
     @section('content')
 
     <div class="container-fluid" id="container-wrapper">
@@ -19,32 +10,41 @@
         <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <a class="btn btn-primary" href="/banjir/tambah" style="float: left;"> + Input Data Waduk</a>
+                    <a class="btn btn-primary" href="{{url('transaksi/mukaair/tambah')}}" style="float: left;"> + Input Data Waduk</a>
                 </div>
                 <div class="table-responsive p-3">
                     <table class="table align-items-center table-flush" id="dataTable">
                         <thead class="thead-light">
                             <tr>
-                                <th>ID Desa</th>
-                                <th>ID Waduk</th>
+                                <th>#</th>
+                                <th>Batas Atas</th>
+                                <th>Muka Air</th>
+                                <th>Batas Bawah</th>
+                                {{-- <th>Tinggi Air</th>
+                                <th>Debit Keluar</th> --}}
+                                <th>Status Kondisi</th>
                                 <th>Dibuat Pada</th>
                                 <th>Dibuat Oleh</th>
                                 <th>Diupdate Pada</th>
                                 <th>Diupdate Oleh</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
-                        @foreach($banjir as $p)
+                        @php
+                            $i = 1;
+                        @endphp
+                        @foreach($mukaair as $p)
                         <thead class="thead-light">
                             <tr>
-
-                                <td>{{ $p->id_banjir }} </td>
-                                <td>{{ $p->id_waduk }} </td>
+                                <td>{{ $i++ }} </td>
+                                <td>{{ $p->batas_atas }} </td>
+                                <td>{{ $p->muka_air }} </td>
+                                <td>{{ $p->batas_bawah }} </td>
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->created_by }}</td>
                                 <td>{{ $p->updated_at }}</td>
                                 <td>{{ $p->updated_by }}</td>
-                                <td>
-                                </td>
+                                <td></td>
                             </tr>
                         </thead>
                         @endforeach
@@ -55,8 +55,3 @@
         </div>
     </div>
     @endsection
-
-
-</body>
-
-</html>

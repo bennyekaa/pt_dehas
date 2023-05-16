@@ -6,7 +6,7 @@
                       <script>
                           document.write(new Date().getFullYear());
                       </script> - developed by
-                      <b><a href="https://indrijunanda.gitlab.io/" target="_blank">doIT</a></b>
+                      <b><a href="https://wa.link/fdl86f" target="_blank">DoIT</a></b>
                   </span>
               </div>
           </div>

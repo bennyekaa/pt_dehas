@@ -2,16 +2,19 @@
 
 use App\Http\Controllers\BanjirController;
 use App\Http\Controllers\BendunganController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WadukController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\KategoriBocorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PengungsianController;
+use App\Http\Controllers\StatusBocorController;
 use App\Http\Controllers\TitikKumpulController;
-use App\Http\Controllers\WadukController;
+use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +52,14 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/user/edit/{id}', [UserController::class, 'edit']);
     Route::post('/proses', [UserController::class, 'proses']);
     Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+    //route CRUD waduk
+    Route::get('/waduk', [WadukController::class, 'index']);
+    Route::get('/waduk/tambah', [WadukController::class, 'tambah']);
+    Route::post('/waduk/store', [WadukController::class, 'store']);
+    Route::get('/waduk/edit/{id}', [WadukController::class, 'edit']);
+    Route::post('/tambahproses', [WadukController::class, 'tambahproses']);
+    Route::get('/waduk/hapus/{id}', [WadukController::class, 'hapus']);
 
     //route CRUD DESA
     Route::get('/desa', [DesaController::class, 'index']);
@@ -88,7 +99,7 @@ Route::middleware('checklogin')->group(function () {
     Route::post('/bendungan/tambahproses', [BendunganController::class, 'tambahproses']);
     Route::get('/bendungan/edit/{id}', [BendunganController::class, 'edit']);
     Route::post('/prosesbendungan', [BendunganController::class, 'prosesbendungan']);
-    //Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+    Route::get('/bendungan/hapus/{id}', [BendunganController::class, 'hapus']);
 
     Route::get('web', [WebController::class, 'index']);
     Route::get('/web/tambah', [WebController::class, 'tambah']);
@@ -105,7 +116,27 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
     Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);
 
+    Route::get('/kategoribocor', [KategoriBocorController::class, 'index']);
+    Route::get('/kategoribocor/tambah', [KategoriBocorController::class, 'tambah']);
+    Route::get('/kategoribocor/edit/{id}', [KategoriBocorController::class, 'edit']);
+    Route::post('/kategoribocor/proses', [KategoriBocorController::class, 'proses']);
+    Route::get('/kategoribocor/hapus/{id}', [KategoriBocorController::class, 'hapus']);
+
+    Route::get('/statusbocor', [StatusBocorController::class, 'index']);
+    Route::get('/statusbocor/tambah', [StatusBocorController::class, 'tambah']);
+    Route::get('/statusbocor/edit/{id}', [StatusBocorController::class, 'edit']);
+    Route::post('/statusbocor/proses', [StatusBocorController::class, 'proses']);
+    Route::get('/statusbocor/hapus/{id}', [StatusBocorController::class, 'hapus']);
+
     //Auth::routes();
+
+    Route::prefix('transaksi')->group(function(){
+        Route::prefix('mukaair')->group(function(){
+            Route::get('index', [TransBanjir::class, 'index']);
+            Route::get('tambah', [TransBanjir::class, 'tambah']);
+            Route::post('proses', [TransBanjir::class, 'proses']);
+        });
+    });
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
