@@ -54,8 +54,9 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
     //route CRUD waduk
-    Route::get('/waduk', [WadukController::class, 'index']);
+    // Route::get('/waduk', [WadukController::class, 'index']);
     Route::get('/waduk/tambah', [WadukController::class, 'tambah']);
+    Route::post('/waduk/proses', [WadukController::class, 'proses']);
     Route::post('/waduk/store', [WadukController::class, 'store']);
     Route::get('/waduk/edit/{id}', [WadukController::class, 'edit']);
     Route::post('/tambahproses', [WadukController::class, 'tambahproses']);
@@ -132,9 +133,11 @@ Route::middleware('checklogin')->group(function () {
 
     Route::prefix('transaksi')->group(function(){
         Route::prefix('mukaair')->group(function(){
-            Route::get('index', [TransBanjir::class, 'index']);
+            Route::get('index/{id}', [TransBanjir::class, 'index']);
             Route::get('tambah', [TransBanjir::class, 'tambah']);
             Route::post('proses', [TransBanjir::class, 'proses']);
+            Route::get('kirim/{id}', [TransBanjir::class, 'kirim']);
+            Route::get('hapus/{id}', [TransBanjir::class, 'hapus']);
         });
     });
 

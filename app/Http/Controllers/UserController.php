@@ -60,14 +60,14 @@ class UserController extends Controller
 
         // $this->whatsappNotification($request->no_hp);
 
-		return redirect('/user');
+        return redirect(('/user'))->with('success', 'Data Tersimpan');
 	}
 
 	// HAPUS
 	public function hapus($id)
 	{
 		try {
-			DB::table('ref_user')->where('id_user', $id)->delete();
+			DB::table('ref_user')->where('id_user', decrypt($id))->delete();
 			return redirect(('/user'))->with('success', 'Data Terhapus');
 		} catch (Exception $e) {
 			return redirect(('/user'))->with('error', $e->getMessage());

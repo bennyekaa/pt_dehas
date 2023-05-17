@@ -13,4 +13,9 @@ class DataMukaAir extends Model
     protected $primaryKey = 'id_banjir_muka_air';
 
     public $incrementing = false;
+
+    public function waduk()
+    {
+        return $this->belongsTo(WadukBendungan::class, "id_waduk", "id_waduk");
+    }
 }

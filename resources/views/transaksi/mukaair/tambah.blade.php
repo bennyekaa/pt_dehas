@@ -9,9 +9,8 @@
 
                     <div class="card-body">
                         <form action="{{ url('transaksi/mukaair/proses') }}" method="post">
-
                             @csrf
-
+                            <input type="hidden" name="fungsi" value="Tambah">
                             <div class="row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-6">
@@ -40,11 +39,11 @@
 @endsection
 @section('tambahanjs')
     <script type="text/javascript">
-        $(document).ready(function() {
-            $("#list_mukaair").select2({
-                tags: true,
-                maximumInputLength: 7
-            });
-        });
+        // $(document).ready(function() {
+        //     $("#list_mukaair").select2({
+        //         tags: true,
+        //         maximumInputLength: 7
+        //     });
+        // });
     </script>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\WadukBendungan;
+use Exception;
 
 class WadukController extends Controller
 {
@@ -13,14 +14,16 @@ class WadukController extends Controller
         // mengambil data dari table Titik Kumpul
     //  $data['waduk'] = DB::table('ref_waduk')->get();
         $data['waduk'] = DB::table('ref_waduk')->orderBy('tinggi_air', 'asc')->get();
-        return view('master.waduk', $data);
+        session()->put('waduk', url()->full());
+        return view('master.waduk.index', $data);
     }
 
-    public function edit($id_waduk)
+    public function edit($id)
     {
-        $id = decrypt($id_waduk);
-        $data = WadukBendungan::find($id);
-        return view('edit.waduk', compact(['data']));
+        // $id = decrypt($id_waduk);
+        // $data = WadukBendungan::find($id);
+        $data['riwayat_waduk'] = WadukBendungan::find(decrypt($id));
+        return view('master.waduk.edit', $data);
     }
 
     public function proseswaduk(Request $request)
@@ -39,7 +42,42 @@ class WadukController extends Controller
 
     public function tambah()
     {
-        return view('register.waduk');
+        return view('master.waduk.add');
+        // return view('register.waduk');
+    }
+
+    public function proses(Request $request){
+        if ($request->fungsi == "Tambah") {
+            try {
+                $waduk = new WadukBendungan();
+                $waduk->muka_air = $request->muka_air;
+                $waduk->tinggi_air = $request->tinggi_air;
+                $waduk->debit_keluar = $request->debit_keluar;
+                $waduk->status = $request->status;
+                $waduk->keterangan = $request->keterangan;
+                $waduk->created_at = date('Y-m-d H:i:s.U');
+                $waduk->created_by = session('nama');
+                $waduk->save();
+                return redirect(session('waduk'))->with('success', 'Data Berhasil Ditambah');
+            } catch (Exception $e) {
+                return redirect(session('waduk'))->with('error', $e->getMessage());
+            }
+        } else {
+            try {
+                $waduk = WadukBendungan::find($request->id_waduk);
+                $waduk->muka_air = $request->muka_air;
+                $waduk->tinggi_air = $request->tinggi_air;
+                $waduk->debit_keluar = $request->debit_keluar;
+                $waduk->status = $request->status;
+                $waduk->keterangan = $request->keterangan;
+                $waduk->updated_at = date('Y-m-d H:i:s.U');
+                $waduk->updated_by = session('nama');
+                $waduk->save();
+                return redirect(session('waduk'))->with('success', 'Data Berhasil Diedit');
+            } catch (Exception $e) {
+                return redirect(session('waduk'))->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function tambahproses(Request $request)
@@ -58,7 +96,14 @@ class WadukController extends Controller
 
     public function hapus($id)
     {
-        DB::table('ref_waduk')->where('id_waduk', $id)->delete();
-        return redirect(('/waduk'))->with('success', 'Data Terhapus');
+        // DB::table('ref_waduk')->where('id_waduk', $id)->delete();
+        // return redirect(('/waduk'))->with('success', 'Data Terhapus');
+        try {
+            $waduk = WadukBendungan::find(decrypt($id));
+            $waduk->delete();
+            return redirect(session('waduk'))->with('success', 'Data Terhapus');
+        } catch (Exception $e) {
+            return redirect(session('waduk'))->with('error', $e->getMessage());
+        }
     }
 }

@@ -8,7 +8,7 @@
                     <div class="card-header">Edit Kategori</div>
 
                     <div class="card-body">
-                        <form action="{{url('kategoribocor/proses')}}" method="post">
+                        <form action="{{url('statusbocor/proses')}}" method="post">
 
                             @csrf
                             <input type="hidden" name="fungsi" value="Edit">
