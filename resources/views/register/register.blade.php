@@ -61,6 +61,7 @@
                                     <option value="2">Atasan</option>
                                     <option value="3">BPPD</option>
                                     <option value="4">Umum</option>
+                                    <option value="5">Balai</option>
                                 </select>
                             </div>
                         </div>

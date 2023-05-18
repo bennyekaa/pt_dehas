@@ -1,38 +1,37 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Tambah Kategori</div>
+                    <div class="card-header">Tambah Status Waduk</div>
 
                     <div class="card-body">
-                        <form action="{{ url('statusbocor/proses') }}" method="post">
+                        <form action="{{ url('waduk/proses') }}" method="post">
 
                             @csrf
                             <input type="hidden" name="fungsi" value="Tambah">
 
                             <div class="row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-end">Kategori Bocor</label>
+                                <label for="name" class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-6">
-                                    <select class="form-control select2" name="id_kategori_bocor" required>
-                                        <option value="">--Masukkan Kategori Bocor--</option>
-                                        @foreach ($kategoribocor as $item)
-                                            <option value="{{ $item->id_kategori_bocor }}">
-                                                {{ $item->nama_kategori }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="number" step="any" class="form-control" name="muka_air" placeholder="Masukkan Nilai Muka Air" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-end">Nama Status</label>
+                                <label for="name" class="col-md-4 col-form-label text-md-end">Tinggi Air</label>
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control" name="nama_status" placeholder="Masukkan Nama Status" required>
+                                    <input type="number" step="any" class="form-control" name="tinggi_air" placeholder="Masukkan Nilai Tinggi Air" required>
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label for="name" class="col-md-4 col-form-label text-md-end">Debit Keluar</label>
+                                <div class="col-md-6">
+                                    <input type="number" step="any" class="form-control" name="debit_keluar" placeholder="Masukkan Nilai Debit Keluar" required>
+                                </div>
+                            </div>
 
                             <div class="row mb-3">
                                 <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan</label>

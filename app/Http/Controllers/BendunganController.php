@@ -13,6 +13,7 @@ class BendunganController extends Controller
     {
         // mengambil data dari table bendungan
         $data['bendungan'] = DB::table('ref_bendungan')->get();
+        session()->put('bendungan', url()->full());
         return view('master.bendungan', $data);
     }
 
@@ -63,9 +64,11 @@ class BendunganController extends Controller
         $data->elev_muka_air_waduk = $request->elev_muka_air_waduk;
         $data->kapasitas_waduk = $request->kapasitas_waduk;
         $data->luas_genangan_waduk = $request->luas_genangan_waduk;
+        $data->updated_at = date('Y-m-d H:i:s.U');
         $data->updated_by = session('nama');
         $data->save();
-        return redirect('/bendungan');
+        // return redirect('/bendungan');
+        return redirect(session('bendungan'))->with('success', 'Data Berhasil Diedit');
     }
 
     public function tambah()
@@ -108,12 +111,13 @@ class BendunganController extends Controller
             'created_at' => date('Y-m-d H:i:s.U'),
             'created_by' => session('nama')
         ]);
-        return redirect('/bendungan');
+        // return redirect('/bendungan');
+        return redirect(session('bendungan'))->with('success', 'Data Berhasil Ditambah');
     }
 
     public function hapus($id)
     {
-            DB::table('ref_bendungan')->where('id_bendungan', $id)->delete();
+            DB::table('ref_bendungan')->where('id_bendungan', decrypt($id))->delete();
             return redirect(('/bendungan'))->with('success', 'Data Terhapus');
     }
 

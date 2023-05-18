@@ -1,14 +1,4 @@
 @extends('layouts.app')
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>PT Dehas Inframedia Karsa - Bendungan</title>
-</head>
-
-<body>
-
     @section('content')
 
     <div class="container-fluid" id="container-wrapper">
@@ -20,7 +10,7 @@
             <h1 class="h5 mb-1 text-primary">Deskripsi Bendungan</h1>
             <div class="card mb-4">
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="dataTable">
+                    <table class="table align-items-center table-flush">
                         <thead class="thead-light">
                             <tr>
                                 <td style="width: 35%">Nama bendungan</td>
@@ -67,7 +57,7 @@
             <h1 class="h5 mb-1 text-primary">Tubuh Bendungan</h1>
             <div class="card mb-4">
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="dataTable">
+                    <table class="table align-items-center table-flush" >
                         <thead class="thead-light">
                             <tr>
                                 <td style="width: 35%">Tipe Bendungan</td>
@@ -115,7 +105,7 @@
             <h1 class="h5 mb-1 text-primary">Bangunan Pelimpah</h1>
             <div class="card mb-4">
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="dataTable">
+                    <table class="table align-items-center table-flush" >
                         <thead class="thead-light">
                             <tr>
                                 <td style="width: 35%">Tipe</td>
@@ -158,7 +148,7 @@
             <h1 class="h5 mb-1 text-primary">Bangunan Pengambilan / Pengeluaran</h1>
             <div class="card mb-4">
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="dataTable">
+                    <table class="table align-items-center table-flush" >
                         <thead class="thead-light">
                             <tr>
                                 <td style="width: 35%">Tipe</td>
@@ -196,7 +186,7 @@
             <h1 class="h5 mb-1 text-primary">Waduk</h1>
             <div class="card mb-4">
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="dataTable">
+                    <table class="table align-items-center table-flush" >
                         <thead class="thead-light">
                             <tr>
                                 <td style="width: 35%">Elev. muka air banjir, PMF</td>
@@ -222,8 +212,3 @@
 
     </div>
     @endsection
-
-
-</body>
-
-</html>

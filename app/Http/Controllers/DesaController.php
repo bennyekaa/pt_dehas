@@ -114,7 +114,7 @@ class DesaController extends Controller
     // HAPUS
     public function hapus($id)
     {
-        DB::table('ref_desa')->where('id_desa', $id)->delete();
+        DB::table('ref_desa')->where('id_desa', decrypt($id))->delete();
         return redirect('/desa');
     }
 }
