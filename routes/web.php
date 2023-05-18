@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\KategoriBocorController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\StatusBocorController;
@@ -44,6 +45,9 @@ Route::middleware('checklogin')->group(function () {
 
     // detail Bendungan
     route::get('/detailbendungan', [BendunganController::class, 'detailbendungan']);
+
+    // menu laporan
+    route::get('/laporan', [LaporanController::class, 'index']);
 
     //route CRUD USER
     Route::get('/user', [UserController::class, 'index']);
