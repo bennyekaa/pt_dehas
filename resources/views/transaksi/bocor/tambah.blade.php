@@ -1,48 +1,52 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="container-fluid" id="container-wrapper">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Data Banjir</h1>
-    </div>
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-12">
-            <div class="card mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Masukkan Ketinggian Muka Air</div>
                 <div class="card-body">
-                    <form action="/transaksi/bocor/proses" method="post">
+                    <form action="/transaksi/bocor/proses" method="post" enctype="multipart/form-data">
 
                         @csrf
 
                         <div class="row mb-3">
-                            <label>Kategori</label>
-                            <select name="kategori" id="kategori" class="form-control col-md-6" required>
-                                @foreach ($kategori as $val)
-                                <option value="{{ $val->id_kategori_bocor }}">{{ $val->nama_kategori }}</option>
-                                @endforeach
-                            </select>
+                            <label for="kategori" class="col-md-4 col-form-label text-md-end">Status Bocor</label>
+                            <div class="col-md-6">
+                                <select name="kategori" id="kategori" class="form-control col-md-6" required>
+                                    <option value="">--Pilih Status Bocor--</option>
+                                    @foreach ($kategori as $val)
+                                    <option value="{{ $val->id_kategori_bocor }}">{{ $val->nama_kategori }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label>Status Bocor</label>
-                            <select name="status_bocor" id="status_bocor" class="form-control col-md-6" required>
-                                <option>
-
-                                </option>
-                            </select>
+                            <label for="status_bocor" class="col-md-4 col-form-label text-md-end">Keterangan Bocor</label>
+                            <div class="col-md-6">
+                                <select name="status_bocor" id="status_bocor" class="form-control col-md-6" required>
+                                    
+                                    <option value="">--Pilih Keterangan Bocor--</option>
+                                    
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
                             <div class="col-md-6">
-                                <textarea class="form-control" id="keterangan" rows="3"></textarea>
+                                <textarea class="form-control" name="keterangan" id="keterangan" rows="3"></textarea>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="file">Pilih File</label>
-                            <input type="file" class="form-control-file" id="data_file" name="data_file" accept="image/*" onchange="return fileValidation()">
+                        <div class="row mb-3">
+                            <label for="file" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                            <div class="col-md-6">
+                                <input type="file" class="form-control-file" id="data_file" name="data_file" accept="image/*" onchange="return fileValidation()">
+                            </div>
                         </div>
-
                         <div class=" row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

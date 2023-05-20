@@ -13,8 +13,9 @@ class StatusBocor extends Model
 
     public $incrementing = false;
 
-    public function kategoriBocor()
+    public function kategoribocor()
     {
         return $this->belongsTo(KategoriBocor::class, "id_kategori_bocor", "id_kategori_bocor");
     }
+
 }

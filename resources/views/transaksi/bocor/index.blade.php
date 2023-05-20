@@ -21,7 +21,10 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>#</th>
+                                <th>Kategori</th>
                                 <th>Status Bocor</th>
+                                <th>keterangan</th>
+                                <th>File</th>
                                 <th>Dibuat Pada</th>
                                 <th>Dibuat Oleh</th>
                                 <th>Diupdate Pada</th>
@@ -32,22 +35,26 @@
                         <tbody>
                             @php
                             $i = 1;
+                            $file = 1;
                             @endphp
                             @foreach ($bocor as $item)
                             <tr>
                                 <td>{{ $i++ }} </td>
-                                <td>{{ $item->id_status_bocor}} </td>
+                                <td>{{ $item->statusbocor->kategoribocor->nama_kategori}} </td>
+                                <td>{{ $item->statusbocor->nama_status}} </td>
+                                <td>{{ $item->keterangan}} </td>
+                                <td>file-upload {{$file++}} </td>
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->created_by }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td>{{ $item->updated_by }}</td>
                                 <td>
-                                    <!-- <div class="btn-group">
+                                    <div class="btn-group">
                                         @if (session('role') == 0)
-                                        <a class="btn btn-primary" title="Kirim Ke Balai" href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                        <a class="btn btn-primary" title="Kirim Ke Balai" href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}">
                                             <i class="fa fa-arrow-right"></i>
                                         </a>
-                                        <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                        <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="{{ url('transaksi/bocor/hapus') }}/{{ encrypt($item->id_banjir_bocor) }}">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                         @elseif(session('role') == 5)
@@ -61,7 +68,7 @@
                                             </div>
                                         </div>
                                         @endif
-                                    </div> -->
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

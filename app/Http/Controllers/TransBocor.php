@@ -8,6 +8,8 @@ use App\Models\StatusBocor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Exception;
+
 
 class TransBocor extends Controller
 {
@@ -27,14 +29,6 @@ class TransBocor extends Controller
     {
         // dd($request->all());
         $path = Storage::putFile('/public/berkas', $request->file('data_file'));
-        // DB::table('data_banjir_bocor')->insert([
-        //     'id_status_bocor' => $request->status_bocor,
-        //     'status_role' => session('role'),
-        //     'keterangan' => $request->keterangan,
-        //     'nama_file' => $path, 
-        //     'created_at' => date('Y-m-d H:i:s.U'),
-        //     'created_by' => session('nama')
-        // ]);
         $bocor = new DataBanjir();
         $bocor->id_status_bocor = $request->status_bocor;
         $bocor->status_role = session('role');
@@ -43,7 +37,7 @@ class TransBocor extends Controller
         $bocor->nama_file = $path;
         $bocor->created_at = date('Y-m-d H:i:s.U');
         $bocor->created_by = session('nama');
-        dd($bocor);
+        // dd($bocor);
         $bocor->save();
         return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Ditambah');
     }
@@ -52,5 +46,30 @@ class TransBocor extends Controller
     {
         $data = StatusBocor::where('id_kategori_bocor',$id)->get();
         return $data;
+    }
+
+    public function kirim($id)
+    {
+        try {
+            $bocor = DataBanjir::find(decrypt($id));
+            $bocor->status_role = 5;
+            $bocor->updated_at = date('Y-m-d H:i:s.U');
+            $bocor->updated_by = session('nama');
+            $bocor->save();
+            return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke Balai');
+        } catch (Exception $e) {
+            return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
+        }
+    }
+
+    public function hapus($id)
+    {
+        try {
+            $bocor = DataBanjir::find(decrypt($id));
+            $bocor->delete();
+            return redirect(session('banjir_bocor'))->with('success', 'Data Terhapus');
+        } catch (Exception $e) {
+            return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
+        }
     }
 }
