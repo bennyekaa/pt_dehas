@@ -25,16 +25,27 @@ class TransBocor extends Controller
 
     public function proses(Request $request)
     {
+        // dd($request->all());
         $path = Storage::putFile('/public/berkas', $request->file('data_file'));
-        DB::table('data_banjir_bocor')->insert([
-            'id_status_bocor' => $request->status_bocor,
-            'status_role' => $request->status_role,
-            'keterangan' => $request->keterangan,
-            'nama_file' => $path, 
-            'created_at' => date('Y-m-d H:i:s.U'),
-            'created_by' => session('nama')
-        ]);
-        return redirect('/transaksi/bocor/index', $data);
+        // DB::table('data_banjir_bocor')->insert([
+        //     'id_status_bocor' => $request->status_bocor,
+        //     'status_role' => session('role'),
+        //     'keterangan' => $request->keterangan,
+        //     'nama_file' => $path, 
+        //     'created_at' => date('Y-m-d H:i:s.U'),
+        //     'created_by' => session('nama')
+        // ]);
+        $bocor = new DataBanjir();
+        $bocor->id_status_bocor = $request->status_bocor;
+        $bocor->status_role = session('role');
+        $bocor->aktif = 1;
+        $bocor->keterangan = $request->keterangan;
+        $bocor->nama_file = $path;
+        $bocor->created_at = date('Y-m-d H:i:s.U');
+        $bocor->created_by = session('nama');
+        dd($bocor);
+        $bocor->save();
+        return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Ditambah');
     }
 
     public function get_status($id)
