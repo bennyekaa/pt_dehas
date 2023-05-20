@@ -16,6 +16,7 @@ use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\StatusBocorController;
 use App\Http\Controllers\TitikKumpulController;
 use App\Http\Controllers\TransBanjir;
+use App\Http\Controllers\TransBocor;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,9 +46,6 @@ Route::middleware('checklogin')->group(function () {
 
     // detail Bendungan
     route::get('/detailbendungan', [BendunganController::class, 'detailbendungan']);
-
-    // menu laporan
-    route::get('/laporan', [LaporanController::class, 'index']);
 
     //route CRUD USER
     Route::get('/user', [UserController::class, 'index']);
@@ -143,6 +141,15 @@ Route::middleware('checklogin')->group(function () {
             Route::get('kirim/{id}', [TransBanjir::class, 'kirim']);
             Route::get('hapus/{id}', [TransBanjir::class, 'hapus']);
         });
+        Route::prefix('bocor')->group(function(){
+            Route::get('index/{id}', [TransBocor::class, 'index']);
+            Route::get('get_status/{id}', [TransBocor::class, 'get_status']);
+            Route::get('tambah', [TransBocor::class, 'tambah']);
+            Route::post('proses', [TransBocor::class, 'proses']);
+            Route::get('kirim/{id}', [TransBocor::class, 'kirim']);
+            Route::get('hapus/{id}', [TransBocor::class, 'hapus']);
+        });
+            
     });
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

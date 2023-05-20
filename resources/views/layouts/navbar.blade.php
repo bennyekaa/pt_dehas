@@ -36,7 +36,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Input Data Waduk</h6>
                 <a class="collapse-item" href="{{ url('transaksi/mukaair/index') }}/{{encrypt(session('role'))}}">Waduk Banjir</a>
-                <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
+                <a class="collapse-item" href="{{ url('transaksi/bocor/index') }}/{{encrypt(session('role'))}}">Waduk Bocor</a>
             </div>
         </div>
     </li>
@@ -69,11 +69,11 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap" aria-expanded="true" aria-controls="collapseBootstrap">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Master</span>
         </a>
-        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+        <div id="collapseMaster" class="collapse" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Master</h6>
                 <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
@@ -89,15 +89,15 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('banjir') }}">
-            <i class="fas fa-fw fa-window-maximize"></i>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans" aria-expanded="true" aria-controls="collapseTrans">
+            <i class="fab fa-fw fa-wpforms"></i>
             <span>Transaksi</span>
         </a>
         <div id="collapseTrans" class="collapse" aria-labelledby="headingTrans" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Data Waduk</h6>
                 <a class="collapse-item" href="{{ url('transaksi/mukaair/index') }}/{{encrypt(session('role'))}}">Waduk Banjir</a>
-                <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
+                <a class="collapse-item" href="{{ url('transaksi/bocor/index') }}/{{encrypt(session('role'))}}">Waduk Bocor</a>
             </div>
         </div>
     </li>
@@ -108,7 +108,6 @@
             <span>Laporan</span>
         </a>
     </li>
-
     @elseif (session('role') == 5)
     <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/') }}">
@@ -138,7 +137,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Detail Data Waduk</h6>
                 <a class="collapse-item" href="{{ url('transaksi/mukaair/index') }}/{{encrypt(session('role'))}}">Waduk Banjir</a>
-                <a class="collapse-item" href="buttons.html">Waduk Bocor</a>
+                <a class="collapse-item" href="{{ url('transaksi/bocor/index') }}/{{encrypt(session('role'))}}">Waduk Bocor</a>
             </div>
         </div>
     </li>
