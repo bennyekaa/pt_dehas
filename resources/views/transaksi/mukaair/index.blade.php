@@ -23,6 +23,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Muka Air</th>
+                                    <th>Tinggi Air</th>
+                                    <th>Debit Keluar</th>
+                                    <th>Status Bendungan</th>
                                     <th>Dibuat Pada</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
@@ -38,6 +41,40 @@
                                     <tr>
                                         <td>{{ $i++ }} </td>
                                         <td>{{ $item->waduk->muka_air }} </td>
+                                        <td>{{ $item->waduk->tinggi_air }} </td>
+                                        <td>{{ $item->waduk->debit_keluar }} </td>
+                                        @if ($item->waduk->status == 0)
+                                            <td>
+                                                <div class="alert alert-success" status="alert"> NORMAL</div>
+                                            </td>
+                                        @elseif ($item->waduk->status == 1)
+                                            <td>
+                                                <div class="alert alert-primary" status="alert" style="font-color:white;">
+                                                    WASPADA 1 RTD BENDUNGAN TAMBLANG </div>
+                                            </td>
+                                        @elseif ($item->waduk->status == 2)
+                                            <td>
+                                                <div class="alert alert-secondary" status="alert"> BENDUNGAN TAMBLANG ATAU =
+                                                    BAHAYA BANJIR HIJAU DI HILIR BENDUNGAN</div>
+                                            </td>
+                                        @elseif ($item->waduk->status == 3)
+                                            <td>
+                                                <div class="alert alert-info" status="alert"> BENDUNGAN TAMBLANG ATAU =
+                                                    BAHAYA BANJIR KUNING DI HILIR BENDUNGAN</div>
+                                            </td>
+                                        @elseif ($item->waduk->status == 4)
+                                            <td>
+                                                <div class="alert alert-warning" status="alert"> AWAS RTD ATAU = BAHAYA
+                                                    BANJIR
+                                                    MERAH DI HILIR BENDUNGAN</div>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <div class="alert alert-danger" status="alert"> AWAS RTD ATAU = BAHAYA
+                                                    BANJIR
+                                                    MERAH DI HILIR BENDUNGAN</div>
+                                            </td>
+                                        @endif
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->created_by }}</td>
                                         <td>{{ $item->updated_at }}</td>
@@ -60,9 +97,9 @@
                                                             aria-haspopup="true" aria-expanded="false"> Kirim Pemberitahuan
                                                         </a>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="#">Bupati</a>
-                                                            <a class="dropdown-item" href="#">BPPD</a>
-                                                            <a class="dropdown-item" href="#">PENDUDUK</a>
+                                                            <a class="dropdown-item" href="{{url('transaksi/mukaair/pesan')}}/{{encrypt($item->id_banjir_muka_air)}}/2" title="Kirim Ke Bupati">Bupati</a>
+                                                            <a class="dropdown-item" href="{{url('transaksi/mukaair/pesan')}}/{{encrypt($item->id_banjir_muka_air)}}/3">BPPD</a>
+                                                            <a class="dropdown-item" href="{{url('transaksi/mukaair/pesan')}}/{{encrypt($item->id_banjir_muka_air)}}/4">PENDUDUK</a>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -76,7 +113,5 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 @endsection
