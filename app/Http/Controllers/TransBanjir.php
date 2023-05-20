@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataBanjir;
 use App\Models\DataMukaAir;
 use App\Models\Waduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Exception;
+use App\Models\Notif;
 
 class TransBanjir extends Controller
 {
@@ -36,6 +38,7 @@ class TransBanjir extends Controller
                 $mukaair = new DataMukaAir();
                 $mukaair->id_waduk = $request->id_waduk;
                 $mukaair->status_role = 0;
+                $mukaair->aktif = 1;
                 $mukaair->created_at = date('Y-m-d H:i:s.U');
                 $mukaair->created_by = session('nama');
                 $mukaair->save();
@@ -70,6 +73,36 @@ class TransBanjir extends Controller
             $mukaair->updated_by = session('nama');
             $mukaair->save();
             return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke Balai');
+        } catch (Exception $e) {
+            return redirect(session('banjir_mukaair'))->with('error', $e->getMessage());
+        }
+    }
+
+    public function pesan($id,$role)
+    {
+        $data['id_banjir'] = $id;
+        $data['role'] = $role;
+        return view('transaksi.mukaair.pesan',$data);
+    }
+
+    public function notif(Request $request)
+    {
+        try {
+            $mukaair = DataMukaAir::find(decrypt($request->id_banjir));
+            $mukaair->status_role = $request->role;
+            $mukaair->aktif = 0;
+            $mukaair->updated_at = date('Y-m-d H:i:s.U');
+            $mukaair->updated_by = session('nama');
+            $mukaair->save();
+            $notif = new Notif();
+            $notif->id_referensi = decrypt($request->id_banjir);
+            $notif->role = $request->role;
+            $notif->pesan = $request->pesan;
+            $notif->aktif = 1;
+            $notif->created_at = date('Y-m-d H:i:s.U');
+            $notif->created_by = session('nama');
+            $notif->save();
+            return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim');
         } catch (Exception $e) {
             return redirect(session('banjir_mukaair'))->with('error', $e->getMessage());
         }
