@@ -97,6 +97,7 @@ class TransBanjir extends Controller
             $notif = new Notif();
             $notif->id_referensi = decrypt($request->id_banjir);
             $notif->role = $request->role;
+            $notif->pesan = $request->pesan;
             $notif->aktif = 1;
             $notif->created_at = date('Y-m-d H:i:s.U');
             $notif->created_by = session('nama');
