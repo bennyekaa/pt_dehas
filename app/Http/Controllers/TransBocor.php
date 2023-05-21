@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataBanjir;
 use App\Models\KategoriBocor;
 use App\Models\StatusBocor;
+use App\Models\Notif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +58,36 @@ class TransBocor extends Controller
             $bocor->updated_by = session('nama');
             $bocor->save();
             return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke Balai');
+        } catch (Exception $e) {
+            return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
+        }
+    }
+
+    public function pesan($id, $role)
+    {
+        $data['id_bocor'] = $id;
+        $data['role'] = $role;
+        return view('transaksi.bocor.pesan', $data);
+    }
+
+    public function notif(Request $request)
+    {
+        try {
+            $mukaair = DataBanjir::find(decrypt($request->id_bocor));
+            $mukaair->status_role = $request->role;
+            $mukaair->aktif = 0;
+            $mukaair->updated_at = date('Y-m-d H:i:s.U');
+            $mukaair->updated_by = session('nama');
+            $mukaair->save();
+            $notif = new Notif();
+            $notif->id_referensi = decrypt($request->id_bocor);
+            $notif->role = $request->role;
+            $notif->pesan = $request->pesan;
+            $notif->aktif = 1;
+            $notif->created_at = date('Y-m-d H:i:s.U');
+            $notif->created_by = session('nama');
+            $notif->save();
+            return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim');
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
         }

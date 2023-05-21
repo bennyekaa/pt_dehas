@@ -62,9 +62,9 @@
                                             <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Kirim Pemberitahuan
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <a class="dropdown-item" href="#">Bupati</a>
-                                                <a class="dropdown-item" href="#">BPPD</a>
-                                                <a class="dropdown-item" href="#">PENDUDUK</a>
+                                                <a class="dropdown-item" href="{{url('transaksi/bocor/pesan')}}/{{encrypt($item->id_banjir_bocor)}}/2" title="Kirim Ke Bupati">Bupati</a>
+                                                <a class="dropdown-item" href="{{url('transaksi/bocor/pesan')}}/{{encrypt($item->id_banjir_bocor)}}/3">BPPD</a>
+                                                <a class="dropdown-item" href="{{url('transaksi/bocor/pesan')}}/{{encrypt($item->id_banjir_bocor)}}/4">PENDUDUK</a>
                                             </div>
                                         </div>
                                         @endif
