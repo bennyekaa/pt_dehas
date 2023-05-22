@@ -12,6 +12,7 @@ class PengungsianController extends Controller
     {
         // mengambil data dari table Titik Kumpul
         $data['pengungsian'] = DB::table('ref_pengungsian')->orderBy('kode_pengungsian', 'asc')->get();
+        session()->put('ungsian', url()->full());
         return view('master.pengungsian', $data);
     }
 
@@ -63,7 +64,12 @@ class PengungsianController extends Controller
 
     public function hapus($id)
     {
-        DB::table('ref_titik_kumpul')->where('id_titik_kumpul', decrypt($id))->delete();
-        return redirect(('/titikkumpul'))->with('success', 'Data Terhapus');
+        try {
+            $pengungsian = PengungsianBendungan::find(decrypt($id));
+            $pengungsian->delete();
+            return redirect(session('ungsian'))->with('success', 'Data Terhapus');
+        } catch (Exception $e) {
+            return redirect(session('ungsian'))->with('error', $e->getMessage());
+        }
     }
 }

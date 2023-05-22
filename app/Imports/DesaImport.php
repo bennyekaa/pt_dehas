@@ -59,7 +59,7 @@ class DesaImport implements ToModel, WithStartRow
             'perempuan' => $row[39],
             'total_LP' => $row[30],
             'created_at' => now(),
-            'created_by' => $created_by,
+            'created_by' => $created_by
         ]);
 
         TitikKumpulBendungan::create([
@@ -73,7 +73,7 @@ class DesaImport implements ToModel, WithStartRow
             'nama_kabupaten' => $row[47],
             'jarak_ke_tk' => $row[48],
             'created_at' => now(),
-            'created_by' => $created_by,
+            'created_by' => $created_by
         ]);
 
         PengungsianBendungan::create([
@@ -87,7 +87,7 @@ class DesaImport implements ToModel, WithStartRow
             'nama_kabupaten_pengungsian' => $row[55],
             'jarak_pengungsian' => $row[56],
             'created_at' => now(),
-            'created_by' => $created_by,
+            'created_by' => $created_by
         ]);
 
     }

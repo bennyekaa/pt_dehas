@@ -73,12 +73,12 @@ class TransBocor extends Controller
     public function notif(Request $request)
     {
         try {
-            $mukaair = DataBanjir::find(decrypt($request->id_bocor));
-            $mukaair->status_role = $request->role;
-            $mukaair->aktif = 0;
-            $mukaair->updated_at = date('Y-m-d H:i:s.U');
-            $mukaair->updated_by = session('nama');
-            $mukaair->save();
+            $bocor = DataBanjir::find(decrypt($request->id_bocor));
+            $bocor->status_role = $request->role;
+            $bocor->aktif = 0;
+            $bocor->updated_at = date('Y-m-d H:i:s.U');
+            $bocor->updated_by = session('nama');
+            $bocor->save();
             $notif = new Notif();
             $notif->id_referensi = decrypt($request->id_bocor);
             $notif->role = $request->role;
@@ -102,5 +102,24 @@ class TransBocor extends Controller
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
         }
+    }
+
+    //EDIT
+    public function edit($id_bocor)
+    {
+        $id = decrypt($id_bocor);
+        $data = DataBanjir::find($id);
+        return view('transaksi.bocor.edit', compact(['bocor']));
+    }
+
+    public function prosesedit(Request $request)
+    {
+        $bocor = DataBanjir::find($request->id_banjir_bocor);
+        $bocor->id_status_bocor = $request->status_bocor;
+        $bocor->desa = $request->desa;
+        $bocor->titik_kumpul = $request->titik_kumpul;
+        $bocor->updated_by = session('nama');
+        $bocor->save();
+        return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Diedit');
     }
 }
