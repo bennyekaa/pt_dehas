@@ -10,7 +10,7 @@
             <div class="col-lg-12">
                 <div class="card mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <a class="btn btn-primary" href="{{ url('kategoribocor/tambah') }}" style="float: left;"> + Tambah
+                        <a class="btn btn-primary" href="{{ url('kategoribocor/tambah') }}" style="float: left;"> + Tambah 
                             Kategori</a>
                     </div>
                     <div class="table-responsive p-3">

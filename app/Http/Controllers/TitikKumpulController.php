@@ -11,10 +11,8 @@ class TitikKumpulController extends Controller
 {
     public function index()
     {
-        // mengambil data dari table Titik Kumpul
-      //  $data['titikkumpul'] = DB::table('ref_titik_kumpul')->get();
-        $data['titikkumpul'] = DB::table('ref_titik_kumpul')->orderBy('kode_tk', 'asc')->get();
-
+        $data['kumpul'] = DB::table('ref_titik_kumpul')->orderBy('kode_tk', 'asc')->get();
+        session()->put('titikkumpul', url()->full());
         return view('master.titikkumpul', $data);
     }
 
@@ -64,9 +62,20 @@ class TitikKumpulController extends Controller
         return redirect('/titikkumpul');
     }
 
+    // public function hapus($id)
+    // {
+    //     DB::table('ref_titik_kumpul')->where('id_titik_kumpul', decrypt($id))->delete();
+    //     return redirect(('ref_titik_kumpul'))->with('success', 'Data Terhapus');
+    // }
+
     public function hapus($id)
     {
-        DB::table('ref_titik_kumpul')->where('id_titik_kumpul', decrypt($id))->delete();
-        return redirect(('/titikkumpul'))->with('success', 'Data Terhapus');
+        try {
+            $titikkumpul = TitikKumpulBendungan::find(decrypt($id));
+            $titikkumpul->delete();
+            return redirect(session('titikkumpul'))->with('success', 'Data Terhapus');
+        } catch (Exception $e) {
+            return redirect(session('titikkumpul'))->with('error', $e->getMessage());
+        }
     }
 }

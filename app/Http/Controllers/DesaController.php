@@ -16,9 +16,8 @@ class DesaController extends Controller
 {
     public function index()
     {
-    //  $data['desa'] = DB::table('ref_desa')->get();
         $data['desa'] = DB::table('ref_desa')->orderBy('kode_desa', 'asc')->get();
-
+        session()->put('ref_desa', url()->full());
         return view('master.desa', $data);
     }
 
@@ -31,9 +30,39 @@ class DesaController extends Controller
 
     public function tambahproses(Request $request)
     {
+        $created_by = session('nama');
         DB::table('ref_desa')->insert([
             'kode_desa' => $request->kode_desa,
-            'desa' => $request->desa,
+            'desa_lat' => $request->desa_lat,
+            'desa_long' => $request->desa_long,
+            'kelurahan_desa' => $request->kelurahan_desa,
+            'kecamatan_desa' => $request->kecamatan_desa,
+            'kabupaten_desa' => $request->kabupaten_desa,
+            'jarak_pengungsian' => $request->jarak_pengungsian,
+            'p_long' => $request->p_long,
+            'p_lat' => $request->p_lat,
+            'e_long' => $request->e_long,
+            'e_lat' => $request->e_lat,
+            'created_at' => date('Y-m-d H:i:s.U'),
+            'created_by' => session('nama')
+        ]);
+        DB::table('ref_titik_kumpul')->insert([
+            'kode_desa' => $request->kode_desa,
+            'titik_kumpul' => $request->titik_kumpul,
+            'jarak_titik_kumpul' => $request->jarak_tk,
+            'tk_long' => $request->tk_long,
+            'tk_lat' => $request->tk_lat,
+            'lokasi_pengungsian' => $request->lokasi_pengungsian,
+            'jarak_pengungsian' => $request->jarak_pengungsian,
+            'p_long' => $request->p_long,
+            'p_lat' => $request->p_lat,
+            'e_long' => $request->e_long,
+            'e_lat' => $request->e_lat,
+            'created_at' => date('Y-m-d H:i:s.U'),
+            'created_by' => session('nama')
+        ]);
+        DB::table('ref_pengungsian')->insert([
+            'kode_desa' => $request->kode_desa,
             'titik_kumpul' => $request->titik_kumpul,
             'jarak_titik_kumpul' => $request->jarak_tk,
             'tk_long' => $request->tk_long,
@@ -62,7 +91,6 @@ class DesaController extends Controller
     {
         $data = DesaBendungan::find($request->id_desa);
         $data->kode_desa = $request->kode_desa;
-        $data->desa = $request->desa;
         $data->titik_kumpul = $request->titik_kumpul;
         $data->jarak_titik_kumpul = $request->jarak_tk;
         $data->tk_long = $request->tk_long;
@@ -98,8 +126,6 @@ class DesaController extends Controller
         Excel::import(new DesaImport, $file);
         // menangkap file excel
         // $file = $request->file('file');
-        // //dd($request->file('file')->getClientOriginalName());
-        // // membuat nama file unik
         // $nama_file = rand() . $file->getClientOriginalName();
 
         // // upload ke folder file_desa di dalam folder public
@@ -107,11 +133,6 @@ class DesaController extends Controller
 
         // import data
         // Excel::import(new DesaImport, public_path('/file_desa/' . $nama_file));
-
-        // notifikasi dengan session
-     //   Session::flash('sukses', 'Data Desa Berhasil Diimport!');
-
-        // alihkan halaman kembali
         return redirect('/desa');
     }
 
@@ -119,6 +140,6 @@ class DesaController extends Controller
     public function hapus($id)
     {
         DB::table('ref_desa')->where('id_desa', decrypt($id))->delete();
-        return redirect('/desa');
+         return redirect(session('ref_desa'))->with('success', 'Data Terhapus');
     }
 }

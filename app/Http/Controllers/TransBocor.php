@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataBanjir;
 use App\Models\KategoriBocor;
 use App\Models\StatusBocor;
+use App\Models\Notif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,36 @@ class TransBocor extends Controller
         }
     }
 
+    public function pesan($id, $role)
+    {
+        $data['id_bocor'] = $id;
+        $data['role'] = $role;
+        return view('transaksi.bocor.pesan', $data);
+    }
+
+    public function notif(Request $request)
+    {
+        try {
+            $bocor = DataBanjir::find(decrypt($request->id_bocor));
+            $bocor->status_role = $request->role;
+            $bocor->aktif = 0;
+            $bocor->updated_at = date('Y-m-d H:i:s.U');
+            $bocor->updated_by = session('nama');
+            $bocor->save();
+            $notif = new Notif();
+            $notif->id_referensi = decrypt($request->id_bocor);
+            $notif->role = $request->role;
+            $notif->pesan = $request->pesan;
+            $notif->aktif = 1;
+            $notif->created_at = date('Y-m-d H:i:s.U');
+            $notif->created_by = session('nama');
+            $notif->save();
+            return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim');
+        } catch (Exception $e) {
+            return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
+        }
+    }
+
     public function hapus($id)
     {
         try {
@@ -71,5 +102,24 @@ class TransBocor extends Controller
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
         }
+    }
+
+    //EDIT
+    public function edit($id_bocor)
+    {
+        $id = decrypt($id_bocor);
+        $data = DataBanjir::find($id);
+        return view('transaksi.bocor.edit', compact(['bocor']));
+    }
+
+    public function prosesedit(Request $request)
+    {
+        $bocor = DataBanjir::find($request->id_banjir_bocor);
+        $bocor->id_status_bocor = $request->status_bocor;
+        $bocor->desa = $request->desa;
+        $bocor->titik_kumpul = $request->titik_kumpul;
+        $bocor->updated_by = session('nama');
+        $bocor->save();
+        return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Diedit');
     }
 }

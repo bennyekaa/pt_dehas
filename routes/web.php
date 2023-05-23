@@ -78,7 +78,7 @@ Route::middleware('checklogin')->group(function () {
     // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
     // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
     // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
-    // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+    Route::get('/titikkumpul/hapus/{id}', [TitikKumpulController::class, 'hapus']);
 
     //route CRUD waduk
     Route::get('/waduk', [WadukController::class, 'index']);
@@ -90,11 +90,11 @@ Route::middleware('checklogin')->group(function () {
 
     //route CRUD Pengungsian
     Route::get('/pengungsian', [PengungsianController::class, 'index']);
-   // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
-   // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
-   // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
-   // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
-   // Route::get('/desa/hapus/{id}', [TitikKumpulController::class, 'hapus']);
+   // Route::get('/desa/tambah', [PengungsianController::class, 'tambah']);
+   // Route::post('/desa/tambahproses', [PengungsianController::class, 'tambahproses']);
+   // Route::get('/desa/edit/{id}', [PengungsianController::class, 'edit']);
+   // Route::post('/prosesdesa', [PengungsianController::class, 'prosestitikkumpul']);
+    Route::get('/pengungsian/hapus/{id}', [PengungsianController::class, 'hapus']);
 
     //route CRUD BENDUNGAN
     Route::get('/bendungan', [BendunganController::class, 'index']);
@@ -150,6 +150,8 @@ Route::middleware('checklogin')->group(function () {
             Route::post('proses', [TransBocor::class, 'proses']);
             Route::get('kirim/{id}', [TransBocor::class, 'kirim']);
             Route::get('hapus/{id}', [TransBocor::class, 'hapus']);
+            Route::get('pesan/{id}/{id2}', [TransBocor::class, 'pesan']);
+            Route::post('notif', [TransBocor::class, 'notif']);
         });
             
     });
