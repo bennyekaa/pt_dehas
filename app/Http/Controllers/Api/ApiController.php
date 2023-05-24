@@ -18,7 +18,7 @@ class ApiController extends Controller
         $notif = Notif::where('aktif', 1)->count();
 
         if ($notif > 0) {
-            $data['notif'] = Notif::where('aktif', 1)->get();
+            $data['notif'] = Notif::where('aktif', 1)->orderBy('created_at', 'desc')->first();
             if (isset($data['notif'])) {
                 return response([
                     'success' => true,
