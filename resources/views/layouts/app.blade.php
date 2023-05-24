@@ -84,13 +84,8 @@
             });
             $('#dataTable').DataTable();
             $('#dataTableHover').DataTable();
-        })
-        $(".datepicker").datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true,
-        });
-        $('.alert_notif').on('click', function() {
+
+            $('.alert_notif').on('click', function() {
             var getLink = $(this).attr('href');
             Swal.fire({
                 title: "Yakin hapus data?",
@@ -109,6 +104,12 @@
                 }
             })
             return false;
+        });
+        })
+        $(".datepicker").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
         });
     </script>
     @yield('tambahanjs')
