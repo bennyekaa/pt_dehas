@@ -12,6 +12,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    public static function getTokenWA(){
+        $token = 'VKV@d+tb1541aPL7nJDu';
+
+        return $token;
+    }
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {

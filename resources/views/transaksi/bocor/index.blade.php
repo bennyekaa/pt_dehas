@@ -51,6 +51,9 @@
                                 <td>
                                     <div class="btn-group">
                                         @if (session('role') == 0)
+                                        <a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                            <i class="fa fa-book"></i>
+                                        </a>
                                         <a class="btn btn-primary" title="Kirim Ke Balai" href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}">
                                             <i class="fa fa-arrow-right"></i>
                                         </a>
@@ -58,6 +61,9 @@
                                             <i class="fa fa-trash"></i>
                                         </a>
                                         @elseif(session('role') == 5)
+                                        <a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                            <i class="fa fa-book"></i>
+                                        </a>
                                         <div class="dropdown">
                                             <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Kirim Pemberitahuan
                                             </a>

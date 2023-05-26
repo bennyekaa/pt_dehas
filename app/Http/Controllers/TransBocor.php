@@ -122,4 +122,13 @@ class TransBocor extends Controller
         $bocor->save();
         return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Diedit');
     }
+
+
+    public function lihat_berkas($id){
+        $data['berkas'] = DataBanjir::find(decrypt($id));
+        $data['url'] = Storage::url($data['berkas']->nama_file);
+        $data['tipedata'] = Storage::mimeType($data['berkas']->nama_file);
+        // dd($data);
+        return view('transaksi.bocor.view', $data);
+    }
 }
