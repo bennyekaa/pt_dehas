@@ -18,6 +18,7 @@ class Checklogin
     {
         if (Session::get('login') == 1) {
             // dd(session()->all());
+            // dd(substr(shell_exec('getmac'), 159,20));
             return $next($request);
         } else {
             return redirect('/login');
