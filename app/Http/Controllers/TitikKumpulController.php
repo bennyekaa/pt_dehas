@@ -62,12 +62,6 @@ class TitikKumpulController extends Controller
         return redirect('/titikkumpul');
     }
 
-    // public function hapus($id)
-    // {
-    //     DB::table('ref_titik_kumpul')->where('id_titik_kumpul', decrypt($id))->delete();
-    //     return redirect(('ref_titik_kumpul'))->with('success', 'Data Terhapus');
-    // }
-
     public function hapus($id)
     {
         try {
