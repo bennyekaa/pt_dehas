@@ -20,4 +20,9 @@ class UserBendungan extends Model
         'hp',
         'password',
     ];
+
+    public function role()
+    {
+        return $this->hasMany(Role::class, "id_role", "id_role");
+    }
 }

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Session;
+use App\Models\Log;
 
 class Checklogin
 {
@@ -17,8 +18,14 @@ class Checklogin
     public function handle(Request $request, Closure $next): Response
     {
         if (Session::get('login') == 1) {
+            if(empty(session('mac'))){
+                return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
+            }else{
+                return $next($request);
+            }
             // dd(session()->all());
-            return $next($request);
+            // dd(session()->all());
+            // dd(substr(shell_exec('getmac'), 159,20));
         } else {
             return redirect('/login');
         }

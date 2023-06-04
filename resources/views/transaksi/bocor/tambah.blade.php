@@ -14,7 +14,7 @@
                         <div class="row mb-3">
                             <label for="kategori" class="col-md-4 col-form-label text-md-end">Status Bocor</label>
                             <div class="col-md-6">
-                                <select name="kategori" id="kategori" class="form-control col-md-6" required>
+                                <select name="kategori" id="kategori" class="form-control col-md-6 select2" required>
                                     <option value="">--Pilih Status Bocor--</option>
                                     @foreach ($kategori as $val)
                                     <option value="{{ $val->id_kategori_bocor }}">{{ $val->nama_kategori }}</option>
@@ -26,10 +26,10 @@
                         <div class="row mb-3">
                             <label for="status_bocor" class="col-md-4 col-form-label text-md-end">Keterangan Bocor</label>
                             <div class="col-md-6">
-                                <select name="status_bocor" id="status_bocor" class="form-control col-md-6" required>
-                                    
+                                <select name="status_bocor" id="status_bocor" class="form-control col-md-6 select2" required>
+
                                     <option value="">--Pilih Keterangan Bocor--</option>
-                                    
+
                                 </select>
                             </div>
                         </div>

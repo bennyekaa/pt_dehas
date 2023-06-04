@@ -24,6 +24,8 @@ class DesaImport implements ToModel, WithStartRow
         $id_titik_kumpul = Str::uuid();
         $created_by = session('nama');
 
+        // dd($row[1]);
+
         DesaBendungan::create([
             'id_desa' => Str::uuid(),
             'id_pengungsian' => $id_pengungsian,
@@ -91,7 +93,7 @@ class DesaImport implements ToModel, WithStartRow
         ]);
 
     }
-    
+
 
     public function startRow(): int
     {

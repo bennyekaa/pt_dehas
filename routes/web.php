@@ -12,6 +12,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\KategoriBocorController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Pengaturan;
 use App\Http\Controllers\PengungsianController;
 use App\Http\Controllers\StatusBocorController;
 use App\Http\Controllers\TitikKumpulController;
@@ -131,6 +132,8 @@ Route::middleware('checklogin')->group(function () {
     Route::post('/statusbocor/proses', [StatusBocorController::class, 'proses']);
     Route::get('/statusbocor/hapus/{id}', [StatusBocorController::class, 'hapus']);
 
+    Route::get('/pengaturan/qr', [Pengaturan::class, 'qr']);
+
     //Auth::routes();
 
     Route::prefix('transaksi')->group(function(){
@@ -152,9 +155,12 @@ Route::middleware('checklogin')->group(function () {
             Route::get('hapus/{id}', [TransBocor::class, 'hapus']);
             Route::get('pesan/{id}/{id2}', [TransBocor::class, 'pesan']);
             Route::post('notif', [TransBocor::class, 'notif']);
+            Route::get('view_berkas/{id}', [TransBocor::class, 'lihat_berkas']);
         });
-            
+
     });
+
+
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });

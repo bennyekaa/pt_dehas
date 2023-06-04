@@ -120,15 +120,19 @@ class DesaController extends Controller
             'file' => 'required|mimes:csv,xls,xlsx'
         ]);
 
+        $file = $request->file('file')->getRealPath();
+        // $nama_file = rand() . $file->getClientOriginalName();
+        // Excel::import(new PenggunaImport, $file);
+        Excel::import(new DesaImport, $file);
         // menangkap file excel
-        $file = $request->file('file');
-        $nama_file = rand() . $file->getClientOriginalName();
+        // $file = $request->file('file');
+        // $nama_file = rand() . $file->getClientOriginalName();
 
-        // upload ke folder file_desa di dalam folder public
-        $file->move('file_desa', $nama_file);
+        // // upload ke folder file_desa di dalam folder public
+        // $file->move('file_desa', $nama_file);
 
         // import data
-        Excel::import(new DesaImport, public_path('/file_desa/' . $nama_file));
+        // Excel::import(new DesaImport, public_path('/file_desa/' . $nama_file));
         return redirect('/desa');
     }
 

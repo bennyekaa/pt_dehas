@@ -8,11 +8,11 @@
     <hr class="sidebar-divider my-0">
 
     @if (session('role') == 0)
-    <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
-    </li>
+    </li> --}}
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url('detailbendungan') }}">
@@ -41,11 +41,11 @@
         </div>
     </li>
     @elseif(session('role') == 1)
-    <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
-    </li>
+    </li> --}}
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url('detailbendungan') }}">
@@ -109,11 +109,11 @@
         </a>
     </li>
     @elseif (session('role') == 5)
-    <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
-    </li>
+    </li> --}}
 
     <li class="nav-item">
         <a class="nav-link" href="{{ url('detailbendungan') }}">
