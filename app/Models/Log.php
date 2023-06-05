@@ -13,6 +13,10 @@ class Log extends Model
 
     public $incrementing = false;
 
+    protected $fillable = [
+        'mac_add'
+    ];
+
     public function user()
     {
         return $this->belongsTo(Role::class, "id_user", "id_user");
