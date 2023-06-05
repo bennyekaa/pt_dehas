@@ -7,11 +7,11 @@
     </a>
     <hr class="sidebar-divider my-0">
 
-    @if (session('role') == 0)
+    @if (session('nama_role') == 0)
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -40,11 +40,11 @@
             </div>
         </div>
     </li>
-    @elseif(session('role') == 1)
+    @elseif(session('nama_role') == "ADMIN")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -83,6 +83,7 @@
                 <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
                 <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                 <a class="collapse-item" href="{{ url('user') }}">User</a>
+                <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
                 <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                 <a class="collapse-item" href="{{ url('web') }}">Website</a>
             </div>
@@ -108,11 +109,11 @@
             <span>Laporan</span>
         </a>
     </li>
-    @elseif (session('role') == 5)
+    @elseif (session('nama_role') == 5)
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -141,6 +142,7 @@
             </div>
         </div>
     </li>
+
     @endif
     {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('user/tambah') }}">

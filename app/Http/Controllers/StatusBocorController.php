@@ -50,7 +50,7 @@ class StatusBocorController extends Controller
         } else {
             try {
                 $statusbocor = StatusBocor::find($request->id_status_bocor);
-                $statusbocor->nama_status = $request->nama_status;
+                $statusbocor->nama_status = $request->nama_status;w
                 $statusbocor->keterangan = $request->keterangan;
                 $statusbocor->id_kategori_bocor = $request->id_kategori_bocor;
                 $statusbocor->status = $request->status;

@@ -56,7 +56,7 @@ class TransBanjir extends Controller
         //         $statusbocor->status = $request->status;
         //         $statusbocor->updated_at = date('Y-m-d H:i:s.U');
         //         $statusbocor->updated_by = session('nama');
-        //         $statusbocor->save();
+        //         $statusbocor->save(); 
         //         return redirect(session('statusbocor'))->with('success', 'Data Berhasil Diedit');
         //     } catch (Exception $e) {
         //         return redirect(session('statusbocor'))->with('error', $e->getMessage());

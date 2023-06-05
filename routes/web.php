@@ -19,6 +19,8 @@ use App\Http\Controllers\TitikKumpulController;
 use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\TransBocor;
 use App\Http\Controllers\WebController;
+use App\Http\Controllers\JabatanController;
+use App\Models\jabatan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +57,14 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/user/edit/{id}', [UserController::class, 'edit']);
     Route::post('/proses', [UserController::class, 'proses']);
     Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+    //route CRUD Jabatan
+    Route::get('/jabatan', [JabatanController::class, 'index']);
+    Route::get('/jabatan/tambah', [JabatanController::class, 'tambah']);
+    Route::post('/jabatan/tambahproses', [JabatanController::class, 'tambahproses']);
+    Route::get('/jabatan/edit/{id}', [JabatanController::class, 'edit']);
+    Route::post('/jabatan/proses', [JabatanController::class, 'proses']);
+    Route::get('/jabatan/hapus/{id}', [JabatanController::class, 'hapus']);
 
     //route CRUD waduk
     // Route::get('/waduk', [WadukController::class, 'index']);
