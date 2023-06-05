@@ -13,8 +13,8 @@ class Log extends Model
 
     public $incrementing = false;
 
-    public function role()
+    public function user()
     {
-        return $this->belongsTo(Role::class, "id_log", "id_log");
+        return $this->belongsTo(Role::class, "id_user", "id_user");
     }
 }
