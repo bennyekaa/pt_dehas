@@ -144,7 +144,7 @@
                                         <a class="btn btn-warning" title="Edit" href="/desa/edit/{{ encrypt($p->id_desa) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-danger alert_notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
+                                        <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>

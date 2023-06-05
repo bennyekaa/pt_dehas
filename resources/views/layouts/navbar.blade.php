@@ -1,17 +1,17 @@
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
         <div class="sidebar-brand-icon">
-            <img src="{{ asset('assets/img/logo/pt_dehas.jpg') }}">
+            <img src="{{ asset('assets/img/logo/pt_dehas.png') }}">
         </div>
         <div class="sidebar-brand-text mx-3">PT Dehas</div>
     </a>
     <hr class="sidebar-divider my-0">
 
-    @if (session('role') == 0)
+    @if (session('nama_role') == 0)
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -29,7 +29,7 @@
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap" aria-expanded="true" aria-controls="collapseBootstrap">
-            <i class="far fa-fw fa-window-maximize"></i>
+            <i class="fab fa-fw fa-wpforms"></i>
             <span>Input Data Waduk</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
@@ -40,11 +40,11 @@
             </div>
         </div>
     </li>
-    @elseif(session('role') == 1)
+    @elseif(session('nama_role') == "ADMIN")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -61,12 +61,12 @@
         </a>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" href="{{ url('import') }}">
             <i class="fas fa-fw fa-file-import"></i>
             <span>Import</span>
         </a>
-    </li>
+    </li> -->
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
@@ -83,6 +83,7 @@
                 <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
                 <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                 <a class="collapse-item" href="{{ url('user') }}">User</a>
+                <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
                 <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                 <a class="collapse-item" href="{{ url('web') }}">Website</a>
             </div>
@@ -108,11 +109,11 @@
             <span>Laporan</span>
         </a>
     </li>
-    @elseif (session('role') == 5)
+    @elseif (session('nama_role') == 5)
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
     </li> --}}
 
     <li class="nav-item">
@@ -141,6 +142,7 @@
             </div>
         </div>
     </li>
+
     @endif
     {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('user/tambah') }}">
