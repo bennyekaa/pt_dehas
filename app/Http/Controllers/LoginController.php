@@ -29,25 +29,36 @@ class LoginController extends Controller
             } else {
                 $role = UserBendungan::where('id_role', $user->id_role)->first();
                 $count_device = $role->total_device;
+                $device_set = Log::where('id_user', $role->id_user)->whereNull('mac_add')->count();
+                // dd($count_device - $device_set);
                 $nama_role = $role->role->first()->nama_role;
-                $device = Log::Join('ref_role', 'ref_role.id_log','=','log.id_log')->where('ref_role.id_role', $role->id_role)->first();
+                $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
+                // dd($device);
                 // $device = Log::where('id_log', $role->log->first()->id_log)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->get();
                 // dd($device);
-                Session::put([
-                    'id_user' => $user->id_user,
-                    'nama' => $user->nama,
-                    'email' => $user->email,
-                    'hp' => $user->hp,
-                    'id_role'  => $user->id_role,
-                    'nama_role'  => $nama_role,
-                    'id_log'  => $device->id_log,
-                    'mac'  => $device->mac_add,
-                    'mac_aktif'  => $device->aktif,
-                    'id_desa'  => $user->id_desa,
-                    'total_device'  => $count_device,
-                    'login' => 1
-                ]);
-                return redirect('/')->with('success', 'Selamat Datang');
+                if(!empty($device)){
+                    Session::put([
+                        'id_user' => $user->id_user,
+                        'nama' => $user->nama,
+                        'email' => $user->email,
+                        'hp' => $user->hp,
+                        'id_role'  => $user->id_role,
+                        'nama_role'  => $nama_role,
+                        'id_log'  => $device->id_log,
+                        'mac'  => $device->mac_add,
+                        'mac_aktif'  => $device->aktif,
+                        'id_desa'  => $user->id_desa,
+                        'total_device'  => $count_device,
+                        'login' => 1
+                    ]);
+                    return redirect('/')->with('success', 'Selamat Datang');
+                }else{
+                    if(($count_device - $device_set) != 0 ){
+                        Log::where('id_user', $role->id_user)->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
+                    }else{
+                        return redirect('/login')->with('error', 'Device Anda tidak terdaftar, Hubungi Admin!!');
+                    }
+                }
             }
         } else {
             return redirect('/login')->with('error', 'Login Gagal!!');
