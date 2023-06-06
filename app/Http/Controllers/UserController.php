@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Userbendungan;
@@ -11,10 +12,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+	// public function index()
+	// {
+	// 	// mengambil data dari table user
+	// 	$data['user'] = DB::table('ref_user')->get();
+	// 	return view('master.user', $data);
+	// }
+
 	public function index()
 	{
 		// mengambil data dari table user
-		$data['user'] = DB::table('ref_user')->get();
+		$data['user'] = DB::table('ref_user')
+		->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')
+		->get();
+		//dd($data);
 		return view('master.user', $data);
 	}
 
@@ -42,7 +53,8 @@ class UserController extends Controller
 	// TAMBAH
 	public function tambah()
 	{
-		return view('register.register');
+		$data['jabatan'] = Role::all()->sortBy('nama_role');
+		return view('register.register', $data);
 	}
 
 	public function store(Request $request)

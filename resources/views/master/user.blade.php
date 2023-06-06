@@ -37,17 +37,19 @@
                                 <td>{{ $p->email }} </td>
                                 <td>{{ $p->hp }} </td>
                                 <td>{{ $p->username }} </td>
-                                @if ($p->id_role == 0)
+                                <td>{{ $p->nama_role }} </td>
+
+                                <!-- @if ($p->nama_role == "ADMIN")
                                 <td>
-                                    <div class="alert alert-secondary" role="alert"> Operator</div>
+                                    <div class="alert alert-secondary" role="alert"> TEST</div>
                                 </td>
-                                @elseif($p->id_role == 1)
+                                @elseif($p->nama_role == "DEVELOPER")
                                 <td>
                                     <div class="alert alert-primary" role="alert" style="font-color:white;">
-                                        Admin
+                                        COBA
                                     </div>
-                                </td>
-                                @elseif($p->id_role == 2)
+                                </td> -->
+                                <!-- @elseif($p->id_role == 2)
                                 <td>
                                     <div class="alert alert-info" role="alert"> Atasan</div>
                                 </td>
@@ -62,8 +64,8 @@
                                 @else
                                 <td>
                                     <div class="alert alert-warning" role="alert"> Balai</div>
-                                </td>
-                                @endif
+                                </td> -->
+                                <!-- @endif -->
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->created_by }}</td>
                                 <td>{{ $p->updated_at }}</td>

@@ -53,15 +53,15 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="jabatan" class="col-md-4 col-form-label text-md-end">{{('Jabatan')}}</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end">Jabatan</label>
                             <div class="col-md-6">
-                                <select type="jabatan" class="form-control" name="jabatan" id="role">
-                                    <option value="0">Operator</option>
-                                    <option value="1">Admin</option>
-                                    <option value="2">Atasan</option>
-                                    <option value="3">BPPD</option>
-                                    <option value="4">Umum</option>
-                                    <option value="5">Balai</option>
+                                <select class="form-control select2" name="id_role" required>
+                                    <option value="">--Masukkan Jabatan--</option>
+                                    @foreach ($jabatan as $item)
+                                    <option value="{{ $item->id_role }}">
+                                        {{ $item->nama_role }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

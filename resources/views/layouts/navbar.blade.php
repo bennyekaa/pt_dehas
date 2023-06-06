@@ -40,7 +40,7 @@
             </div>
         </div>
     </li>
-    @elseif(session('nama_role') == "ADMIN")
+    @elseif(session('nama_role') == "DEVELOPER" || "ADMIN")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
