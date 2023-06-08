@@ -15,7 +15,11 @@
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet" />
+        rel="stylesheet">
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+
+
 
     {{-- select2 --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/select2/css/select2.css') }}">
@@ -86,25 +90,25 @@
             $('#dataTableHover').DataTable();
 
             $('.alert_notif').on('click', function() {
-            var getLink = $(this).attr('href');
-            Swal.fire({
-                title: "Yakin hapus data?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Ya',
-                cancelButtonColor: '#3085d6',
-                cancelButtonText: "Batal"
+                var getLink = $(this).attr('href');
+                Swal.fire({
+                    title: "Yakin hapus data?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonColor: '#3085d6',
+                    cancelButtonText: "Batal"
 
-            }).then(result => {
-                //jika klik ya maka arahkan ke proses.php
-                // console.log(result);
-                if (result.value) {
-                    window.location.href = getLink
-                }
-            })
-            return false;
-        });
+                }).then(result => {
+                    //jika klik ya maka arahkan ke proses.php
+                    // console.log(result);
+                    if (result.value) {
+                        window.location.href = getLink
+                    }
+                })
+                return false;
+            });
         })
         $(".datepicker").datepicker({
             format: 'yyyy-mm-dd',

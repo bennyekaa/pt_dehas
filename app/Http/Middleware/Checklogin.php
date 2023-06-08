@@ -17,13 +17,13 @@ class Checklogin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // dd(session()->all());
         if (Session::get('login') == 1) {
             if(empty(session('mac'))){
                 return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
             }else{
                 return $next($request);
             }
-            // dd(session()->all());
             // dd(session()->all());
             // dd(substr(shell_exec('getmac'), 159,20));
         } else {

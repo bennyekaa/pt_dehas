@@ -18,6 +18,11 @@ class LoginController extends Controller
 
     public function actionlogin(Request $request)
     {
+        // $useragent = $_SERVER['HTTP_USER_AGENT'];
+        // $info = get_browser($useragent,true);
+        // dd(gethostname());
+        // dd(get_current_user());
+        // dd($_SERVER['SERVER_SOFTWARE']);
         // $hitung_user = UserBendungan::where('email', $request->email)->where('aktif', 1)->count();
         $hitung_user = UserBendungan::where('email', $request->email)->count();
         if ($hitung_user > 0) {
@@ -31,7 +36,7 @@ class LoginController extends Controller
                 $count_device = $role->total_device;
                 $device_set = Log::where('id_user', $role->id_user)->whereNotNull('mac_add')->count();
                 // dd($count_device - $device_set);
-                $nama_role = $role->role->first()->nama_role;
+                $nama_role = $role->role->nama_role;
                 $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
                 // dd($device);
                 // $device = Log::where('id_log', $role->log->first()->id_log)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->get();
@@ -40,7 +45,7 @@ class LoginController extends Controller
                 if (empty($device)) {
                     if (($count_device - $device_set) != 0) {
                         // Log::where('id_user', $role->id_user)->whereNull('mac_add')->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
-                        Log::where('id_user', $role->id_user)->whereNull('mac_add')->first()->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
+                        Log::where('id_user', $role->id_user)->whereNull('mac_add')->first()->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20)) , 'keterangan' => php_uname()]);
                         $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
                         Session::put([
                             'id_user' => $user->id_user,
