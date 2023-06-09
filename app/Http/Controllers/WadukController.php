@@ -2,20 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\WadukImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\WadukBendungan;
 use Exception;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WadukController extends Controller
 {
     public function index()
     {
         // mengambil data dari table Titik Kumpul
-    //  $data['waduk'] = DB::table('ref_waduk')->get();
-        $data['waduk'] = DB::table('ref_waduk')->orderBy('tinggi_air', 'asc')->get();
+        $data['waduk'] = WadukBendungan::all();
+        // $data['waduk'] = DB::table('ref_waduk')->get();
         session()->put('waduk', url()->full());
         return view('master.waduk.index', $data);
+    }
+
+    public function import(){
+        return view('master.waduk.import');
+    }
+
+    public function export(){
+
+    }
+
+    public function proses_excel(Request $request){
+        if($request->fungsi == 'Import'){
+            // dd($request->all());
+            try {
+                $file = $request->file('data_file')->getRealPath();
+                Excel::import(new WadukImport, $file);
+
+                return redirect(session('waduk'))->with('success', 'Berhasil Import');
+            } catch (Exception $e) {
+                return redirect(session('waduk'))->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function edit($id)

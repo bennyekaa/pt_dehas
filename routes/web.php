@@ -70,6 +70,9 @@ Route::middleware('checklogin')->group(function () {
     //route CRUD waduk
     // Route::get('/waduk', [WadukController::class, 'index']);
     Route::get('/waduk/tambah', [WadukController::class, 'tambah']);
+    Route::get('/waduk/import', [WadukController::class, 'import']);
+    Route::get('/waduk/export', [WadukController::class, 'export']);
+    Route::post('/waduk/proses/excel', [WadukController::class, 'proses_excel']);
     Route::post('/waduk/proses', [WadukController::class, 'proses']);
     Route::post('/waduk/store', [WadukController::class, 'store']);
     Route::get('/waduk/edit/{id}', [WadukController::class, 'edit']);
