@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\log;
+use App\Models\Userbendungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Userbendungan;
 use Exception;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class UserController extends Controller
 {
@@ -25,7 +28,6 @@ class UserController extends Controller
 		$data['user'] = DB::table('ref_user')
 		->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')
 		->get();
-		//dd($data);
 		return view('master.user', $data);
 	}
 
@@ -38,6 +40,7 @@ class UserController extends Controller
 
 	public function proses(Request $request)
 	{
+
 		$data = Userbendungan::find($request->id_user);
 		$data->nama = $request->nama;
 		$data->email = $request->email;
@@ -50,6 +53,20 @@ class UserController extends Controller
 		return redirect('/user');
 	}
 
+	// public function Data_Riwayat_Keluarga_Edit($id_pegawai)
+	// {
+	// 	$id = decrypt($id_pegawai);
+	// 	// $data['riwayatkeluarga'] = RiwayatKeluarga::find($id);
+	// 	$data['riwayatkeluarga'] = DB::connection('simpegabaru')->table('data.riwayat_keluarga')->leftJoin('ref.jenis_hubungan_keluarga', 'jenis_hubungan_keluarga.id_jenis_hubungan_keluarga', '=', 'riwayat_keluarga.id_jenis_hubungan_keluarga')->leftJoin('ref.jenjang_pendidikan', 'jenjang_pendidikan.id_jenjang_pendidikan', '=', 'riwayat_keluarga.id_jenjang_pendidikan')->where('id_riwayat_keluarga', $id)->first();
+	// 	$data['jenishubungan'] = JenisHubKel::all()->keyBy('id_jenis_hubungan_keluarga');
+	// 	$data['baris1'] = "Update Riwayat Keluarga";
+	// 	$data['jenjangpendidikan'] = JenjangPendidikan::all()->sortBy('urut');
+	// 	$data['link'] = url()->previous();
+	// 	$data['pegawai'] = Pegawai_baru::where('id_biodata', $data['riwayatkeluarga']->id_biodata)->first();
+	// 	// dd($data);
+	// 	return view('admin.data.riwayat.keluarga.editriwayatkeluarga', $data);
+	// }
+
 	// TAMBAH
 	public function tambah()
 	{
@@ -59,16 +76,38 @@ class UserController extends Controller
 
 	public function store(Request $request)
 	{
-		DB::table('ref_user')->insert([
-			'nama' => $request->nama,
-			'email' => $request->email,
-			'hp' => $request->no_hp,
-			'username' => $request->username,
-			'password' => Hash::make($request->password),
-			'role' => $request->jabatan,
-			'created_at' => date('Y-m-d H:i:s.U'),
-			'created_by' => session('nama')
-		]);
+		$id_log = Str::uuid();
+		$id_user =Str::uuid();
+		$check = Userbendungan::where('id_role', $request->id_role)->count();
+		try {
+			if ($check > 0) {
+				return redirect(('/user'))->with('error', 'Jabatan sudah digunakan');
+			}else {
+				DB::table('ref_user')->insert([
+					'id_user' => $id_user,
+					'nama' => $request->nama,
+					'email' => $request->email,
+					'hp' => $request->no_hp,
+					'username' => $request->username,
+					'password' => Hash::make($request->password),
+					'id_role' => $request->id_role,
+					'total_device' => '1',
+					'created_at' => date('Y-m-d H:i:s.U'),
+					'created_by' => session('nama')
+				]);
+
+				DB::table('log')->insert([
+					'id_user' => $id_user,
+					'id_log' => $id_log,
+					'created_at' => date('Y-m-d H:i:s.U'),
+					'created_by' => session('nama')
+				]);
+			}
+			
+		} catch (Exception $e) {
+			
+		}
+		
 
         // $this->whatsappNotification($request->no_hp);
 

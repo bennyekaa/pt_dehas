@@ -20,6 +20,7 @@
                                 <th>HP</th>
                                 <th>Username</th>
                                 <th>Role</th>
+                                <th>Total Device</th>
                                 <th>Dibuat Pada</th>
                                 <th>Dibuat Oleh</th>
                                 <th>Diupdate Pada</th>
@@ -37,35 +38,35 @@
                                 <td>{{ $p->email }} </td>
                                 <td>{{ $p->hp }} </td>
                                 <td>{{ $p->username }} </td>
-                                <td>{{ $p->nama_role }} </td>
-
-                                <!-- @if ($p->nama_role == "ADMIN")
+                                <!-- <td>{{ $p->nama_role }} </td> -->
+                                @if ($p->nama_role == "ADMIN")
                                 <td>
-                                    <div class="alert alert-secondary" role="alert"> TEST</div>
+                                    <div class="alert alert-secondary" role="alert"> ADMIN</div>
                                 </td>
                                 @elseif($p->nama_role == "DEVELOPER")
                                 <td>
                                     <div class="alert alert-primary" role="alert" style="font-color:white;">
-                                        COBA
+                                        DEVELOPER
                                     </div>
-                                </td> -->
-                                <!-- @elseif($p->id_role == 2)
-                                <td>
-                                    <div class="alert alert-info" role="alert"> Atasan</div>
                                 </td>
-                                @elseif($p->id_role == 3)
+                                @elseif($p->nama_role == "POLISI")
                                 <td>
-                                    <div class="alert alert-success" role="alert"> BPPD</div>
+                                    <div class="alert alert-info" role="alert"> POLISI</div>
                                 </td>
-                                @elseif($p->id_role == 4)
+                                @elseif($p->nama_role == "BALAI")
                                 <td>
-                                    <div class="alert alert-dark" role="alert"> Umum</div>
+                                    <div class="alert alert-success" role="alert"> BALAI</div>
+                                </td>
+                                @elseif($p->nama_role == "OPERATOR")
+                                <td>
+                                    <div class="alert alert-dark" role="alert"> OPERATOR</div>
                                 </td>
                                 @else
                                 <td>
-                                    <div class="alert alert-warning" role="alert"> Balai</div>
-                                </td> -->
-                                <!-- @endif -->
+                                    <div class="alert alert-warning" role="alert"> PENDUDUK</div>
+                                </td>
+                                @endif
+                                <td>{{ $p->total_device }} </td>
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->created_by }}</td>
                                 <td>{{ $p->updated_at }}</td>

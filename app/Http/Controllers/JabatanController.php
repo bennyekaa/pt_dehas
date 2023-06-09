@@ -25,8 +25,6 @@ class JabatanController extends Controller
     public function tambahproses(Request $request)
     {
         $id_log = Str::uuid();
-
-        $created_by = session('nama');
         DB::table('ref_role')->insert([
        //     'id_role' => Str::uuid(),
             'nama_role' => $request->nama_role,

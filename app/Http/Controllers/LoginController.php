@@ -28,12 +28,13 @@ class LoginController extends Controller
                 return redirect('/login')->with('error', 'Login Gagal, Silahkan Hubungi Administrator');
             } else {
                 $role = UserBendungan::where('id_role', $user->id_role)->first();
+                //dd($role);
                 $count_device = $role->total_device;
                 $device_set = Log::where('id_user', $role->id_user)->whereNotNull('mac_add')->count();
                 // dd($count_device - $device_set);
                 $nama_role = $role->role->first()->nama_role;
                 $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
-                // dd($device);
+                //dd($device);
                 // $device = Log::where('id_log', $role->log->first()->id_log)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->get();
                 // dd($device);
                 // dd($count_device-$device_set);
