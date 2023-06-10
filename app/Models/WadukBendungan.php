@@ -13,4 +13,6 @@ class WadukBendungan extends Model
     protected $primaryKey = 'id_waduk';
 
     public $incrementing = false;
+
+    protected $fillable = ['id_waduk', 'batas_bawah', 'batas_atas', 'status', 'keterangan', 'puncak', 'ambang', 'lebar', 'c', 'created_by'];
 }

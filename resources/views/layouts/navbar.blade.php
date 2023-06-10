@@ -7,7 +7,7 @@
     </a>
     <hr class="sidebar-divider my-0">
 
-    @if (session('nama_role') == 0)
+    @if (session('nama_role') == "OPERATOR")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -40,7 +40,7 @@
             </div>
         </div>
     </li>
-    @elseif(session('nama_role') == "DEVELOPER" || "ADMIN")
+    @elseif(session('nama_role') == "DEVELOPER" || "ADMIN" || session('nama_role') == "DEVELOPER")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -78,6 +78,7 @@
                 <h6 class="collapse-header">Master</h6>
                 <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
                 <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
+                <a class="collapse-item" href="{{ url('device') }}">Device</a>
                 <a class="collapse-item" href="{{ url('kategoribocor') }}">Kategori Bocor</a>
                 <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
                 <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
@@ -109,7 +110,7 @@
             <span>Laporan</span>
         </a>
     </li>
-    @elseif (session('nama_role') == 5)
+    @elseif (session('nama_role') == "BALAI")
     {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>

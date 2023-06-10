@@ -8,6 +8,7 @@ use App\Http\Controllers\WadukController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesaController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\KategoriBocorController;
 use App\Http\Controllers\LaporanController;
@@ -69,6 +70,9 @@ Route::middleware('checklogin')->group(function () {
     //route CRUD waduk
     // Route::get('/waduk', [WadukController::class, 'index']);
     Route::get('/waduk/tambah', [WadukController::class, 'tambah']);
+    Route::get('/waduk/import', [WadukController::class, 'import']);
+    Route::get('/waduk/export', [WadukController::class, 'export']);
+    Route::post('/waduk/proses/excel', [WadukController::class, 'proses_excel']);
     Route::post('/waduk/proses', [WadukController::class, 'proses']);
     Route::post('/waduk/store', [WadukController::class, 'store']);
     Route::get('/waduk/edit/{id}', [WadukController::class, 'edit']);
@@ -143,6 +147,14 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/statusbocor/hapus/{id}', [StatusBocorController::class, 'hapus']);
 
     Route::get('/pengaturan/qr', [Pengaturan::class, 'qr']);
+
+    Route::get('/device', [DeviceController::class, 'index']);
+    Route::post('/device/proses', [DeviceController::class, 'proses']);
+    Route::get('/device/lihat/{id}', [DeviceController::class, 'lihat']);
+    Route::get('/device/edit/{id}', [DeviceController::class, 'edit']);
+    Route::get('/device/reset/{id}', [DeviceController::class, 'reset']);
+    Route::get('/device/status/{id}/{id2}', [DeviceController::class, 'status']);
+    Route::get('/device/hapus/{id}', [DeviceController::class, 'hapus']);
 
     //Auth::routes();
 

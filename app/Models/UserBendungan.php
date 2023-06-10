@@ -23,6 +23,6 @@ class UserBendungan extends Model
 
     public function role()
     {
-        return $this->hasMany(Role::class, "id_role", "id_role");
+        return $this->belongsTo(Role::class, "id_role", "id_role");
     }
 }
