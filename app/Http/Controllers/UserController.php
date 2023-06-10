@@ -53,20 +53,6 @@ class UserController extends Controller
 		return redirect('/user');
 	}
 
-	// public function Data_Riwayat_Keluarga_Edit($id_pegawai)
-	// {
-	// 	$id = decrypt($id_pegawai);
-	// 	// $data['riwayatkeluarga'] = RiwayatKeluarga::find($id);
-	// 	$data['riwayatkeluarga'] = DB::connection('simpegabaru')->table('data.riwayat_keluarga')->leftJoin('ref.jenis_hubungan_keluarga', 'jenis_hubungan_keluarga.id_jenis_hubungan_keluarga', '=', 'riwayat_keluarga.id_jenis_hubungan_keluarga')->leftJoin('ref.jenjang_pendidikan', 'jenjang_pendidikan.id_jenjang_pendidikan', '=', 'riwayat_keluarga.id_jenjang_pendidikan')->where('id_riwayat_keluarga', $id)->first();
-	// 	$data['jenishubungan'] = JenisHubKel::all()->keyBy('id_jenis_hubungan_keluarga');
-	// 	$data['baris1'] = "Update Riwayat Keluarga";
-	// 	$data['jenjangpendidikan'] = JenjangPendidikan::all()->sortBy('urut');
-	// 	$data['link'] = url()->previous();
-	// 	$data['pegawai'] = Pegawai_baru::where('id_biodata', $data['riwayatkeluarga']->id_biodata)->first();
-	// 	// dd($data);
-	// 	return view('admin.data.riwayat.keluarga.editriwayatkeluarga', $data);
-	// }
-
 	// TAMBAH
 	public function tambah()
 	{

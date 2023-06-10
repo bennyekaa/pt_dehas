@@ -66,13 +66,6 @@
                             </div>
                         </div>
 
-                        <!-- <select name="id_jenis_hubungan_keluarga" id="list_jenis" class="form-control custom-select select2 col-md-6" required>
-                            <option value="">-- Silakan Pilih Jenis Hubungan Keluarga --</option>
-                            @foreach ($jenishubungan as $val)
-                            <option value="{{ $val->id_jenis_hubungan_keluarga }}" {{$riwayatkeluarga->id_jenis_hubungan_keluarga == $val->id_jenis_hubungan_keluarga ? 'selected' : ''}}>{{ $val->nama_jenis_hubungan_keluarga }}</option>
-                            @endforeach
-                        </select> -->
-
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
