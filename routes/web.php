@@ -81,6 +81,8 @@ Route::middleware('checklogin')->group(function () {
 
     //route CRUD DESA
     Route::get('/desa', [DesaController::class, 'index']);
+    Route::get('/importdesa', [DesaController::class, 'import']);
+    Route::post('/desa/proses/excel', [DesaController::class, 'proses_excel']);
     Route::get('/desa/tambah', [DesaController::class, 'tambah']);
     Route::post('/desa/tambahproses', [DesaController::class, 'tambahproses']);
     Route::get('/desa/edit/{id}', [DesaController::class, 'edit']);
@@ -91,8 +93,8 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/titikkumpul', [TitikKumpulController::class, 'index']);
     // Route::get('/desa/tambah', [TitikKumpulController::class, 'tambah']);
     // Route::post('/desa/tambahproses', [TitikKumpulController::class, 'tambahproses']);
-    // Route::get('/desa/edit/{id}', [TitikKumpulController::class, 'edit']);
-    // Route::post('/prosesdesa', [TitikKumpulController::class, 'prosestitikkumpul']);
+     Route::get('/titikkumpul/edit/{id}', [TitikKumpulController::class, 'edit']);
+     Route::post('/prosestitikkumpul', [TitikKumpulController::class, 'prosestitikkumpul']);
     Route::get('/titikkumpul/hapus/{id}', [TitikKumpulController::class, 'hapus']);
 
     //route CRUD waduk
@@ -107,8 +109,8 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/pengungsian', [PengungsianController::class, 'index']);
    // Route::get('/desa/tambah', [PengungsianController::class, 'tambah']);
    // Route::post('/desa/tambahproses', [PengungsianController::class, 'tambahproses']);
-   // Route::get('/desa/edit/{id}', [PengungsianController::class, 'edit']);
-   // Route::post('/prosesdesa', [PengungsianController::class, 'prosestitikkumpul']);
+    Route::get('/pengungsian/edit/{id}', [PengungsianController::class, 'edit']);
+    Route::post('/prosespengungsian', [PengungsianController::class, 'prosespengungsian']);
     Route::get('/pengungsian/hapus/{id}', [PengungsianController::class, 'hapus']);
 
     //route CRUD BENDUNGAN

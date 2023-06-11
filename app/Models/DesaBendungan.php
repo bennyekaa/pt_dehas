@@ -20,6 +20,7 @@ class DesaBendungan extends Model
         'kode_desa',
         'desa_lat',
         'desa_long',
+        'radius',
         'kelurahan_desa',
         'kecamatan_desa',
         'kabupaten_desa',

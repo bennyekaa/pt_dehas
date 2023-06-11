@@ -16,11 +16,10 @@ class TitikKumpulController extends Controller
         return view('master.titikkumpul', $data);
     }
 
-    public function edit($id_titik_kumpul)
+    public function edit($id)
     {
-        $id = decrypt($id_titik_kumpul);
-        $data = TitikKumpulBendungan::find($id);
-        return view('edit.titikkumpul', compact(['data']));
+        $data['titikkumpul'] = TitikKumpulBendungan::find(decrypt($id));
+        return view('edit.titikkumpul', $data);
     }
 
     public function prosestitikkumpul(Request $request)
@@ -37,30 +36,30 @@ class TitikKumpulController extends Controller
         $data->jarak_ke_tk = $request->jarak_ke_tk;
         $data->updated_by = session('nama');
         $data->save();
-        return redirect('/titikkumpul');
+        return redirect(('/titikkumpul'))->with('success', 'Data Tersimpan');
     }
 
-    public function tambah()
-    {
-        return view('register.titikkumpul');
-    }
+    // public function tambah()
+    // {
+    //     return view('register.titikkumpul');
+    // }
 
-    public function tambahproses(Request $request)
-    {
-        DB::table('ref_bendungan')->insert([
-            'kode_tk' => $request->kode_tk,
-            'tk_lat' => $request->tk_lat,
-            'tk_long' => $request->tk_long,
-            'nama_titik_kumpul' => $request->nama_titik_kumpul,
-            'nama_desa' => $request->nama_desa,
-            'nama_kecamatan' => $request->nama_kecamatan,
-            'nama_kabupaten' => $request->nama_kabupaten,
-            'jarak_ke_tk' => $request->jarak_ke_tk,
-            'created_at' => date('Y-m-d H:i:s.U'),
-            'created_by' => session('nama')
-        ]);
-        return redirect('/titikkumpul');
-    }
+    // public function tambahproses(Request $request)
+    // {
+    //     DB::table('ref_bendungan')->insert([
+    //         'kode_tk' => $request->kode_tk,
+    //         'tk_lat' => $request->tk_lat,
+    //         'tk_long' => $request->tk_long,
+    //         'nama_titik_kumpul' => $request->nama_titik_kumpul,
+    //         'nama_desa' => $request->nama_desa,
+    //         'nama_kecamatan' => $request->nama_kecamatan,
+    //         'nama_kabupaten' => $request->nama_kabupaten,
+    //         'jarak_ke_tk' => $request->jarak_ke_tk,
+    //         'created_at' => date('Y-m-d H:i:s.U'),
+    //         'created_by' => session('nama')
+    //     ]);
+    //     return redirect('/titikkumpul');
+    // }
 
     public function hapus($id)
     {

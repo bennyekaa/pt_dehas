@@ -19,8 +19,8 @@
                 <div class="col-lg-12">
                     <div class="card mb-4">
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <a class="btn btn-primary" href="/pengungsian/tambah" style="float: left;"> + Tambah
-                                Pengungsian</a>
+                            <!-- <a class="btn btn-primary" href="/pengungsian/tambah" style="float: left;"> + Tambah
+                                Pengungsian</a> -->
                         </div>
                         <div class="table-responsive p-3">
                             <table class="table align-items-center table-flush table-hover" id="dataTableHover">
@@ -54,7 +54,7 @@
                                             <td>{{ $p->nama_desa_pengungsian }} </td>
                                             <td>{{ $p->nama_kecamatan_pengungsian }} </td>
                                             <td>{{ $p->nama_kabupaten_pengungsian }} </td>
-                                            <td>{{ $p->jarak_pengungsian }} </td>
+                                            <td>{{ $p->jarak_pengungsian }} KM</td>
                                             <td>{{ $p->created_at }}</td>
                                             <td>{{ $p->created_by }}</td>
                                             <td>{{ $p->updated_at }}</td>
@@ -65,10 +65,10 @@
                                                         href="/pengungsian/edit/{{ encrypt($p->id_pengungsian) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
-                                                    <a class="btn btn-danger alert_notif" title="Hapus"
+                                                    <!-- <a class="btn btn-danger alert_notif" title="Hapus"
                                                         href="/pengungsian/hapus/{{ encrypt($p->id_pengungsian) }}">
                                                         <i class="fa fa-trash"></i>
-                                                    </a>
+                                                    </a> -->
                                                 </div>
                                             </td>
                                         </tr>

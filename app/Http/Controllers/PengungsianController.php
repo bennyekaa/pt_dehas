@@ -16,14 +16,14 @@ class PengungsianController extends Controller
         return view('master.pengungsian', $data);
     }
 
-    public function edit($id_pengungsian)
+    //EDIT
+    public function edit($id)
     {
-        $id = decrypt($id_pengungsian);
-        $data = PengungsianBendungan::find($id);
-        return view('edit.pengungsian', compact(['data']));
+        $data['pengungsian'] = PengungsianBendungan::find(decrypt($id));
+        return view('edit.pengungsian', $data);
     }
 
-    public function prosestitikkumpul(Request $request)
+    public function prosespengungsian(Request $request)
     {
         $data = PengungsianBendungan::find($request->id_pengungsian);
         $data->id_pengungsian = $request->id_pengungsian;
@@ -37,30 +37,30 @@ class PengungsianController extends Controller
         $data->jarak_pengungsian = $request->jarak_pengungsian;
         $data->updated_by = session('nama');
         $data->save();
-        return redirect('/pengungsian');
+        return redirect(('/pengungsian'))->with('success', 'Data Tersimpan');
     }
 
-    public function tambah()
-    {
-        return view('register.pengungsian');
-    }
+    // public function tambah()
+    // {
+    //     return view('register.pengungsian');
+    // }
 
-    public function tambahproses(Request $request)
-    {
-        DB::table('ref_bendungan')->insert([
-            'kode_tk' => $request->kode_tk,
-            'tk_lat' => $request->tk_lat,
-            'tk_long' => $request->tk_long,
-            'nama_titik_kumpul' => $request->nama_titik_kumpul,
-            'nama_desa' => $request->nama_desa,
-            'nama_kecamatan' => $request->nama_kecamatan,
-            'nama_kabupaten' => $request->nama_kabupaten,
-            'jarak_ke_tk' => $request->jarak_ke_tk,
-            'created_at' => date('Y-m-d H:i:s.U'),
-            'created_by' => session('nama')
-        ]);
-        return redirect('/titikkumpul');
-    }
+    // public function tambahproses(Request $request)
+    // {
+    //     DB::table('ref_bendungan')->insert([
+    //         'kode_tk' => $request->kode_tk,
+    //         'tk_lat' => $request->tk_lat,
+    //         'tk_long' => $request->tk_long,
+    //         'nama_titik_kumpul' => $request->nama_titik_kumpul,
+    //         'nama_desa' => $request->nama_desa,
+    //         'nama_kecamatan' => $request->nama_kecamatan,
+    //         'nama_kabupaten' => $request->nama_kabupaten,
+    //         'jarak_ke_tk' => $request->jarak_ke_tk,
+    //         'created_at' => date('Y-m-d H:i:s.U'),
+    //         'created_by' => session('nama')
+    //     ]);
+    //     return redirect('/titikkumpul');
+    // }
 
     public function hapus($id)
     {
