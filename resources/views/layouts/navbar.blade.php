@@ -78,11 +78,11 @@
                 <h6 class="collapse-header">Master</h6>
                 <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
                 <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
+                <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
+                <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
                 <a class="collapse-item" href="{{ url('device') }}">Device</a>
                 <a class="collapse-item" href="{{ url('kategoribocor') }}">Kategori Bocor</a>
-                <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
                 <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
-                <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                 <a class="collapse-item" href="{{ url('user') }}">User</a>
                 <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
                 <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
