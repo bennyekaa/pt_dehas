@@ -51,8 +51,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <!-- <a class="btn btn-primary" href="/desa/tambah" style="float: left;"> + Tambah Desa Baru</a> -->
                         <div class="btn-group">
-                            {{-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                EXCEL</a> --}}
+                            <!-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
+                                EXCEL</a> -->
                             <a href="{{url('/importdesa')}}" class="btn btn-primary my-3">IMPORT EXCEL</a>
                         </div>
                 </div>
@@ -69,7 +69,7 @@
                                 <th>Kabupaten</th>
                                 <th>Jarak Dari Bendungan</th>
                                 <th>Banjir (m)</th>
-                                <th>Kecamatan Max</th>
+                                <th>Kecepatan Max</th>
                                 <th>Waktu Tiba (jam)</th>
                                 <th>Waktu Surut (jam)</th>
                                 <th>Durasi Banjir (jam)</th>
@@ -111,7 +111,7 @@
                                 <td>{{ $p->kelurahan_desa }} </td>
                                 <td>{{ $p->kecamatan_desa }} </td>
                                 <td>{{ $p->kabupaten_desa }} </td>
-                                <td>{{ $p->jarak_dari_bendungan }} </td>
+                                <td>{{ $p->jarak_dari_bendungan }} KM </td>
                                 <td>{{ $p->banjir }} </td>
                                 <td>{{ $p->kec_max }} </td>
                                 <td>{{ $p->waktu_tiba }} </td>

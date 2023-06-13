@@ -170,7 +170,7 @@ class DesaController extends Controller
         $data->total_LP = $request->total_LP;
         $data->updated_by = session('nama');
         $data->save();
-        return redirect(('/desa'))->with('success', 'Data Tersimpan');
+        return redirect(('/desa'))->with('success', 'Data Terupdate');
     }
 
     //EXPORT

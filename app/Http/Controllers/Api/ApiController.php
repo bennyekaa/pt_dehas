@@ -164,7 +164,7 @@ class ApiController extends Controller
     }
     public function master_user()
     {
-        $data['user'] = UserBendungan::all();
+        $data['user'] = UserBendungan::Join('id');
         if (isset($data['p'])) {
             return response([
                 'success' => true,

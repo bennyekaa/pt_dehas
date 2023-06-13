@@ -15,7 +15,7 @@ use Exception;
 class TransBocor extends Controller
 {
     public function index($stat){
-        $data['bocor'] = DataBanjir::where('status_role', decrypt($stat))->get();
+        $data['bocor'] = DataBanjir::where('id_role', decrypt($stat))->get();
         session()->put('banjir_bocor', url()->full());
         return view('transaksi.bocor.index', $data);
     }

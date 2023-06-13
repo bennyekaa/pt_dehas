@@ -36,7 +36,7 @@ class TitikKumpulController extends Controller
         $data->jarak_ke_tk = $request->jarak_ke_tk;
         $data->updated_by = session('nama');
         $data->save();
-        return redirect(('/titikkumpul'))->with('success', 'Data Tersimpan');
+        return redirect(('/titikkumpul'))->with('success', 'Data Terupdate');
     }
 
     // public function tambah()
