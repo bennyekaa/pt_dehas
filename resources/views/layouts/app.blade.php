@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="{{ asset('assets/img/logo/pt_dehas.png') }}" rel="icon">
-    <title>PT Dehas Inframedia Karsa - Deshboard</title>
+    <title>PT Dehas Inframedia Karsa - Dashboard</title>
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">

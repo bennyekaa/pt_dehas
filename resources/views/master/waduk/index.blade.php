@@ -11,8 +11,8 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         {{-- <a class="btn btn-primary" href="/waduk/tambah" style="float: left;"> + Tambah Status Waduk</a> --}}
                         <div class="btn-group">
-                            <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                EXCEL</a>
+                            {{-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
+                                EXCEL</a> --}}
                             <a href="{{url('waduk/import')}}" class="btn btn-primary my-3">IMPORT EXCEL</a>
                         </div>
                     </div>

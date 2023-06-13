@@ -25,17 +25,28 @@ class UserController extends Controller
 	public function index()
 	{
 		// mengambil data dari table user
-		$data['user'] = DB::table('ref_user')
-		->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')
-		->get();
+        if(session('nama_role') == 'DEVELOPER'){
+            $data['user'] = DB::table('ref_user')
+            ->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')
+            ->get();
+        }else{
+            $data['user'] = DB::table('ref_user')
+            ->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')->where('nama_role', '<>', 'DEVELOPER')
+            ->get();
+        }
 		return view('master.user', $data);
 	}
 
 	public function edit($id_user)
 	{
 		$id = decrypt($id_user);
-		$data = Userbendungan::find($id);
-		return view('edit.user', compact(['data']));
+		$data['user'] = Userbendungan::find($id);
+        if (session('nama_role') == 'DEVELOPER') {
+            $data['jabatan'] = Role::all()->sortBy('nama_role');
+        } else {
+            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->get();
+        }
+		return view('edit.user', $data);
 	}
 
 	public function proses(Request $request)
@@ -46,17 +57,21 @@ class UserController extends Controller
 		$data->email = $request->email;
 		$data->hp = $request->no_hp;
 		$data->username = $request->username;
-		$data->password = $request->password;
-		$data->role = $request->role;
+		$data->password = Hash::make($request->password);
+		$data->id_role = $request->id_role;
 		$data->updated_by = session('nama');
 		$data->save();
-		return redirect('/user');
+		return redirect('/user')->with('success', 'Data Tersimpan');
 	}
 
 	// TAMBAH
 	public function tambah()
 	{
-		$data['jabatan'] = Role::all()->sortBy('nama_role');
+        if(session('nama_role') == 'DEVELOPER'){
+            $data['jabatan'] = Role::all()->sortBy('nama_role');
+        }else{
+            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->get();
+        }
 		return view('register.register', $data);
 	}
 
@@ -89,11 +104,11 @@ class UserController extends Controller
 					'created_by' => session('nama')
 				]);
 			}
-			
+
 		} catch (Exception $e) {
-			
+
 		}
-		
+
 
         // $this->whatsappNotification($request->no_hp);
 
