@@ -7,6 +7,7 @@ use App\Models\DesaBendungan;
 use App\Models\Notif;
 use App\Models\PengungsianBendungan;
 use App\Models\TitikKumpulBendungan;
+use App\Models\UserBendungan;
 use App\Models\Web_custom;
 use Illuminate\Http\Request;
 use DB;
@@ -45,6 +46,40 @@ class ApiController extends Controller
             'status' => true,
             'message' => 'update success'
         ]);
+    }
+
+    public function register_penduduk()
+    {
+        $data['web'] = Web_custom::all();
+        if (isset($data['web'])) {
+            return response([
+                'success' => true,
+                'message' => 'List Data',
+                'data' => $data['web']
+            ], 200);
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ], 401);
+        }
+    }
+
+    public function login($username, $password)
+    {
+        $data['user'] = UserBendungan::all();
+        if (isset($data['web'])) {
+            return response([
+                'success' => true,
+                'message' => 'List Data',
+                'data' => $data['web']
+            ], 200);
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ], 401);
+        }
     }
 
     public function master_web()
@@ -98,6 +133,38 @@ class ApiController extends Controller
     public function master_p()
     {
         $data['p'] = PengungsianBendungan::all();
+        if (isset($data['p'])) {
+            return response([
+                'success' => true,
+                'message' => 'List Data',
+                'data' => $data['p']
+            ], 200);
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ], 401);
+        }
+    }
+    public function master_bendungan()
+    {
+        $data['p'] = PengungsianBendungan::all();
+        if (isset($data['p'])) {
+            return response([
+                'success' => true,
+                'message' => 'List Data',
+                'data' => $data['p']
+            ], 200);
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ], 401);
+        }
+    }
+    public function master_user()
+    {
+        $data['user'] = UserBendungan::all();
         if (isset($data['p'])) {
             return response([
                 'success' => true,

@@ -51,8 +51,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <!-- <a class="btn btn-primary" href="/desa/tambah" style="float: left;"> + Tambah Desa Baru</a> -->
                         <div class="btn-group">
-                            <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                EXCEL</a>
+                            {{-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
+                                EXCEL</a> --}}
                             <a href="{{url('/importdesa')}}" class="btn btn-primary my-3">IMPORT EXCEL</a>
                         </div>
                 </div>

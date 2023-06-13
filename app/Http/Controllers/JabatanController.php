@@ -12,7 +12,11 @@ class JabatanController extends Controller
     public function index()
     {
         // mengambil data dari table user
-        $data['jabatan'] = DB::table('ref_role')->get();
+        if(session('nama_role') == 'DEVELOPER'){
+            $data['jabatan'] = DB::table('ref_role')->get();
+        }else{
+            $data['jabatan'] = DB::table('ref_role')->where('nama_role', '<>', 'DEVELOPER')->get();
+        }
         return view('master.jabatan.index', $data);
     }
 
