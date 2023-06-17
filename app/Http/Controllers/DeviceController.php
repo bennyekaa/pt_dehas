@@ -60,7 +60,8 @@ class DeviceController extends Controller
     public function reset($id_log)
     {
         $log = Log::where('id_log', decrypt($id_log))->first();
-        if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
+        if ($log->keterangan != request()->header('user_agent')) {
+        // if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
             Log::where('id_log', decrypt($id_log))->update(['mac_add' => null, 'keterangan' => null]);
             return redirect(session('device_login'))->with('success', 'Berhasil Reset Device');
         } else {
@@ -72,7 +73,8 @@ class DeviceController extends Controller
     {
         $log = Log::where('id_log', decrypt($id_log))->first();
         $user = $log->id_user;
-        if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
+        if ($log->keterangan != request()->header('user_agent')) {
+        // if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
             $log->delete();
             $hitung_log = Log::where('id_user', $user)->count();
             UserBendungan::where('id_user', $user)->update(['total_device' => $hitung_log]);
@@ -85,7 +87,8 @@ class DeviceController extends Controller
     public function status($id_log, $set)
     {
         $log = Log::where('id_log', decrypt($id_log))->first();
-        if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
+        if ($log->keterangan != request()->header('user_agent')) {
+        // if ($log->mac_add != trim(substr(shell_exec('getmac'), 159, 20))) {
             if ($set == 0) {
                 Log::where('id_log', decrypt($id_log))->update(['aktif' => 0]);
                 return redirect(session('device_login'))->with('success', 'Berhasil Mengubah Status');

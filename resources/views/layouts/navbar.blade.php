@@ -169,27 +169,6 @@
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>
                 </div>
         </li>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
-            <i class="far fa-fw fa-window-maximize"></i>
-            <span>Master</span>
-        </a>
-        <div id="collapseMaster" class="collapse" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Master</h6>
-                <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
-                <a class="collapse-item" href="{{ url('desa') }}">Desa</a>
-                <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
-                <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
-                <a class="collapse-item" href="{{ url('device') }}">Device</a>
-                <a class="collapse-item" href="{{ url('kategoribocor') }}">Kategori Bocor</a>
-                <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
-                <a class="collapse-item" href="{{ url('user') }}">User</a>
-                <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
-                <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
-                <a class="collapse-item" href="{{ url('web') }}">Website</a>
-            </div>
-    </li>
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"

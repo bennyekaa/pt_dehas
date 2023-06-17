@@ -8,6 +8,7 @@ use App\Models\UserBendungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Jenssegers\Agent\Agent;
 
 class LoginController extends Controller
 {
@@ -35,10 +36,10 @@ class LoginController extends Controller
                 $role = UserBendungan::where('id_role', $user->id_role)->first();
                 //dd($role);
                 $count_device = $role->total_device;
-                $device_set = Log::where('id_user', $role->id_user)->whereNotNull('mac_add')->count();
+                $device_set = Log::where('id_user', $role->id_user)->whereNotNull('keterangan')->count();
                 // dd($count_device - $device_set);
                 $nama_role = $role->role->nama_role;
-                $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
+                $device = Log::where('id_user', $role->id_user)->where('keterangan', request()->header('user_agent'))->where('aktif', 1)->first();
                 //dd($device);
                 // $device = Log::where('id_log', $role->log->first()->id_log)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->get();
                 // dd($device);
@@ -46,8 +47,11 @@ class LoginController extends Controller
                 if (empty($device)) {
                     if (($count_device - $device_set) != 0) {
                         // Log::where('id_user', $role->id_user)->whereNull('mac_add')->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
-                        Log::where('id_user', $role->id_user)->whereNull('mac_add')->first()->update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20)) , 'keterangan' => php_uname()]);
-                        $device = Log::where('id_user', $role->id_user)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->where('aktif', 1)->first();
+                        $agent = new Agent();
+                        $perangkat = $agent->device();
+                        $platform = $agent->platform();
+                        Log::where('id_user', $role->id_user)->whereNull('keterangan')->first()->update(['mac_add' => $platform , 'keterangan' => request()->header('user_agent')]);
+                        $device = Log::where('id_user', $role->id_user)->where('mac_add', $platform)->where('aktif', 1)->first();
                         Session::put([
                             'id_user' => $user->id_user,
                             'nama' => $user->nama,
@@ -57,6 +61,7 @@ class LoginController extends Controller
                             'nama_role'  => $nama_role,
                             'id_log'  => $device->id_log,
                             'mac'  => $device->mac_add,
+                            'device'  => $device->keterangan,
                             'mac_aktif'  => $device->aktif,
                             'id_desa'  => $user->id_desa,
                             'total_device'  => $count_device,
@@ -78,6 +83,7 @@ class LoginController extends Controller
                         'nama_role'  => $nama_role,
                         'id_log'  => $device->id_log,
                         'mac'  => $device->mac_add,
+                        'device'  => $device->keterangan,
                         'mac_aktif'  => $device->aktif,
                         'id_desa'  => $user->id_desa,
                         'total_device'  => $count_device,

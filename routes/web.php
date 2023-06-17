@@ -53,6 +53,8 @@ Route::middleware('checklogin')->group(function () {
 
     //route CRUD USER
     Route::get('/user', [UserController::class, 'index']);
+    Route::get('user/reset/{id}', [UserController::class, 'reset']);
+    Route::post('prosesreset', [UserController::class, 'prosesreset']);
     Route::get('/user/tambah', [UserController::class, 'tambah']);
     Route::post('/user/store', [UserController::class, 'store']);
     Route::get('/user/edit/{id}', [UserController::class, 'edit']);

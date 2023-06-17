@@ -197,6 +197,7 @@ return [
 
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
 
     ],
 
@@ -214,6 +215,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
 
 
     ])->toArray(),

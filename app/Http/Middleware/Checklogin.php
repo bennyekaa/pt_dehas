@@ -19,7 +19,7 @@ class Checklogin
     {
         // dd(session()->all());
         if (Session::get('login') == 1) {
-            if(empty(session('mac'))){
+            if(empty(session('device'))){
                 return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
             }else{
                 return $next($request);

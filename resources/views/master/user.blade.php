@@ -73,6 +73,10 @@
                                         <td>{{ $p->updated_by }}</td>
                                         <td>
                                             <div class="btn-group">
+                                                <a class="btn btn-info" title="Reset Password"
+                                                    href="{{'user/reset'}}/{{ encrypt($p->id_user) }}">
+                                                    <i class="fa fa-arrows-h"></i>
+                                                </a>
                                                 <a class="btn btn-warning" title="Edit"
                                                     href="/user/edit/{{ encrypt($p->id_user) }}">
                                                     <i class="fa fa-edit"></i>

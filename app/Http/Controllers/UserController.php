@@ -31,7 +31,7 @@ class UserController extends Controller
             ->get();
         }else{
             $data['user'] = DB::table('ref_user')
-            ->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')->where('nama_role', '<>', 'DEVELOPER')
+            ->Join('ref_role', 'ref_user.id_role', '=', 'ref_role.id_role')->where('nama_role', '<>', 'DEVELOPER')->where('nama_role', '<>', 'PENDUDUK')
             ->get();
         }
 		return view('master.user', $data);
@@ -44,20 +44,36 @@ class UserController extends Controller
         if (session('nama_role') == 'DEVELOPER') {
             $data['jabatan'] = Role::all()->sortBy('nama_role');
         } else {
-            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->get();
+            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->where('nama_role', '<>', 'PENDUDUK')->get();
         }
 		return view('edit.user', $data);
 	}
 
+    public function reset($id){
+        $data['user'] = $id;
+        return view('edit.password', $data);
+    }
+
+    public function prosesreset(Request $request)
+    {
+        // dd(decrypt($id));
+        try {
+            Userbendungan::where('id_user', '=', decrypt($request->id_user))->update(['password' => Hash::make($request->password)]);
+
+            return redirect('user')->with('success', 'Berhasil Reset Password');
+        } catch (Exception $e) {
+            return redirect('user')->with('error', $e->getMessage());
+        }
+    }
+
 	public function proses(Request $request)
 	{
-
 		$data = Userbendungan::find($request->id_user);
 		$data->nama = $request->nama;
 		$data->email = $request->email;
 		$data->hp = $request->no_hp;
 		$data->username = $request->username;
-		$data->password = Hash::make($request->password);
+		// $data->password = Hash::make($request->password);
 		$data->id_role = $request->id_role;
 		$data->updated_by = session('nama');
 		$data->save();
@@ -70,7 +86,7 @@ class UserController extends Controller
         if(session('nama_role') == 'DEVELOPER'){
             $data['jabatan'] = Role::all()->sortBy('nama_role');
         }else{
-            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->get();
+            $data['jabatan'] = Role::where('nama_role', '<>', 'DEVELOPER')->where('nama_role', '<>', 'PENDUDUK')->get();
         }
 		return view('register.register', $data);
 	}

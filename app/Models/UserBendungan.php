@@ -15,10 +15,16 @@ class UserBendungan extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'id_user',
         'nama',
         'email',
         'hp',
+        'username',
         'password',
+        'id_role',
+        'id_desa',
+        'created_at',
+        'created_by'
     ];
 
     public function role()
