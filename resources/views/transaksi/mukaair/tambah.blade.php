@@ -12,15 +12,16 @@
                             @csrf
                             <input type="hidden" name="fungsi" value="Tambah">
                             <div class="row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label for="tinggi_air" class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-6">
-                                    <select class="form-control select2" name="id_waduk" id="list_mukaair">
+                                    <input type="number" step="any" name="tinggi_air" placeholder="Masukkan Tinggi Air" autofocus>
+                                    {{-- <select class="form-control select2" name="id_waduk" id="list_mukaair">
                                         <option value="">--Masukkan Muka Air--</option>
                                         @foreach ($mukaair as $item)
                                             <option value="{{ $item->id_waduk }}">
                                                 {{ $item->muka_air }}</option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                 </div>
                             </div>
 

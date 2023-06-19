@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Exception;
 use App\Models\Notif;
+use App\Models\Role;
+use App\Models\WadukBendungan;
+use DB;
 
 class TransBanjir extends Controller
 {
     public function index($stat)
     {
-        $data['mukaair'] = DataMukaAir::where('status_role', decrypt($stat))->get();
+        $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at')->get();
         session()->put('banjir_mukaair', url()->full());
         // dd($data);
         return view('transaksi.mukaair.index', $data);
@@ -22,8 +25,8 @@ class TransBanjir extends Controller
 
     public function tambah()
     {
-        $data['mukaair'] = Waduk::all()->sortBy('muka_air');
-        return view('transaksi.mukaair.tambah', $data);
+        // $data['mukaair'] = Waduk::all()->sortBy('muka_air');
+        return view('transaksi.mukaair.tambah');
     }
 
     public function proses(Request $request)
@@ -35,9 +38,17 @@ class TransBanjir extends Controller
         // }
         if ($request->fungsi == "Tambah") {
             try {
+                $master_muka_air = WadukBendungan::all();
+                $cari_status = DB::select("SELECT * FROM ref_waduk WHERE ".$request->tinggi_air." BETWEEN batas_bawah AND batas_atas");
+                $hitung_muka_air = $master_muka_air->first()->ambang+$request->tinggi_air;
+                $hitung_debit = pow(($master_muka_air->first()->c*$master_muka_air->first()->lebar*$request->tinggi_air),1.5);
+                // dd($hitung_debit);
                 $mukaair = new DataMukaAir();
-                $mukaair->id_waduk = $request->id_waduk;
-                $mukaair->status_role = 0;
+                $mukaair->muka_air = $hitung_muka_air;
+                $mukaair->tinggi_air = $request->tinggi_air;
+                $mukaair->debit_air = round($hitung_debit,2);
+                $mukaair->id_role = session('id_role');
+                $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;
                 $mukaair->created_at = date('Y-m-d H:i:s.U');
                 $mukaair->created_by = session('nama');
@@ -56,7 +67,7 @@ class TransBanjir extends Controller
         //         $statusbocor->status = $request->status;
         //         $statusbocor->updated_at = date('Y-m-d H:i:s.U');
         //         $statusbocor->updated_by = session('nama');
-        //         $statusbocor->save(); 
+        //         $statusbocor->save();
         //         return redirect(session('statusbocor'))->with('success', 'Data Berhasil Diedit');
         //     } catch (Exception $e) {
         //         return redirect(session('statusbocor'))->with('error', $e->getMessage());
@@ -67,8 +78,9 @@ class TransBanjir extends Controller
     public function kirim($id)
     {
         try {
+            $balai = Role::where('nama_role', 'BALAI')->first();
             $mukaair = DataMukaAir::find(decrypt($id));
-            $mukaair->status_role = 5;
+            $mukaair->id_role = $balai->id_role;
             $mukaair->updated_at = date('Y-m-d H:i:s.U');
             $mukaair->updated_by = session('nama');
             $mukaair->save();

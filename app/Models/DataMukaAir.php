@@ -14,8 +14,8 @@ class DataMukaAir extends Model
 
     public $incrementing = false;
 
-    public function waduk()
+    public function role()
     {
-        return $this->belongsTo(WadukBendungan::class, "id_waduk", "id_waduk");
+        return $this->belongsTo(Role::class, "id_role", "id_role");
     }
 }
