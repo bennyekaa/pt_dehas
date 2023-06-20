@@ -40,28 +40,6 @@ class PengungsianController extends Controller
         return redirect(('/pengungsian'))->with('success', 'Data Tersimpan');
     }
 
-    // public function tambah()
-    // {
-    //     return view('register.pengungsian');
-    // }
-
-    // public function tambahproses(Request $request)
-    // {
-    //     DB::table('ref_bendungan')->insert([
-    //         'kode_tk' => $request->kode_tk,
-    //         'tk_lat' => $request->tk_lat,
-    //         'tk_long' => $request->tk_long,
-    //         'nama_titik_kumpul' => $request->nama_titik_kumpul,
-    //         'nama_desa' => $request->nama_desa,
-    //         'nama_kecamatan' => $request->nama_kecamatan,
-    //         'nama_kabupaten' => $request->nama_kabupaten,
-    //         'jarak_ke_tk' => $request->jarak_ke_tk,
-    //         'created_at' => date('Y-m-d H:i:s.U'),
-    //         'created_by' => session('nama')
-    //     ]);
-    //     return redirect('/titikkumpul');
-    // }
-
     public function hapus($id)
     {
         try {

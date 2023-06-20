@@ -182,6 +182,11 @@ Route::middleware('checklogin')->group(function () {
             Route::get('pesan/{id}/{id2}', [TransBocor::class, 'pesan']);
             Route::post('notif', [TransBocor::class, 'notif']);
             Route::get('view_berkas/{id}', [TransBocor::class, 'lihat_berkas']);
+            Route::get('view_berkas2/{id}', [TransBocor::class, 'lihat_berkas2']);
+            Route::get('view_berkas3/{id}', [TransBocor::class, 'lihat_berkas3']);
+            Route::get('view_berkas4/{id}', [TransBocor::class, 'lihat_berkas4']);
+            Route::get('view_berkas5/{id}', [TransBocor::class, 'lihat_berkas5']);
+
         });
 
     });
