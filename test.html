@@ -1,0 +1,363 @@
+@extends('layout.app')
+
+@section('content')
+    {{-- panel atas --}}
+    <div class="row  border-bottom white-bg dashboard-header">
+        <div class="col-md-12">
+            <h1 style="text-align: center">{{ $baris1 }}<br>{{ $profile->biodata->nama_lengkap }}</h1>
+        </div>
+    </div>
+    {{-- panel bawah --}}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="ibox ">
+                                            <form method="POST" action="{{ url('ref_pegawai/edit/save') }}">
+                                                @csrf
+                                                <input type="hidden" name="link" value="{{ $link }}">
+                                                <input type="hidden" name="id_pegawai" value="{{ $pegawai->id_pegawai }}">
+                                                <input type="hidden" name="id_biodata" value="{{ $pegawai->id_biodata }}">
+                                                <input type="hidden" name="email"
+                                                    value="{{ $riwayatpegawai[0]->email }}">
+                                                <input type="hidden" name="email_resmi"
+                                                    value="{{ $riwayatpegawai[0]->email_resmi }}">
+                                                <div class="form-group  row"><label
+                                                        class="col-sm-2 col-form-label">NIP</label>
+                                                    <div class="col-sm-10"><input type="text" class="form-control"
+                                                            name="nip" value="{{ $pegawai->nip }}"></div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+                                                <div class="form-group  row"><label class="col-sm-2 col-form-label">Status
+                                                        Pegawai</label>
+                                                    <div class="col-sm-10"><select name="id_status_pegawai"
+                                                            id="list_status_pegawai" class="form-control col-md-6" required>
+                                                            <option value="">-- Silakan Pilih Jenis Pegawai --
+                                                            </option>
+                                                            @foreach ($statuspegawai as $val)
+                                                                <option value="{{ $val->id_status_pegawai }}"
+                                                                    {{ $pegawai->id_status_pegawai == $val->id_status_pegawai ? 'selected' : '' }}>
+                                                                    {{ $val->nama_status_pegawai }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+                                                <div class="form-group  row"><label class="col-sm-2 col-form-label">Jenis
+                                                        Pegawai</label>
+                                                    <div class="col-sm-10"><select name="id_jenis_pegawai"
+                                                            id="list_jenis_pegawai" class="form-control col-md-6" required>
+                                                            <option value="">-- Silakan Pilih Jenis Pegawai --
+                                                            </option>
+                                                            @foreach ($jenispegawai as $val)
+                                                                <option value="{{ $val->id_jenis_pegawai }}"
+                                                                    {{ $pegawai->id_jenis_pegawai == $val->id_jenis_pegawai ? 'selected' : '' }}>
+                                                                    {{ $val->nama_jenis_pegawai }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+                                                <div id='div_prodi' style="display: none">
+                                                    <div class="form-group  row"><label
+                                                            class="col-sm-2 col-form-label">Prodi (Khusus Dosen)</label>
+                                                        <div class="col-sm-10"><select name="pro_kd" id="pro_kd"
+                                                                class="form-control custom-select select2"
+                                                                style="width: 50%;">
+                                                                <option value=""></option>
+                                                                @foreach ($prodi as $val)
+                                                                    <option value="{{ $val->pro_kd }}"
+                                                                        {{ $pegawai->pro_kd == $val->pro_kd ? 'selected' : '' }}>
+                                                                        {{ $val->jjg_kd }} - {{ $val->pro_nm }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+                                                </div>
+
+                                                <div id='div_remun'
+                                                    style="display: none; border: 1px solid rgb(63, 5, 5); box-sizing: border-box; padding: 10px; margin: 10px;">
+                                                    <div class="form-group  row"><label
+                                                            class="col-sm-2 col-form-label">Jabatan Remun</label>
+                                                        <div class="col-sm-10"><select name="id_jabatan_uj" id="id_jabatan_uj" class="form-control custom-select select2" style="width: 50%;">
+                                                                <option value=""></option>
+                                                                @foreach ($remun as $val)
+                                                                    <option value="{{ $val->id_jabatan_uj }}"
+                                                                        {{ $pegawai->id_jabatan_uj == $val->id_jabatan_uj ? 'selected' : '' }}>
+                                                                        {{ $val->nama_jabatan_uj }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                    <div class="form-group  row"><label class="col-sm-2 col-form-label">Job
+                                                            Class</label>
+                                                        <div class="col-sm-10"><input type="number" class="form-control"
+                                                                name="job_class" value="{{ $pegawai->job_class }}"></div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                    <div class="form-group  row"><label class="col-sm-2 col-form-label">Job
+                                                            Value</label>
+                                                        <div class="col-sm-10"><input type="number" class="form-control"
+                                                                name="job_value" value="{{ $pegawai->job_value }}"></div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                    <div class="form-group  row"><label
+                                                            class="col-sm-2 col-form-label">Status</label>
+                                                        <div class="col-sm-10"><input type="number" class="form-control"
+                                                                name="status" value="{{ $pegawai->status }}"></div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                    <div class="form-group  row"><label
+                                                            class="col-sm-2 col-form-label">Durasi Hukdis</label>
+                                                        <div class="col-sm-10"><input type="number" class="form-control"
+                                                                name="durasi_hukdis"
+                                                                value="{{ $pegawai->durasi_hukdis }}"></div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                    <div class="form-group  row"><label
+                                                            class="col-sm-2 col-form-label">Index</label>
+                                                        <div class="col-sm-10"><input type="number" class="form-control"
+                                                                name="index" value="{{ $pegawai->index }}"></div>
+                                                    </div>
+
+                                                    <div class="hr-line-dashed"></div>
+
+                                                </div>
+
+                                                <div class="form-group row"><label class="col-sm-2 col-form-label">Tanggal
+                                                        Masuk</label>
+                                                    <div class="col-sm-10"><input type="date" class="form-control"
+                                                            name="tanggal_masuk"
+                                                            value="{{ date('Y-m-d', strtotime($pegawai->tanggal_masuk)) }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+                                                @if (empty($pegawai->tanggal_keluar))
+                                                    <div class="form-group row"><label
+                                                            class="col-sm-2 col-form-label">Tanggal Keluar</label>
+                                                        <div class="col-sm-10"><input type="date" class="form-control"
+                                                                name="tanggal_keluar"></div>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group row"><label
+                                                            class="col-sm-2 col-form-label">Tanggal Keluar</label>
+                                                        <div class="col-sm-10"><input type="date" class="form-control"
+                                                                name="tanggal_keluar"
+                                                                value="{{ date('Y-m-d', strtotime($pegawai->tanggal_keluar)) }}">
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="hr-line-dashed"></div>
+
+
+                                                <div class="form-group  row"><label class="col-sm-2 col-form-label">Jenis
+                                                        Keluar</label>
+                                                    <div class="col-sm-10"><select name="id_jenis_keluar"
+                                                            id="list_jenis_keluar" class="form-control col-md-6">
+                                                            <option value=""></option>
+                                                            @foreach ($jeniskeluar as $val)
+                                                                <option value="{{ $val->id_jenis_keluar }}"
+                                                                    {{ $pegawai->id_jenis_keluar == $val->id_jenis_keluar ? 'selected' : '' }}>
+                                                                    {{ $val->nama_jenis_keluar }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+
+                                                <div class="form-group  row"><label
+                                                        class="col-sm-2 col-form-label">Pejabat Penilai</label>
+                                                    <div class="col-sm-10"><select name="id_pp" id="list_pp"
+                                                            class="form-control custom-select select2 col-md-6">
+                                                            <option value="">-- Silakan Pilih Pegawai --</option>
+                                                            @foreach ($pegawailist as $val)
+                                                                <option value="{{ $val->id_pegawai }}"
+                                                                    {{ $pegawai->pejabat_penilai == $val->id_pegawai ? 'selected' : '' }}>
+                                                                    {{ $val->nip }} -
+                                                                    {{ $val->gelar_depan.' ' }}{{ $val->nama_lengkap }}{{ $val->gelar_belakang }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+                                                <div class="form-group  row"><label class="col-sm-2 col-form-label">Atasan
+                                                        Pejabat Penilai</label>
+                                                    <div class="col-sm-10"><select name="id_app" id="list_app"
+                                                            class="form-control custom-select select2 col-md-6">
+                                                            <option value="">-- Silakan Pilih Pegawai --</option>
+                                                            @foreach ($pegawailist as $val)
+                                                                <option value="{{ $val->id_pegawai }}"
+                                                                    {{ $pegawai->atasan_pejabat_penilai == $val->id_pegawai ? 'selected' : '' }}>
+                                                                    {{ $val->nip }} -
+                                                                    {{ $val->gelar_depan.' ' }}{{ $val->nama_lengkap }}{{ $val->gelar_belakang }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hr-line-dashed"></div>
+
+
+                                                <div class="form-group  row"><label class="col-sm-2 col-form-label">Status
+                                                        Aktif</label>
+                                                    <div class="col-sm-10">
+                                                        <select name="is_active" id="list_jk"
+                                                            class="form-control col-md-6" required>
+                                                            <option value="0"
+                                                                {{ $pegawai->is_active == '0' ? 'selected' : '' }}>Tidak
+                                                                Aktif</option>
+                                                            <option value="1"
+                                                                {{ $pegawai->is_active == '1' ? 'selected' : '' }}>Aktif
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-sm-4">
+                                                        <a class="btn btn-white btn-sm" type="reset"
+                                                            href="{{ url()->previous() }}">TUTUP</i></a>
+                                                        <button class="btn btn-primary btn-sm" type="submit"
+                                                            style="color: white;">SIMPAN</i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('tambahanjs')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#tableDataTENDIK').DataTable({
+                order: [
+                    [3, 'desc']
+                ],
+                columnDefs: [{
+                        visible: false,
+                        target: 'no-view'
+                    },
+                    {
+                        searchable: false,
+                        target: 'no-search'
+                    },
+                    {
+                        ordarable: false,
+                        target: 'no-sort'
+                    },
+                ],
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [{
+                        extend: 'copy'
+                    },
+                    {
+                        extend: 'csv'
+                    },
+                    {
+                        extend: 'excel',
+                        title: 'ExampleFile'
+                    },
+                    {
+                        extend: 'pdf',
+                        title: 'ExampleFile'
+                    },
+
+                    {
+                        extend: 'print',
+                        customize: function(win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            })
+            $('#list_jenis_pegawai').change(function() {
+                var id = $('#list_jenis_pegawai').val();
+                var nama = $('#list_jenis_pegawai :selected').html();
+
+                console.log(nama);
+
+                $('#div_remun').hide();
+                // $('#id_jabatan_uj').val(null);
+
+                $('#div_prodi').hide();
+                $('#pro_kd').val(null);
+
+                if (nama.trim() == 'Dosen') {
+                    console.log('a');
+                    $('#div_prodi').show();
+                } else if (nama.trim() != 'Dosen' && nama.trim() != 'Majelis Wali Amanat') {
+                    $('#div_remun').show();
+                }
+                // console.log('b');
+
+            });
+            $('#list_jenis_pegawai').trigger('change');
+        });
+        //detail pegawai
+        function showDetail(kd_pegawai = null) {
+            console.log(kd_pegawai);
+            if (!kd_pegawai) {
+                $("#modalDetailBody").html("<p class='text-muted text-center'>Data tidak ditemukan</p>");
+                $('#modalDetail').modal('show');
+            } else {
+                $.get("detail_pegawai/" + kd_pegawai, function(data) {
+                    $("#modalDetailBody").html(data);
+                    $('#modalDetail').modal('show');
+                });
+            }
+        }
+    </script>
+@endsection

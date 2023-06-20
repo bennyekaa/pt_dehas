@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DataBanjir extends Model
+class DataBanjirBocor extends Model
 {
     protected $connection = 'mysql';
     protected $table = 'data_banjir_bocor';
@@ -14,8 +14,8 @@ class DataBanjir extends Model
 
     public $incrementing = false;
 
-    public function statusbocor()
+    public function kategoribocor()
     {
-        return $this->belongsTo(StatusBocor::class, "id_status_bocor", "id_status_bocor");
+        return $this->belongsTo(KategoriBocor::class, "id_kategori_bocor", "id_kategori_bocor");
     }
 }

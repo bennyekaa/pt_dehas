@@ -21,7 +21,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>No</th>
-                                <th>Status Bendungan</th>
+                                <th>Nama Kategori</th>
                                 <th>Lokasi</th>
                                 <th>Tinggi MAW (Meter)</th>
                                 <th>Debit (m3/Detik)</th>
@@ -41,6 +41,8 @@
                                 <th>Dibuat Oleh</th>
                                 <th>Diupdate Pada</th>
                                 <th>Diupdate Oleh</th>
+                                <th>Diupdate BPBD Pada</th>
+                                <th>Diupdate BPBD </th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -52,17 +54,43 @@
                             @foreach ($bocor as $item)
                             <tr>
                                 <td>{{ $i++ }} </td>
-                                <td>{{ $item->statusbocor->kategoribocor->nama_kategori }} </td>
-                                <td>{{ $item->statusbocor->nama_status }} </td>
+                                <td>{{ $item->nama_kategori }} </td>
+                                <td>{{ $item->lokasi }} </td>
+                                <td>{{ $item->ukuran }} </td>
+                                <td>{{ $item->tinggi_MAW }} </td>
+                                <td>{{ $item->debit }} </td>
+                                <td>{{ $item->kekuatan }} </td>
+                                <td>{{ $item->diameter }} </td>
+                                <td>{{ $item->tinggi }} </td>
+                                <td>{{ $item->panjang }} </td>
+                                <td>{{ $item->lebar }} </td>
                                 <td>{{ $item->keterangan }} </td>
                                 {{-- <td>file-upload {{$file++}} </td> --}}
                                 <td><a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                        <i class="fa fa-eye"></i>
+                                    </a></td>
+                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas2') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                        <i class="fa fa-eye"></i>
+                                    </a></td>
+                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas3') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                        <i class="fa fa-eye"></i>
+                                    </a></td>
+                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas4') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
+                                        <i class="fa fa-eye"></i>
+                                    </a></td>
+                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung" href="{{ url('transaksi/bocor/view_berkas5') }}/{{ encrypt($item->id_banjir_bocor) }}" target="_blank">
                                         <i class="fa fa-eye"></i>
                                     </a></td>
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->created_by }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td>{{ $item->updated_by }}</td>
+                                <td>{{ $item->updated_at_bpbd }}</td>
+                                <td>{{ $item->updated_by_bpbd }}</td>
                                 <td>
                                     <div class="btn-group">
                                         @if (session('role') == 0)

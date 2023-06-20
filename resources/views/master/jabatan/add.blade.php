@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Tambah Jabtan</div>
+                <div class="card-header">Tambah Jabatan</div>
 
                 <div class="card-body">
                     <form action="{{url('jabatan/tambahproses')}}" method="post">
