@@ -167,7 +167,7 @@ Route::middleware('checklogin')->group(function () {
             Route::get('index/{id}', [TransBanjir::class, 'index']);
             Route::get('tambah', [TransBanjir::class, 'tambah']);
             Route::post('proses', [TransBanjir::class, 'proses']);
-            Route::get('kirim/{id}', [TransBanjir::class, 'kirim']);
+            Route::get('kirim/{id}/{id2}', [TransBanjir::class, 'kirim']);
             Route::get('pesan/{id}/{id2}', [TransBanjir::class, 'pesan']);
             Route::post('notif', [TransBanjir::class, 'notif']);
             Route::get('hapus/{id}', [TransBanjir::class, 'hapus']);

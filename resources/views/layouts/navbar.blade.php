@@ -230,6 +230,43 @@
                 </div>
             </div>
         </li>
+    @elseif (session('nama_role') == 'BPBD')
+        {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
+    <a class="nav-link" href="{{ url('/') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span></a>
+    </li> --}}
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('detailbendungan') }}">
+                <i class="fas fa-fw fa-bookmark"></i>
+                <span>Detail Bendungan</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
+                <i class="fas fa-fw fa-map-marked"></i>
+                <span>Kelola Maps</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
+                aria-expanded="true" aria-controls="collapseBootstrap">
+                <i class="far fa-fw fa-window-maximize"></i>
+                <span>Detail Data Waduk</span>
+            </a>
+            <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Detail Data Waduk</h6>
+                    <a class="collapse-item"
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                    <a class="collapse-item"
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                </div>
+            </div>
+        </li>
     @endif
     {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('user/tambah') }}">

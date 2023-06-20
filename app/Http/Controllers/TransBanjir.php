@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BendunganBendungan;
 use App\Models\DataBanjir;
 use App\Models\DataMukaAir;
 use App\Models\Waduk;
@@ -39,14 +40,14 @@ class TransBanjir extends Controller
         if ($request->fungsi == "Tambah") {
             try {
                 $master_muka_air = WadukBendungan::all();
-                $cari_status = DB::select("SELECT * FROM ref_waduk WHERE ".$request->tinggi_air." BETWEEN batas_bawah AND batas_atas");
-                $hitung_muka_air = $master_muka_air->first()->ambang+$request->tinggi_air;
-                $hitung_debit = pow(($master_muka_air->first()->c*$master_muka_air->first()->lebar*$request->tinggi_air),1.5);
+                $cari_status = DB::select("SELECT * FROM ref_waduk WHERE " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+                $hitung_muka_air = $master_muka_air->first()->ambang + $request->tinggi_air;
+                $hitung_debit = pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 1.5);
                 // dd($hitung_debit);
                 $mukaair = new DataMukaAir();
                 $mukaair->muka_air = $hitung_muka_air;
                 $mukaair->tinggi_air = $request->tinggi_air;
-                $mukaair->debit_air = round($hitung_debit,2);
+                $mukaair->debit_air = round($hitung_debit, 2);
                 $mukaair->id_role = session('id_role');
                 $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;
@@ -75,26 +76,70 @@ class TransBanjir extends Controller
         // }
     }
 
-    public function kirim($id)
+    public function kirim($id, $role)
     {
         try {
-            $balai = Role::where('nama_role', 'BALAI')->first();
-            $mukaair = DataMukaAir::find(decrypt($id));
-            $mukaair->id_role = $balai->id_role;
-            $mukaair->updated_at = date('Y-m-d H:i:s.U');
-            $mukaair->updated_by = session('nama');
-            $mukaair->save();
-            return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke Balai');
+            if ($role == 'BALAI') {
+                $batas_normal = DB::select("SELECT * FROM ref_waduk WHERE status = 0");
+                $batas_waspada1 = DB::select("SELECT * FROM ref_waduk WHERE status = 1");
+                $batas_waspada2 = DB::select("SELECT * FROM ref_waduk WHERE status = 2");
+                $batas_siaga = DB::select("SELECT * FROM ref_waduk WHERE status = 3");
+                $batas_awas = DB::select("SELECT * FROM ref_waduk WHERE status = 4");
+                $balai = Role::where('nama_role', $role)->first();
+                $bendungan = BendunganBendungan::first();
+                $mukaair = DataMukaAir::find(decrypt($id));
+                $mukaair->id_role = $balai->id_role;
+                $mukaair->updated_at = date('Y-m-d H:i:s.U');
+                $mukaair->updated_by = session('nama');
+                $notif = new Notif();
+                $notif->id_referensi = decrypt($id);
+                $notif->role = $balai->role;
+                $notif->aktif = 1;
+                $notif->pesan = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->updated_at;
+                $notif->created_at = date('Y-m-d H:i:s.U');
+                $notif->created_by = session('nama');
+                $mukaair->save();
+                $notif->save();
+                return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke BALAI');
+            }else
+            if ($role == 'BPBD') {
+                $bpbd = Role::where('nama_role', $role)->first();
+                $mukaair = DataMukaAir::find(decrypt($id));
+                $mukaair->id_role = $bpbd->id_role;
+                $mukaair->updated_at = date('Y-m-d H:i:s.U');
+                $mukaair->updated_by = session('nama');
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role = $bpbd->role;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $mukaair->save();
+                $notif->save();
+                return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke BPDB');
+            }else
+            if ($role == 'PENDUDUK') {
+                $penduduk = Role::where('nama_role', $role)->first();
+                $mukaair = DataMukaAir::find(decrypt($id));
+                $mukaair->id_role = $penduduk->id_role;
+                $mukaair->updated_at_bpbd = date('Y-m-d H:i:s.U');
+                $mukaair->updated_by_bpbd = session('nama');
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role = $penduduk->role;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $mukaair->save();
+                $notif->save();
+                return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke PENDUDUK');
+            }
         } catch (Exception $e) {
             return redirect(session('banjir_mukaair'))->with('error', $e->getMessage());
         }
     }
 
-    public function pesan($id,$role)
+    public function pesan($id, $role)
     {
         $data['id_banjir'] = $id;
         $data['role'] = $role;
-        return view('transaksi.mukaair.pesan',$data);
+        return view('transaksi.mukaair.pesan', $data);
     }
 
     public function notif(Request $request)

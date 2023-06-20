@@ -49,7 +49,8 @@
                                             </td>
                                         @elseif ($item->status == 1)
                                             <td>
-                                                <div class="alert alert-primary" status="alert" style="font-color:white;"> WASPADA 1</div>
+                                                <div class="alert alert-primary" status="alert" style="font-color:white;">
+                                                    WASPADA 1</div>
                                             </td>
                                         @elseif ($item->status == 2)
                                             <td>
@@ -74,22 +75,31 @@
                                         <td>{{ $item->updated_by }}</td>
                                         <td>
                                             <div class="btn-group">
-                                                @if (session('role') == 0)
+                                                @if (session('nama_role') == 'OPERATOR')
                                                     <a class="btn btn-primary" title="Kirim Ke Balai"
-                                                        href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                                        href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BALAI">
                                                         <i class="fa fa-arrow-right"></i>
                                                     </a>
                                                     <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
                                                         href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
-                                                @elseif(session('role') == 5)
+                                                @elseif (session('nama_role') == 'BALAI')
+                                                    <a class="btn btn-primary" title="Kirim Ke BPBD"
+                                                        href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BPBD">
+                                                        <i class="fa fa-arrow-right"></i>
+                                                    </a>
+                                                    {{-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
+                                                        href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a> --}}
+                                                @elseif(session('nama_role') == 'BPBD')
                                                     <div class="dropdown">
-                                                        <a class="btn btn-primary dropdown-toggle" href="#"
-                                                            role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false"> Kirim Pemberitahuan
+                                                        <a class="btn btn-primary" title="Kirim Pemberitahuan Ke Penduduk"
+                                                            href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/PENDUDUK">
+                                                            <i class="fa fa-arrow-right"></i>
                                                         </a>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        {{-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item"
                                                                 href="{{ url('transaksi/mukaair/pesan') }}/{{ encrypt($item->id_banjir_muka_air) }}/2"
                                                                 title="Kirim Ke Bupati">Bupati</a>
@@ -97,7 +107,7 @@
                                                                 href="{{ url('transaksi/mukaair/pesan') }}/{{ encrypt($item->id_banjir_muka_air) }}/3">BPPD</a>
                                                             <a class="dropdown-item"
                                                                 href="{{ url('transaksi/mukaair/pesan') }}/{{ encrypt($item->id_banjir_muka_air) }}/4">PENDUDUK</a>
-                                                        </div>
+                                                        </div> --}}
                                                     </div>
                                                 @endif
                                             </div>

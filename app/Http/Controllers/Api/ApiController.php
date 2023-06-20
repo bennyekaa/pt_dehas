@@ -74,9 +74,10 @@ class ApiController extends Controller
             } else {
                 $data['desa'] = DesaBendungan::all();
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
                     'data' => $data['desa']
+                    // 'success' => true,
+                    // 'message' => 'List Data',
+                    // 'data' => $data['desa']
                 ], 200);
             }
             //code...
@@ -382,7 +383,7 @@ class ApiController extends Controller
                 ->leftJoin('data_banjir_muka_air', 'data_banjir_muka_air.id_banjir_muka_air', '=', 'notif.id_referensi')
                 ->leftJoin('ref_role as b', 'data_banjir_muka_air.id_role', '=', 'b.id_role')
                 ->where('notif.aktif', 1)
-                ->orderBy('notif.created_at', 'desc')
+                ->orderBy('notif.updated_at', 'desc')
                 ->first();
             if (isset($data['notif'])) {
                 return response([
