@@ -29,6 +29,7 @@ Route::post('/update', [ApiController::class, 'update_notif']);
 Route::get('/log_device/{id}', [ApiController::class, 'log_ready']);
 Route::get('/device/{id?}', [ApiController::class, 'device_ready']);
 Route::get('/check', [ApiController::class, 'mac_check']);
+Route::get('/exist/{id?}', [ApiController::class, 'check_user']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

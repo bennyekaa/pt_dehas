@@ -509,4 +509,38 @@ class ApiController extends Controller
             'data' => $data
         ], 200);
     }
+
+    public function check_user($id=null){
+        try {
+            if(isset($id)){
+                $check_user = UserBendungan::where('username', 'like', $id)->count();
+                $check_email = UserBendungan::where('email', 'like', $id)->count();
+                if($check_user > 0){
+                    return response([
+                        // 'success' => false,
+                        // 'message' => 'Username Sudah Ada',
+                        'data' => ['Username Sudah Ada']
+                    ], 401);
+                }elseif($check_email > 0){
+                    return response([
+                        'data' => ['Email Sudah Ada']
+                    ], 401);
+                }else{
+                    return response([
+                        // 'success' => true,
+                        // 'message' => 'Username dan Email Masih Kosong',
+                        'data' => ['Username dan Email Masih Kosong']
+                    ], 200);
+                }
+            }else{
+                return response([
+                    // 'success' => false,
+                    // 'message' => 'Data tidak sesuai',
+                    'data' => 'Data Tidak Sesuai'
+                ], 401);
+            }
+        } catch (Exception $e) {
+            //throw $th;
+        }
+    }
 }
