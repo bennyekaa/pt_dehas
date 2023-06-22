@@ -109,218 +109,128 @@ class TransBocor extends Controller
         }
 
         $file_1 = null;
+        // if (!empty($request->didih_data_file)) {
+        //     $file_1 = Storage::putFile('/public/berkas', ($request->didih_data_file));
+        // } elseif (empty($request->didih_data_file)) {
+        //     $file_1 = null;
+        // } elseif (!empty($request->gempa_data_file)) {
+        //     $file_1 = Storage::putFile('/public/berkas', ($request->gempa_data_file));
+        // } elseif (empty($request->gempa_data_file)) {
+        //     $file_1 = null;
+        // }
+
         if (!empty($request->didih_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->didih_data_file));
-        } elseif (empty($request->didih_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->didih_data_file);
         } elseif (!empty($request->gempa_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->gempa_data_file));
-        } elseif (empty($request->gempa_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->gempa_data_file);
         } elseif (!empty($request->badai_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->badai_data_file));
-        } elseif (empty($request->badai_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->badai_data_file);
         } elseif (!empty($request->longsor_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->longsor_data_file));
-        } elseif (empty($request->longsor_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->longsor_data_file);
         } elseif (!empty($request->lubang_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->lubang_data_file));
-        } elseif (empty($request->lubang_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->lubang_data_file);
         } elseif (!empty($request->penurunan_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->penurunan_data_file));
-        } elseif (empty($request->penurunan_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->penurunan_data_file);
         } elseif (!empty($request->pusaran_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->pusaran_data_file));
-        } elseif (empty($request->pusaran_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->pusaran_data_file);
         } elseif (!empty($request->rembesan_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->rembesan_data_file));
-        } elseif (empty($request->rembesan_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->rembesan_data_file);
         } elseif (!empty($request->retakan_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->retakan_data_file));
-        } elseif (empty($request->retakan_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->retakan_data_file);
         } elseif (!empty($request->pergerakan_data_file)) {
-            $file_1 = Storage::putFile('/public/berkas', ($request->pergerakan_data_file));
-        } elseif (empty($request->pergerakan_data_file)) {
-            $file_1 = null;
+            $file_1 = Storage::putFile('/public/berkas', $request->pergerakan_data_file);
         }
 
         $file_2 = null;
         if (!empty($request->didih_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->didih_data_file2));
-        } elseif (empty($request->didih_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->didih_data_file2);
         } elseif (!empty($request->gempa_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->gempa_data_file2));
-        } elseif (empty($request->gempa_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->gempa_data_file2);
         } elseif (!empty($request->badai_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->badai_data_file2));
-        } elseif (empty($request->badai_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->badai_data_file2);
         } elseif (!empty($request->longsor_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->longsor_data_file2));
-        } elseif (empty($request->longsor_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->longsor_data_file2);
         } elseif (!empty($request->lubang_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->lubang_data_file2));
-        } elseif (empty($request->lubang_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->lubang_data_file2);
         } elseif (!empty($request->penurunan_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->penurunan_data_file2));
-        } elseif (empty($request->penurunan_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->penurunan_data_file2);
         } elseif (!empty($request->pusaran_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->pusaran_data_file2));
-        } elseif (empty($request->pusaran_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->pusaran_data_file2);
         } elseif (!empty($request->rembesan_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->rembesan_data_file2));
-        } elseif (empty($request->rembesan_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->rembesan_data_file2);
         } elseif (!empty($request->retakan_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->retakan_data_file2));
-        } elseif (empty($request->retakan_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->retakan_data_file2);
         } elseif (!empty($request->pergerakan_data_file2)) {
-            $file_2 = Storage::putFile('/public/berkas', ($file_2 = $request->pergerakan_data_file2));
-        } elseif (empty($request->pergerakan_data_file2)) {
-            $file_2 = null;
+            $file_2 = Storage::putFile('/public/berkas', $request->pergerakan_data_file2);
         }
 
         $file_3 = null;
         if (!empty($request->didih_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->didih_data_file3));
-        } elseif (empty($request->didih_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->didih_data_file3);
         } elseif (!empty($request->gempa_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->gempa_data_file3));
-        } elseif (empty($request->gempa_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->gempa_data_file3);
         } elseif (!empty($request->badai_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->badai_data_file3));
-        } elseif (empty($request->badai_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->badai_data_file3);
         } elseif (!empty($request->longsor_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->longsor_data_file3));
-        } elseif (empty($request->longsor_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->longsor_data_file3);
         } elseif (!empty($request->lubang_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->lubang_data_file3));
-        } elseif (empty($request->lubang_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->lubang_data_file3);
         } elseif (!empty($request->penurunan_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->penurunan_data_file3));
-        } elseif (empty($request->penurunan_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->penurunan_data_file3);
         } elseif (!empty($request->pusaran_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->pusaran_data_file3));
-        } elseif (empty($request->pusaran_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->pusaran_data_file3);
         } elseif (!empty($request->rembesan_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->rembesan_data_file3));
-        } elseif (empty($request->rembesan_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->rembesan_data_file3);
         } elseif (!empty($request->retakan_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->retakan_data_file3));
-        } elseif (empty($request->retakan_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->retakan_data_file3);
         } elseif (!empty($request->pergerakan_data_file3)) {
-            $file_3 = Storage::putFile('/public/berkas', ($file_3 = $request->pergerakan_data_file3));
-        } elseif (empty($request->pergerakan_data_file3)) {
-            $file_3 = null;
+            $file_3 = Storage::putFile('/public/berkas', $request->pergerakan_data_file3);
         }
 
         $file_4 = null;
         if (!empty($request->didih_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->didih_data_file4));
-        } elseif (empty($request->didih_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->didih_data_file4);
         } elseif (!empty($request->gempa_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->gempa_data_file4));
-        } elseif (empty($request->gempa_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->gempa_data_file4);
         } elseif (!empty($request->badai_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->badai_data_file4));
-        } elseif (empty($request->badai_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->badai_data_file4);
         } elseif (!empty($request->longsor_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->longsor_data_file4));
-        } elseif (empty($request->longsor_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->longsor_data_file4);
         } elseif (!empty($request->lubang_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->lubang_data_file4));
-        } elseif (empty($request->lubang_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->lubang_data_file4);
         } elseif (!empty($request->penurunan_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->penurunan_data_file4));
-        } elseif (empty($request->penurunan_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->penurunan_data_file4);
         } elseif (!empty($request->pusaran_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->pusaran_data_file4));
-        } elseif (empty($request->pusaran_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->pusaran_data_file4);
         } elseif (!empty($request->rembesan_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->rembesan_data_file4));
-        } elseif (empty($request->rembesan_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->rembesan_data_file4);
         } elseif (!empty($request->retakan_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->retakan_data_file4));
-        } elseif (empty($request->retakan_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->retakan_data_file4);
         } elseif (!empty($request->pergerakan_data_file4)) {
-            $file_4 = Storage::putFile('/public/berkas', ($file_4 = $request->pergerakan_data_file4));
-        } elseif (empty($request->pergerakan_data_file4)) {
-            $file_4 = null;
+            $file_4 = Storage::putFile('/public/berkas', $request->pergerakan_data_file4);
         }
 
         $file_5 = null;
         if (!empty($request->didih_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->didih_data_file5));
-        } elseif (empty($request->didih_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->didih_data_file5);
         } elseif (!empty($request->gempa_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->gempa_data_file5));
-        } elseif (empty($request->gempa_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->gempa_data_file5);
         } elseif (!empty($request->badai_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->badai_data_file5));
-        } elseif (empty($request->badai_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->badai_data_file5);
         } elseif (!empty($request->longsor_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->longsor_data_file5));
-        } elseif (empty($request->longsor_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->longsor_data_file5);
         } elseif (!empty($request->lubang_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->lubang_data_file5));
-        } elseif (empty($request->lubang_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->lubang_data_file5);
         } elseif (!empty($request->penurunan_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->penurunan_data_file5));
-        } elseif (empty($request->penurunan_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->penurunan_data_file5);
         } elseif (!empty($request->pusaran_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->pusaran_data_file5));
-        } elseif (empty($request->pusaran_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->pusaran_data_file5);
         } elseif (!empty($request->rembesan_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->rembesan_data_file5));
-        } elseif (empty($request->rembesan_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->rembesan_data_file5);
         } elseif (!empty($request->retakan_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->retakan_data_file5));
-        } elseif (empty($request->retakan_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->retakan_data_file5);
         } elseif (!empty($request->pergerakan_data_file5)) {
-            $file_5 = Storage::putFile('/public/berkas', ($file_5 = $request->pergerakan_data_file5));
-        } elseif (empty($request->pergerakan_data_file5)) {
-            $file_5 = null;
+            $file_5 = Storage::putFile('/public/berkas', $request->pergerakan_data_file5);
         }
 
         $bocor = new DataBanjirBocor();
@@ -343,7 +253,7 @@ class TransBocor extends Controller
         $bocor->file_4 = $file_4;
         $bocor->file_5 = $file_5;
         $bocor->created_at = date('Y-m-d H:i:s.U');
-        $bocor->created_by = session('nama');
+        $bocor->created_by = session('id_role');
         // dd($bocor);
         $bocor->save();
         return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Ditambah');
