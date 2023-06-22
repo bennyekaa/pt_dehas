@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\log;
-use App\Models\Userbendungan;
+use App\Models\UserBendungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -40,7 +40,7 @@ class UserController extends Controller
 	public function edit($id_user)
 	{
 		$id = decrypt($id_user);
-		$data['user'] = Userbendungan::find($id);
+		$data['user'] = UserBendungan::find($id);
         if (session('nama_role') == 'DEVELOPER') {
             $data['jabatan'] = Role::all()->sortBy('nama_role');
         } else {
@@ -58,7 +58,7 @@ class UserController extends Controller
     {
         // dd(decrypt($id));
         try {
-            Userbendungan::where('id_user', '=', decrypt($request->id_user))->update(['password' => Hash::make($request->password)]);
+            UserBendungan::where('id_user', '=', decrypt($request->id_user))->update(['password' => Hash::make($request->password)]);
 
             return redirect('user')->with('success', 'Berhasil Reset Password');
         } catch (Exception $e) {
@@ -68,7 +68,7 @@ class UserController extends Controller
 
 	public function proses(Request $request)
 	{
-		$data = Userbendungan::find($request->id_user);
+		$data = UserBendungan::find($request->id_user);
 		$data->nama = $request->nama;
 		$data->email = $request->email;
 		$data->hp = $request->no_hp;
@@ -95,7 +95,7 @@ class UserController extends Controller
 	{
 		$id_log = Str::uuid();
 		$id_user =Str::uuid();
-		$check = Userbendungan::where('id_role', $request->id_role)->count();
+		$check = UserBendungan::where('id_role', $request->id_role)->count();
 		try {
 			if ($check > 0) {
 				return redirect(('/user'))->with('error', 'Jabatan sudah digunakan');
