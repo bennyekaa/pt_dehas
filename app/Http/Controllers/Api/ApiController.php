@@ -26,8 +26,8 @@ class ApiController extends Controller
         $data['web'] = Web_custom::all();
         if (isset($data['web'])) {
             return response([
-                'success' => true,
-                'message' => 'List Data',
+                // 'success' => true,
+                // 'message' => 'List Data',
                 'data' => $data['web']
             ], 200);
         } else {
@@ -47,22 +47,22 @@ class ApiController extends Controller
                 if ($id_desa > 0) {
                     $data['id_desa'] = DesaBendungan::where('id_desa', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_desa']
                     ], 200);
                 } elseif ($kelurahan_desa > 0) {
                     $data['kelurahan_desa'] = DesaBendungan::where('kelurahan_desa', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['kelurahan_desa']
                     ], 200);
                 } elseif ($kode_desa > 0) {
                     $data['kode_desa'] = DesaBendungan::where('kode_desa', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['kode_desa']
                     ], 200);
                 } else {
@@ -98,22 +98,22 @@ class ApiController extends Controller
                 if ($id_tk > 0) {
                     $data['id_tk'] = TitikKumpulBendungan::where('id_titik_kumpul', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_tk']
                     ], 200);
                 } elseif ($kode_tk > 0) {
                     $data['kode_tk'] = TitikKumpulBendungan::where('kode_tk', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['kode_tk']
                     ], 200);
                 } elseif ($nama_tk > 0) {
                     $data['nama_tk'] = TitikKumpulBendungan::where('nama_titik_kumpul', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['nama_tk']
                     ], 200);
                 } else {
@@ -125,8 +125,8 @@ class ApiController extends Controller
             } else {
                 $data['tk'] = TitikKumpulBendungan::all();
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['tk']
                 ], 200);
             }
@@ -147,22 +147,22 @@ class ApiController extends Controller
                 if ($id_p > 0) {
                     $data['id_p'] = PengungsianBendungan::where('id_pengungsian', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_p']
                     ], 200);
                 } elseif ($kode_p > 0) {
                     $data['kode_p'] = PengungsianBendungan::where('kode_pengungsian', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['kode_p']
                     ], 200);
                 } elseif ($nama_p > 0) {
                     $data['nama_p'] = PengungsianBendungan::where('nama_pengungsian', 'like', $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['nama_p']
                     ], 200);
                 } else {
@@ -174,8 +174,8 @@ class ApiController extends Controller
             } else {
                 $data['p'] = PengungsianBendungan::all();
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['p']
                 ], 200);
             }
@@ -195,15 +195,15 @@ class ApiController extends Controller
                 if ($id_b > 0) {
                     $data['id_b'] = BendunganBendungan::where('id_bendungan', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_b']
                     ], 200);
                 } elseif ($nama_b > 0) {
                     $data['nama_b'] = BendunganBendungan::where('id_bendungan', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['nama_b']
                     ], 200);
                 } else {
@@ -215,8 +215,8 @@ class ApiController extends Controller
             } else {
                 $data['bendungan'] = BendunganBendungan::all();
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['bendungan']
                 ], 200);
             }
@@ -238,29 +238,29 @@ class ApiController extends Controller
                 if ($id_user > 0) {
                     $data['id_user'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('id_user', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_user']
                     ], 200);
                 } elseif ($username > 0) {
                     $data['username'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('username', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['username']
                     ], 200);
                 } elseif ($hp > 0) {
                     $data['hp'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('hp', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['hp']
                     ], 200);
                 } elseif ($role > 0) {
                     $data['role'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('nama_role', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['role']
                     ], 200);
                 } else {
@@ -272,8 +272,8 @@ class ApiController extends Controller
             } else {
                 $data['user'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->get();
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['user']
                 ], 200);
             }
@@ -295,22 +295,22 @@ class ApiController extends Controller
                 if ($id_role > 0) {
                     $data['id_role'] = Role::where('id_role', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['id_role']
                     ], 200);
                 } elseif ($nama_role > 0) {
                     $data['nama_role'] = Role::where('nama_role', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['nama_role']
                     ], 200);
                 } elseif ($role > 0) {
                     $data['role'] = Role::where('role', 'like',  $id)->get();
                     return response([
-                        'success' => true,
-                        'message' => 'List Data',
+                        // 'success' => true,
+                        // 'message' => 'List Data',
                         'data' => $data['role']
                     ], 200);
                 } else {
@@ -387,8 +387,8 @@ class ApiController extends Controller
                 ->first();
             if (isset($data['notif'])) {
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['notif']
                 ], 200);
             } else {
@@ -434,18 +434,17 @@ class ApiController extends Controller
                 'message' => 'Login Gagal',
             ], 401);
         }else{
-            $data['status'] ='Login Sukses';
-            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->where('username', $username)->first();
+            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->first();
             return response([
-                'success' => true,
-                'message' => 'List Data',
-                'data' => $data
+                // 'success' => true,
+                // 'message' => 'List Data',
+                'data' => $data['login']
             ], 200);
         }
         if (isset($data['web'])) {
             return response([
-                'success' => true,
-                'message' => 'List Data',
+                // 'success' => true,
+                // 'message' => 'List Data',
                 'data' => $data['web']
             ], 200);
         } else {
@@ -461,8 +460,8 @@ class ApiController extends Controller
         $data['log'] = Log::whereNull('mac_add')->where('id_user', $id)->count();
         if (isset($data['log'])) {
             return response([
-                'success' => true,
-                'message' => 'List Data',
+                // 'success' => true,
+                // 'message' => 'List Data',
                 'data' => $data['log']
             ], 200);
         } else {
@@ -479,8 +478,8 @@ class ApiController extends Controller
         if (isset($id)) {
             if (isset($data['log'])) {
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['log']
                 ], 200);
             } else {
@@ -493,8 +492,8 @@ class ApiController extends Controller
             $data['log'] = Log::all();
             if (isset($data['log'])) {
                 return response([
-                    'success' => true,
-                    'message' => 'List Data',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
                     'data' => $data['log']
                 ], 200);
             } else {
@@ -516,8 +515,8 @@ class ApiController extends Controller
         $data['keterangan'] = request()->header('user_agent');
         // $data['mac'] = trim(substr(shell_exec('getmac'), 159, 20));
         return response([
-            'success' => true,
-            'message' => 'List Data',
+            // 'success' => true,
+            // 'message' => 'List Data',
             'data' => $data
         ], 200);
     }

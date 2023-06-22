@@ -36,11 +36,17 @@ class DesaController extends Controller
         if ($request->fungsi == 'Import') {
             // dd($request->all());
             // try {
+
+                // linux
+                // $path1 = $request->file('data_file')->store('temp');
+                // $path = storage_path('app') . '/' . $path1;
+                // \Excel::import(new DesaImport, $path);
+
                 $file = $request->file('data_file')->getRealPath();
                 Excel::import(new DesaImport, $file);
 
                 return redirect(('/desa'))->with('success', 'Berhasil Import');
-                
+
                 //return redirect(session('desa'))->with('success', 'Berhasil Import');
             // } catch (Exception $e) {
             //     return redirect(session('desa'))->with('error', $e->getMessage());
