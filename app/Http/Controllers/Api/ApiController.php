@@ -435,7 +435,7 @@ class ApiController extends Controller
             ], 401);
         }else{
             $data['status'] ='Login Sukses';
-            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->where('username', $username)->first();
+            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->first();
             return response([
                 'success' => true,
                 'message' => 'List Data',
