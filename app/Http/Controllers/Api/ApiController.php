@@ -384,7 +384,8 @@ class ApiController extends Controller
                 ->leftJoin('ref_role as b', 'data_banjir_muka_air.id_role', '=', 'b.id_role')
                 ->where('notif.aktif', 1)
                 ->orderBy('notif.updated_at', 'desc')
-                ->first();
+                ->limit(1)
+                ->get();
             if (isset($data['notif'])) {
                 return response([
                     // 'success' => true,
@@ -434,24 +435,12 @@ class ApiController extends Controller
                 'message' => 'Login Gagal',
             ], 401);
         }else{
-            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->first();
+            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->get();
             return response([
                 // 'success' => true,
                 // 'message' => 'List Data',
                 'data' => $data['login']
             ], 200);
-        }
-        if (isset($data['web'])) {
-            return response([
-                // 'success' => true,
-                // 'message' => 'List Data',
-                'data' => $data['web']
-            ], 200);
-        } else {
-            return response([
-                'success' => false,
-                'message' => 'Data tidak sesuai',
-            ], 401);
         }
     }
 
