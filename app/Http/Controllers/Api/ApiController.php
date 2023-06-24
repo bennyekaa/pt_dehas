@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BendunganBendungan;
+use App\Models\DataBanjirBocor;
+use App\Models\DataMukaAir;
 use App\Models\DesaBendungan;
 use App\Models\Log;
 use App\Models\Notif;
@@ -18,6 +20,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use DB;
 use Exception;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ApiController extends Controller
 {
@@ -29,12 +32,12 @@ class ApiController extends Controller
                 // 'success' => true,
                 // 'message' => 'List Data',
                 'data' => $data['web']
-            ], 200);
+            ]);
         } else {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
     public function master_desa($id = null)
@@ -50,26 +53,26 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_desa']
-                    ], 200);
+                    ]);
                 } elseif ($kelurahan_desa > 0) {
                     $data['kelurahan_desa'] = DesaBendungan::where('kelurahan_desa', 'like', $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['kelurahan_desa']
-                    ], 200);
+                    ]);
                 } elseif ($kode_desa > 0) {
                     $data['kode_desa'] = DesaBendungan::where('kode_desa', 'like', $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['kode_desa']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 $data['desa'] = DesaBendungan::all();
@@ -78,14 +81,14 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     // 'data' => $data['desa']
-                ], 200);
+                ]);
             }
             //code...
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
     public function master_tk($id = null)
@@ -101,26 +104,26 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_tk']
-                    ], 200);
+                    ]);
                 } elseif ($kode_tk > 0) {
                     $data['kode_tk'] = TitikKumpulBendungan::where('kode_tk', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['kode_tk']
-                    ], 200);
+                    ]);
                 } elseif ($nama_tk > 0) {
                     $data['nama_tk'] = TitikKumpulBendungan::where('nama_titik_kumpul', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['nama_tk']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 $data['tk'] = TitikKumpulBendungan::all();
@@ -128,13 +131,13 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['tk']
-                ], 200);
+                ]);
             }
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
     public function master_p($id = null)
@@ -150,26 +153,26 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_p']
-                    ], 200);
+                    ]);
                 } elseif ($kode_p > 0) {
                     $data['kode_p'] = PengungsianBendungan::where('kode_pengungsian', 'like', $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['kode_p']
-                    ], 200);
+                    ]);
                 } elseif ($nama_p > 0) {
                     $data['nama_p'] = PengungsianBendungan::where('nama_pengungsian', 'like', $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['nama_p']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 $data['p'] = PengungsianBendungan::all();
@@ -177,13 +180,13 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['p']
-                ], 200);
+                ]);
             }
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
     public function master_bendungan($id = null)
@@ -198,19 +201,19 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_b']
-                    ], 200);
+                    ]);
                 } elseif ($nama_b > 0) {
                     $data['nama_b'] = BendunganBendungan::where('id_bendungan', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['nama_b']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 $data['bendungan'] = BendunganBendungan::all();
@@ -218,13 +221,13 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['bendungan']
-                ], 200);
+                ]);
             }
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
     public function master_user($id = null)
@@ -241,33 +244,33 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_user']
-                    ], 200);
+                    ]);
                 } elseif ($username > 0) {
                     $data['username'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('username', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['username']
-                    ], 200);
+                    ]);
                 } elseif ($hp > 0) {
                     $data['hp'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('hp', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['hp']
-                    ], 200);
+                    ]);
                 } elseif ($role > 0) {
                     $data['role'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->where('nama_role', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['role']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 $data['user'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->get();
@@ -275,13 +278,13 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['user']
-                ], 200);
+                ]);
             }
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
 
@@ -298,38 +301,38 @@ class ApiController extends Controller
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['id_role']
-                    ], 200);
+                    ]);
                 } elseif ($nama_role > 0) {
                     $data['nama_role'] = Role::where('nama_role', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['nama_role']
-                    ], 200);
+                    ]);
                 } elseif ($role > 0) {
                     $data['role'] = Role::where('role', 'like',  $id)->get();
                     return response([
                         // 'success' => true,
                         // 'message' => 'List Data',
                         'data' => $data['role']
-                    ], 200);
+                    ]);
                 } else {
                     return response([
                         'success' => false,
                         'message' => 'Data tidak sesuai',
-                    ], 401);
+                    ]);
                 }
             } else {
                 return response([
                     'success' => false,
                     'message' => 'Data tidak sesuai',
-                ], 401);
+                ]);
             }
         } catch (Exception $e) {
             return response([
                 'success' => false,
                 'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
 
@@ -341,10 +344,13 @@ class ApiController extends Controller
             $data['notif'] = Notif::select(
                 'notif.id',
                 'notif.id_referensi',
-                'notif.role as role_notif',
+                'notif.role_muka_air as notif_role_muka_air',
+                'notif.role_bocor as notif_role_bocor',
                 'notif.status as status_notif',
                 'notif.aktif as aktif_notif',
-                'notif.pesan',
+                'notif.pesan_default',
+                'notif.pesan_pemda',
+                'notif.pesan_umum',
                 'b.nama_role as role_muka_air',
                 'data_banjir_muka_air.muka_air',
                 'data_banjir_muka_air.tinggi_air',
@@ -376,7 +382,7 @@ class ApiController extends Controller
                 'data_banjir_bocor.created_by as created_by_bocor',
                 'data_banjir_bocor.updated_at as updated_at_bocor',
                 'data_banjir_bocor.updated_by as updated_by_bocor',
-                )
+            )
                 ->leftJoin('data_banjir_bocor', 'data_banjir_bocor.id_banjir_bocor', '=', 'notif.id_referensi')
                 ->leftJoin('ref_kategori_bocor', 'data_banjir_bocor.id_kategori_bocor', '=', 'ref_kategori_bocor.id_kategori_bocor')
                 ->leftJoin('ref_role as a', 'data_banjir_bocor.id_role', '=', 'a.id_role')
@@ -391,12 +397,12 @@ class ApiController extends Controller
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['notif']
-                ], 200);
+                ]);
             } else {
                 return response([
                     'success' => false,
                     'message' => 'Data tidak sesuai',
-                ], 401);
+                ]);
             }
         }
         // var_dump($tes);
@@ -405,92 +411,191 @@ class ApiController extends Controller
 
     public function update_notif(Request $request)
     {
-        Notif::where('id', $request->id)->update([
-            'role' => $request->role, 'updated_at' => now(), 'updated_by' => $request->nama
-        ]);
-        return response()->json([
-            'status' => true,
-            'message' => 'update success'
-        ]);
+        try {
+            $mukaair = DataMukaAir::where('id_banjir_muka_air', $request->id)->count();
+            $bocor = DataBanjirBocor::where('id_banjir_bocor', $request->id)->count();
+            if ($bocor > 0) {
+                DataMukaAir::where('id_banjir_muka_air', $request->id)->update(['id_role' => $request->id_role, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
+                Notif::where('id_referensi', $request->id)->update([
+                    'role_muka_air' => $request->role_muka_air, 'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'update success'
+                ]);
+            } elseif ($mukaair > 0) {
+                DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => $request->status, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
+                Notif::where('id_referensi', $request->id)->update([
+                    'role_muka_air' => $request->role_muka_air, 'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'update success'
+                ]);
+            } else {
+                return response([
+                    'success' => false,
+                    'message' => 'Data tidak sesuai',
+                ]);
+            }
+        } catch (Exception $th) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
     }
 
     public function register(Request $request)
     {
-        // $agent = new Agent();
-        // $device = $agent->device();
-        // $platform = $agent->platform();
-        UserBendungan::create([ 'id_user' => Str::uuid(), 'nama' => $request->nama, 'email' => $request->email, 'hp' => $request->hp, 'username' => $request->username, 'password' => Hash::make($request->password), 'id_role' => '65877613b110ff8ae52069c50181c077', 'id_desa' => $request->id_desa, 'created_at' => now(), 'created_by' => 'Penduduk']);
-        return response()->json([
-            'status' => true,
-            'message' => 'register success'
-        ]);
+        try {
+            UserBendungan::create(['id_user' => Str::uuid(), 'nama' => $request->nama, 'email' => $request->email, 'hp' => $request->hp, 'username' => $request->username, 'password' => Hash::make($request->password), 'id_role' => '65877613b110ff8ae52069c50181c077', 'id_desa' => $request->id_desa, 'created_at' => now(), 'created_by' => 'Penduduk']);
+            return response()->json([
+                'status' => true,
+                'message' => 'register success'
+            ]);
+        } catch (Exception $th) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
     }
 
     public function login($username, $password)
     {
         $user = UserBendungan::where('username', $username)->first();
-        if(!Hash::check($password, $user->password)){
+        if (!Hash::check($password, $user->password)) {
             return response([
                 'success' => false,
                 'message' => 'Login Gagal',
-            ], 401);
-        }else{
+            ]);
+        } else {
             $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->get();
             return response([
                 // 'success' => true,
                 // 'message' => 'List Data',
                 'data' => $data['login']
-            ], 200);
-        }
-    }
-
-    public function log_ready($id)
-    {
-        $data['log'] = Log::whereNull('mac_add')->where('id_user', $id)->count();
-        if (isset($data['log'])) {
-            return response([
-                // 'success' => true,
-                // 'message' => 'List Data',
-                'data' => $data['log']
-            ], 200);
-        } else {
-            return response([
-                'success' => false,
-                'message' => 'Data tidak sesuai',
-            ], 401);
+            ]);
         }
     }
 
     public function device_ready($id = null)
     {
-        $data['log'] = Log::where('id_user', $id)->get();
-        if (isset($id)) {
-            if (isset($data['log'])) {
+        try {
+            if (isset($id)) {
+                $mac = Log::where('mac_add', $id)->count();
+                $keterangan = Log::where('keterangan', $id)->count();
+                if ($mac > 0) {
+                    $data['mac'] = Log::where('mac_add', $id)->get();
+                    return response([
+                        // 'success' => true,
+                        // 'message' => 'List Data',
+                        'data' => $data['mac']
+                    ]);
+                } elseif ($keterangan > 0) {
+                    $data['keterangan'] = Log::where('keterangan', $id)->get();
+                    return response([
+                        // 'success' => true,
+                        // 'message' => 'List Data',
+                        'data' => $data['keterangan']
+                    ]);
+                } else {
+                    return response([
+                        'success' => false,
+                        'message' => 'Data tidak sesuai',
+                    ]);
+                }
+            } else {
+                $data['log'] = Log::all();
                 return response([
                     // 'success' => true,
                     // 'message' => 'List Data',
                     'data' => $data['log']
-                ], 200);
+                ]);
+            }
+        } catch (Exception $th) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
+    }
+
+    public function check_device($id)
+    {
+        try {
+            $data['jumlah'] = UserBendungan::select('total_device')->where('id_user', $id)->count();
+            $data['device_kosong'] = Log::whereNull('mac_add')->where('id_user', $id)->count();
+            return response([
+                // 'success' => true,
+                // 'message' => 'List Data',
+                'data' => [$data]
+            ]);
+        } catch (Exception $th) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
+    }
+
+    public function add_device(Request $request)
+    {
+        try {
+            Log::where('id_user', $request->id_user)->whereNull('keterangan')->first()->update(['mac_add' => $request->mac_add, 'keterangan' => $request->keterangan]);
+            return response()->json([
+                'status' => true,
+                'message' => 'pendaftaran device success'
+            ]);
+        } catch (Exception $th) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
+    }
+
+    public function check_user($id = null)
+    {
+        try {
+            if (isset($id)) {
+                $check_user = UserBendungan::where('username', 'like', $id)->count();
+                $check_email = UserBendungan::where('email', 'like', $id)->count();
+                $data['detail'] = [['keterangan' => 'Username dan Email Masih Kosong']];
+                $data['user'] = [['keterangan' => 'Username Sudah Ada']];
+                $data['mail'] = [['keterangan' => 'Email Sudah Ada']];
+                if ($check_user > 0) {
+                    return response([
+                        'status' => 'gagal',
+                        // 'message' => 'Username Sudah Ada',
+                        'data' => $data['user']
+                    ]);
+                } elseif ($check_email > 0) {
+                    return response([
+                        'status' => 'gagal',
+                        'data' => $data['mail']
+                    ]);
+                } else {
+                    return response([
+                        'status' => 'success',
+                        // 'success' => true,
+                        // 'message' => 'Username dan Email Masih Kosong',
+                        'data' => $data['detail']
+                    ]);
+                }
             } else {
                 return response([
-                    'success' => false,
-                    'message' => 'Data tidak sesuai',
-                ], 401);
+                    // 'success' => false,
+                    // 'message' => 'Data tidak sesuai',
+                    'data' => 'Data Tidak Sesuai'
+                ]);
             }
-        } else {
-            $data['log'] = Log::all();
-            if (isset($data['log'])) {
-                return response([
-                    // 'success' => true,
-                    // 'message' => 'List Data',
-                    'data' => $data['log']
-                ], 200);
-            } else {
-                return response([
-                    'success' => false,
-                    'message' => 'Data tidak sesuai',
-                ], 401);
-            }
+        } catch (Exception $e) {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
         }
     }
 
@@ -507,40 +612,6 @@ class ApiController extends Controller
             // 'success' => true,
             // 'message' => 'List Data',
             'data' => $data
-        ], 200);
-    }
-
-    public function check_user($id=null){
-        try {
-            if(isset($id)){
-                $check_user = UserBendungan::where('username', 'like', $id)->count();
-                $check_email = UserBendungan::where('email', 'like', $id)->count();
-                if($check_user > 0){
-                    return response([
-                        // 'success' => false,
-                        // 'message' => 'Username Sudah Ada',
-                        'data' => ['Username Sudah Ada']
-                    ], 401);
-                }elseif($check_email > 0){
-                    return response([
-                        'data' => ['Email Sudah Ada']
-                    ], 401);
-                }else{
-                    return response([
-                        // 'success' => true,
-                        // 'message' => 'Username dan Email Masih Kosong',
-                        'data' => ['Username dan Email Masih Kosong']
-                    ], 200);
-                }
-            }else{
-                return response([
-                    // 'success' => false,
-                    // 'message' => 'Data tidak sesuai',
-                    'data' => 'Data Tidak Sesuai'
-                ], 401);
-            }
-        } catch (Exception $e) {
-            //throw $th;
-        }
+        ]);
     }
 }

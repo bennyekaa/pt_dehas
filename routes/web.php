@@ -177,7 +177,8 @@ Route::middleware('checklogin')->group(function () {
             Route::get('get_status/{id}', [TransBocor::class, 'get_status']);
             Route::get('tambah', [TransBocor::class, 'tambah']);
             Route::post('proses', [TransBocor::class, 'proses']);
-            Route::get('kirim/{id}', [TransBocor::class, 'kirim']);
+            Route::get('kirim/{id}/{id2}', [TransBocor::class, 'kirim']);
+            Route::get('tandakirim/{id}/{id2}', [TransBocor::class, 'tanda']);
             Route::get('hapus/{id}', [TransBocor::class, 'hapus']);
             Route::get('pesan/{id}/{id2}', [TransBocor::class, 'pesan']);
             Route::post('notif', [TransBocor::class, 'notif']);

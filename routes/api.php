@@ -26,10 +26,10 @@ Route::get('/notif', [ApiController::class, 'notif']);
 Route::get('/login/{id}/{id1}', [ApiController::class, 'login']);
 Route::post('/register/penduduk', [ApiController::class, 'register']);
 Route::post('/update', [ApiController::class, 'update_notif']);
-Route::get('/log_device/{id}', [ApiController::class, 'log_ready']);
-Route::get('/device/{id?}', [ApiController::class, 'device_ready']);
-Route::get('/check', [ApiController::class, 'mac_check']);
 Route::get('/exist/{id?}', [ApiController::class, 'check_user']);
+Route::get('/checkdevice/{id}', [ApiController::class, 'check_device']);
+Route::get('/device/{id?}', [ApiController::class, 'device_ready']);
+Route::post('/add/device', [ApiController::class, 'add_device']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

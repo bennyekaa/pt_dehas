@@ -9,6 +9,8 @@ use App\Models\Notif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Models\Role;
+use App\Models\BendunganBendungan;
 use Exception;
 
 
@@ -17,11 +19,12 @@ class TransBocor extends Controller
 
     public function index($stat)
     {
-        $data['bocor'] = DataBanjirBocor::where('id_role', decrypt($stat))->orderBy('created_at')->get();
-        $data['bocor'] = DB::table('data_banjir_bocor')
-            ->join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')
-            ->get();
+        $data['bocor'] = DataBanjirBocor::Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at')->get();
         session()->put('banjir_bocor', url()->full());
+        // $data['bocor'] = DB::table('data_banjir_bocor')
+        //     ->join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')
+        //     ->get();
+        // session()->put('banjir_bocor', url()->full());
         return view('transaksi.bocor.index', $data);
     }
 
@@ -265,15 +268,249 @@ class TransBocor extends Controller
         return $data;
     }
 
-    public function kirim($id)
+    public function kirim($id, $role)
     {
         try {
-            $bocor = DataBanjirBocor::find(decrypt($id));
-            $bocor->id_role = 5;
-            $bocor->updated_at = date('Y-m-d H:i:s.U');
-            $bocor->updated_by = session('nama');
-            $bocor->save();
-            return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke Balai');
+            if ($role == 'BALAI') {
+                $balai = Role::where('nama_role', $role)->first();
+                $bocor = DataBanjirBocor::find(decrypt($id));
+                $bocor->id_role = $balai->id_role;
+                $bocor->updated_at = date('Y-m-d H:i:s.U');
+                $bocor->updated_by = session('nama');
+                $notif = new Notif();
+                $notif->id_referensi = decrypt($id);
+                $notif->role_bocor = $balai->role_bocor;
+                $notif->aktif = 1;
+                // $notif->status = $bocor->status;
+                // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                $notif->created_at = date('Y-m-d H:i:s.U');
+                $notif->created_by = session('nama');
+                $bocor->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BALAI');
+            }elseif($role == 'PENDUDUK'){
+                $penduduk = Role::where('nama_role', $role)->first();
+                $mukaair = DataBanjirBocor::find(decrypt($id));
+                $mukaair->id_role = $penduduk->id_role;
+                $mukaair->updated_at_bpbd = date('Y-m-d H:i:s.U');
+                $mukaair->updated_by_bpbd = session('nama');
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role_bocor = $penduduk->role_bocor;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $mukaair->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PENDUDUK');
+            }
+        } catch (Exception $e) {
+            return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
+        }
+    }
+
+    public function tanda($id, $status){
+        try {
+            if ($status == 1) {
+                // $lanjut = Role::where('role_bocor', 3)->first();
+                $bendungan = BendunganBendungan::first();
+                $bocor = DataBanjirBocor::find(decrypt($id));
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role_bocor = 3;
+                $notif->status = $status;
+                $bocor->id_role = null;
+                $bocor->status = $status;
+                $status_pemda = "";
+                $status_umum = "";
+                if ($status == 0) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = null;
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 1) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 2) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 3) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 4) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                }
+                $bocor->updated_at = date('Y-m-d H:i:s.U');
+                $bocor->updated_by = session('nama');
+                $notif->role_bocor = 3;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $bocor->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PU PUSAT');
+            } elseif ($status == 2) {
+                $bpbd = Role::where('nama_role', 'BPBD')->first();
+                $bendungan = BendunganBendungan::first();
+                $bocor = DataBanjirBocor::find(decrypt($id));
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->status = $status;
+                $bocor->id_role = $bpbd->id_role;
+                $bocor->status = $status;
+                $status_pemda = "";
+                $status_umum = "";
+                if ($status == 0) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = null;
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 1) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 2) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 3) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 4) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                }
+                $bocor->updated_at = date('Y-m-d H:i:s.U');
+                $bocor->updated_by = session('nama');
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $bocor->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+            }elseif($status == 3){
+                $bpbd = Role::where('nama_role', 'BPBD')->first();
+                $bendungan = BendunganBendungan::first();
+                $bocor = DataBanjirBocor::find(decrypt($id));
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->status = $status;
+                $bocor->id_role = $bpbd->id_role;
+                $bocor->status = $status;
+                $status_pemda = "";
+                $status_umum = "";
+                if ($status == 0) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = null;
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 1) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 2) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 3) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 4) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                }
+                $bocor->updated_at = date('Y-m-d H:i:s.U');
+                $bocor->updated_by = session('nama');
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $bocor->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+            }elseif($status == 4){
+                $bpbd = Role::where('nama_role', 'BPBD')->first();
+                $bendungan = BendunganBendungan::first();
+                $bocor = DataBanjirBocor::find(decrypt($id));
+                $notif = Notif::where('id_referensi', decrypt($id))->first();
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->status = $status;
+                $bocor->id_role = $bpbd->id_role;
+                $bocor->status = $status;
+                $status_pemda = "";
+                $status_umum = "";
+                if ($status == 0) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = null;
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 1) {
+                    $status_pemda = null;
+                    $status_umum = null;
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 2) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 3) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                } elseif ($status == 4) {
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
+                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                    $notif->pesan_pemda = $status_pemda;
+                    $notif->pesan_umum = $status_umum;
+                }
+                $bocor->updated_at = date('Y-m-d H:i:s.U');
+                $bocor->updated_by = session('nama');
+                $notif->role_bocor = $bpbd->role_bocor;
+                $notif->updated_at = date('Y-m-d H:i:s.U');
+                $notif->updated_by = session('nama');
+                $bocor->save();
+                $notif->save();
+                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+            }
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
         }
