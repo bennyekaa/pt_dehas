@@ -93,6 +93,7 @@ class TransBanjir extends Controller
                 $mukaair->updated_at = date('Y-m-d H:i:s.U');
                 $mukaair->updated_by = session('nama');
                 $notif = new Notif();
+                $notif->id = Str::uuid();
                 $notif->id_referensi = decrypt($id);
                 $notif->role_muka_air = $balai->role_muka_air;
                 $notif->aktif = 1;

@@ -280,6 +280,7 @@ class TransBocor extends Controller
                 $bocor->updated_at = date('Y-m-d H:i:s.U');
                 $bocor->updated_by = session('nama');
                 $notif = new Notif();
+                $notif->id = Str::uuid();
                 $notif->id_referensi = decrypt($id);
                 $notif->role_bocor = $balai->role_bocor;
                 $notif->aktif = 1;
