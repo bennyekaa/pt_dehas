@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\BendunganBendungan;
 use Exception;
+use Illuminate\Support\Str;
 
 
 class TransBocor extends Controller
@@ -237,6 +238,7 @@ class TransBocor extends Controller
         }
 
         $bocor = new DataBanjirBocor();
+        $bocor->id_banjir_bocor =  Str::uuid();
         $bocor->id_kategori_bocor = $request->kategori;
         $bocor->id_role = session('id_role');
         $bocor->aktif = 1;

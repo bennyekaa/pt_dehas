@@ -45,6 +45,7 @@ class TransBanjir extends Controller
                 $hitung_debit = pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 1.5);
                 // dd($hitung_debit);
                 $mukaair = new DataMukaAir();
+                $mukaair->id_banjir_muka_air =  Str::uuid();
                 $mukaair->muka_air = $hitung_muka_air;
                 $mukaair->tinggi_air = $request->tinggi_air;
                 $mukaair->debit_air = round($hitung_debit, 2);
