@@ -323,9 +323,11 @@ class ApiController extends Controller
                     ]);
                 }
             } else {
+                $data['role'] = Role::all();
                 return response([
-                    'success' => false,
-                    'message' => 'Data tidak sesuai',
+                    // 'success' => true,
+                    // 'message' => 'List Data',
+                    'data' => $data['role']
                 ]);
             }
         } catch (Exception $e) {
@@ -414,19 +416,19 @@ class ApiController extends Controller
         try {
             $mukaair = DataMukaAir::where('id_banjir_muka_air', $request->id)->count();
             $bocor = DataBanjirBocor::where('id_banjir_bocor', $request->id)->count();
-            if ($bocor > 0) {
+            if ($mukaair > 0) {
                 DataMukaAir::where('id_banjir_muka_air', $request->id)->update(['id_role' => $request->id_role, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                 Notif::where('id_referensi', $request->id)->update([
-                    'role_muka_air' => $request->role_muka_air, 'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                    'role_muka_air' => $request->role_muka_air, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                 ]);
                 return response()->json([
                     'status' => true,
                     'message' => 'update success'
                 ]);
-            } elseif ($mukaair > 0) {
+            } elseif ($bocor > 0) {
                 DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => $request->status, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                 Notif::where('id_referensi', $request->id)->update([
-                    'role_muka_air' => $request->role_muka_air, 'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                    'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                 ]);
                 return response()->json([
                     'status' => true,
