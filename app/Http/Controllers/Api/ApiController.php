@@ -471,7 +471,7 @@ class ApiController extends Controller
                 'message' => 'Login Gagal',
             ]);
         } else {
-            $data['login'] = UserBendungan::Join('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->Join('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->Join('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->Join('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->get();
+            $data['login'] = UserBendungan::leftJoin('ref_role', 'ref_role.id_role', '=', 'ref_user.id_role')->leftJoin('ref_desa', 'ref_desa.id_desa', '=', 'ref_user.id_desa')->leftJoin('ref_pengungsian', 'ref_pengungsian.id_pengungsian', '=', 'ref_desa.id_pengungsian')->leftJoin('ref_titik_kumpul', 'ref_titik_kumpul.id_titik_kumpul', '=', 'ref_desa.id_titik_kumpul')->where('username', $username)->get();
             return response([
                 // 'success' => true,
                 // 'message' => 'List Data',
