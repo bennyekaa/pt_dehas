@@ -476,6 +476,15 @@ class ApiController extends Controller
                         'status' => true,
                         'message' => 'update success'
                     ]);
+                }else{
+                    DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => $request->status, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
+                    Notif::where('id_referensi', $request->id)->update([
+                        'role_bocor' => $request->role_bocor, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                    ]);
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'update success'
+                    ]);
                 }
             } else {
                 return response([
