@@ -40,6 +40,13 @@ Route::get('/login', [LoginController::class, 'login']);
 Route::get('/logout', [LoginController::class, 'logout']);
 Route::post('/actionlogin', [LoginController::class, 'actionlogin']);
 
+Route::prefix('android')->group(function () {
+    Route::prefix('peta_banjir')->group(function () {
+        Route::get('index', [AndroidController::class, 'petabanjir']);
+        Route::get('index_asli', [AndroidController::class, 'petabanjir_asli']);
+    });
+});
+
 Route::middleware('checklogin')->group(function () {
     Route::get('/', [HomeController::class, 'index']);
 
@@ -192,15 +199,6 @@ Route::middleware('checklogin')->group(function () {
         });
 
     });
-
-    Route::prefix('android')->group(function(){
-        Route::prefix('peta_banjir')->group(function(){
-            Route::get('index', [AndroidController::class, 'petabanjir']);
-            Route::get('index_asli', [AndroidController::class, 'petabanjir_asli']);
-        });
-    });
-
-
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
