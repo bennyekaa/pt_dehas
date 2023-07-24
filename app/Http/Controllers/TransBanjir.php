@@ -101,14 +101,14 @@ class TransBanjir extends Controller
                 $status_pemda = "";
                 $status_umum = "";
                 if($mukaair->status == 0){
-                    $status_pemda = null;
-                    $status_umum = null;
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
                     $notif->pesan_default = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
                     $notif->pesan_pemda = $status_pemda;
                     $notif->pesan_umum = $status_umum;
                 }elseif($mukaair->status == 1){
-                    $status_pemda = null;
-                    $status_umum = null;
+                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
+                    $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
                     $notif->pesan_default = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
                     $notif->pesan_pemda = $status_pemda;
                     $notif->pesan_umum = $status_umum;

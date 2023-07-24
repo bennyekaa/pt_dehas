@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AndroidController;
 use App\Http\Controllers\BanjirController;
 use App\Http\Controllers\BendunganController;
 use App\Http\Controllers\MapController;
@@ -190,6 +191,13 @@ Route::middleware('checklogin')->group(function () {
 
         });
 
+    });
+
+    Route::prefix('android')->group(function(){
+        Route::prefix('peta_banjir')->group(function(){
+            Route::get('index', [AndroidController::class, 'petabanjir']);
+            Route::get('index_asli', [AndroidController::class, 'petabanjir_asli']);
+        });
     });
 
 
