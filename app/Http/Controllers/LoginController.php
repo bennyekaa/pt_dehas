@@ -26,6 +26,7 @@ class LoginController extends Controller
         // dd($_SERVER['SERVER_SOFTWARE']);
         // $hitung_user = UserBendungan::where('email', $request->email)->where('aktif', 1)->count();
         $hitung_user = UserBendungan::where('email', $request->email)->count();
+        // dd($hitung_user);
         if ($hitung_user > 0) {
             $password = $request->password;
             // $user = UserBendungan::where('email', $request->email)->where('aktif',1)->first();

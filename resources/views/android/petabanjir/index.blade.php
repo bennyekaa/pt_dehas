@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="{{ asset('assets/img/logo/pt_dehas.jpg') }}" rel="icon">
+    <link href="{{ asset('assets/img/logo/logo_PU.png') }}" rel="icon">
+    <title>KEMENTERIAN PEKERJAAN UMUM DAN PERUMAHAN RAKYAT</title>
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     </head>
 <body>
-    <img src="{{ asset('assets/img/PMF.jpg') }}" height="100%" id="image">
+    <img src="{{ asset($peta->nama_gambar) }}" height="100%" id="image">
     <button class="btn btn-block btn-primary" onclick="ZoomIn()"> Zoom IN </button>
     <button class="btn btn-block btn-primary" onclick="ZoomOut()"> Zoom Out </button>
     <script>

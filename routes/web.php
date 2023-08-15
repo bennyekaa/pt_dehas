@@ -22,6 +22,7 @@ use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\TransBocor;
 use App\Http\Controllers\WebController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\petaController;
 use App\Models\jabatan;
 use Illuminate\Support\Facades\Route;
 
@@ -167,6 +168,10 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/device/reset/{id}', [DeviceController::class, 'reset']);
     Route::get('/device/status/{id}/{id2}', [DeviceController::class, 'status']);
     Route::get('/device/hapus/{id}', [DeviceController::class, 'hapus']);
+
+
+    Route::get('/peta', [petaController::class, 'index']);
+    Route::get('/peta/status/{id}/{id1}', [petaController::class, 'status']);
 
     //Auth::routes();
 
