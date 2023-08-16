@@ -48,6 +48,7 @@ class DesaBendungan extends Model
         'laki_laki',
         'perempuan',
         'total_LP',
+        'id_kategori',
         'created_at',
         'created_by'
     ];

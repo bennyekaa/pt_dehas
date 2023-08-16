@@ -171,6 +171,7 @@ Route::middleware('checklogin')->group(function () {
 
 
     Route::get('/peta', [petaController::class, 'index']);
+    Route::get('peta/lihat/{id}', [petaController::class, 'lihat']);
     Route::get('/peta/status/{id}/{id1}', [petaController::class, 'status']);
 
     //Auth::routes();

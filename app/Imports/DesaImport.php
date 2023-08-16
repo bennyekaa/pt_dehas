@@ -59,6 +59,7 @@ class DesaImport implements ToModel, WithStartRow
             'laki_laki' => str_replace(',', '.', $row[29]),
             'perempuan' => str_replace(',', '.', $row[30]),
             'total_LP' => str_replace(',', '.', $row[31]),
+            'id_kategori' => $row[58],
             'created_at' => now(),
             'created_by' => $created_by
         ]);

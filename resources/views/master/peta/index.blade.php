@@ -38,13 +38,13 @@
                                         <td>
                                             <div class="btn-group">
                                                 <a class="btn btn-dark" title="Lihat Peta"
-                                                    href="{{ url('device/lihat') }}/{{ encrypt($item->id_user) }}">
+                                                    href="{{ url('peta/lihat') }}/{{ encrypt($item->id_peta) }}" target="_blank">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                             </div>
                                             <div class="btn-group">
                                                 <a class="btn btn-success" title="Aktifkan"
-                                                    href="{{ url('device/edit') }}/{{ encrypt($item->id_user) }}">
+                                                    href="{{ url('peta/status') }}/{{ encrypt($item->id_peta) }}/1">
                                                     <i class="fa fa-check"></i>
                                                 </a>
                                             </div>

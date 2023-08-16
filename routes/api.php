@@ -30,6 +30,7 @@ Route::get('/exist/{id?}', [ApiController::class, 'check_user']);
 Route::get('/checkdevice/{id}', [ApiController::class, 'check_device']);
 Route::get('/device/{id?}', [ApiController::class, 'device_ready']);
 Route::post('/add/device', [ApiController::class, 'add_device']);
+Route::get('/peta_aktif', [ApiController::class, 'peta_aktif']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

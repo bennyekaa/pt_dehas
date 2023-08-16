@@ -10,6 +10,7 @@ use App\Models\DesaBendungan;
 use App\Models\Log;
 use App\Models\Notif;
 use App\Models\PengungsianBendungan;
+use App\Models\peta;
 use App\Models\Role;
 use App\Models\TitikKumpulBendungan;
 use App\Models\UserBendungan;
@@ -363,6 +364,7 @@ class ApiController extends Controller
                 'data_banjir_muka_air.created_by as created_by_muka_air',
                 'data_banjir_muka_air.updated_at as updated_at_muka_air',
                 'data_banjir_muka_air.updated_by as updated_by_muka_air',
+                'pm.kategori as peta_muka_air',
                 'ref_kategori_bocor.nama_kategori',
                 'a.nama_role as role_bocor',
                 'data_banjir_bocor.lokasi',
@@ -383,12 +385,15 @@ class ApiController extends Controller
                 'data_banjir_bocor.created_at as created_at_bocor',
                 'data_banjir_bocor.created_by as created_by_bocor',
                 'data_banjir_bocor.updated_at as updated_at_bocor',
-                'data_banjir_bocor.updated_by as updated_by_bocor'
+                'data_banjir_bocor.updated_by as updated_by_bocor',
+                'pb.kategori as peta_bocor'
             )
                 ->leftJoin('data_banjir_bocor', 'data_banjir_bocor.id_banjir_bocor', '=', 'notif.id_referensi')
                 ->leftJoin('ref_kategori_bocor', 'data_banjir_bocor.id_kategori_bocor', '=', 'ref_kategori_bocor.id_kategori_bocor')
+                ->leftJoin('data_peta as pb', 'data_banjir_bocor.id_peta', '=', 'pb.id_peta')
                 ->leftJoin('ref_role as a', 'data_banjir_bocor.id_role', '=', 'a.id_role')
                 ->leftJoin('data_banjir_muka_air', 'data_banjir_muka_air.id_banjir_muka_air', '=', 'notif.id_referensi')
+                ->leftJoin('data_peta as pm', 'data_banjir_muka_air.id_peta', '=', 'pm.id_peta')
                 ->leftJoin('ref_role as b', 'data_banjir_muka_air.id_role', '=', 'b.id_role')
                 ->where('notif.aktif', 1)
                 ->orderBy('notif.updated_at', 'desc')
@@ -673,6 +678,13 @@ class ApiController extends Controller
             // 'success' => true,
             // 'message' => 'List Data',
             'data' => $data
+        ]);
+    }
+
+    public function peta_aktif(){
+        $data['peta'] = peta::where('aktif', 1)->get();
+        return response([
+            'data' => $data['peta']
         ]);
     }
 }
