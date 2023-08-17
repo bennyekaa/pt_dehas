@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use DB;
 use Exception;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ApiController extends Controller
@@ -681,10 +682,87 @@ class ApiController extends Controller
         ]);
     }
 
-    public function peta_aktif(){
+    public function peta_aktif()
+    {
         $data['peta'] = peta::where('aktif', 1)->get();
         return response([
             'data' => $data['peta']
+        ]);
+    }
+
+    public function desa_filter()
+    {
+        $data['filter'] = DB::select("SELECT
+                ref_desa.id_desa,
+                ref_desa.id_pengungsian,
+                ref_desa.id_titik_kumpul,
+                ref_desa.kode_desa,
+                ref_desa.desa_lat,
+                ref_desa.desa_long,
+                ref_desa.radius,
+                ref_desa.kelurahan_desa,
+                ref_desa.kecamatan_desa,
+                ref_desa.kabupaten_desa,
+                ref_desa.jarak_dari_bendungan,
+                ref_desa.id_kategori,
+                ref_titik_kumpul.kode_tk,
+                ref_titik_kumpul.tk_lat,
+                ref_titik_kumpul.tk_long,
+                ref_titik_kumpul.nama_titik_kumpul,
+                ref_titik_kumpul.nama_desa,
+                ref_titik_kumpul.nama_kecamatan,
+                ref_titik_kumpul.nama_kabupaten,
+                ref_titik_kumpul.jarak_ke_tk,
+                ref_pengungsian.kode_pengungsian,
+                ref_pengungsian.pengungsian_lat,
+                ref_pengungsian.pengungsian_long,
+                ref_pengungsian.nama_pengungsian,
+                ref_pengungsian.nama_desa_pengungsian,
+                ref_pengungsian.nama_kecamatan_pengungsian,
+                ref_pengungsian.nama_kabupaten_pengungsian,
+                ref_pengungsian.jarak_pengungsian
+            FROM
+                ref_desa
+                INNER JOIN
+                ref_titik_kumpul
+                ON
+                    ref_desa.id_titik_kumpul = ref_titik_kumpul.id_titik_kumpul
+                INNER JOIN
+                ref_pengungsian
+                ON
+                    ref_desa.id_pengungsian = ref_pengungsian.id_pengungsian
+            GROUP BY
+                ref_desa.id_desa,
+                ref_desa.id_pengungsian,
+                ref_desa.id_titik_kumpul,
+                ref_desa.kode_desa,
+                ref_desa.desa_lat,
+                ref_desa.desa_long,
+                ref_desa.radius,
+                ref_desa.kelurahan_desa,
+                ref_desa.kecamatan_desa,
+                ref_desa.kabupaten_desa,
+                ref_desa.jarak_dari_bendungan,
+                ref_desa.id_kategori,
+                ref_titik_kumpul.kode_tk,
+                ref_titik_kumpul.tk_lat,
+                ref_titik_kumpul.tk_long,
+                ref_titik_kumpul.nama_titik_kumpul,
+                ref_titik_kumpul.nama_desa,
+                ref_titik_kumpul.nama_kecamatan,
+                ref_titik_kumpul.nama_kabupaten,
+                ref_titik_kumpul.jarak_ke_tk,
+                ref_pengungsian.kode_pengungsian,
+                ref_pengungsian.pengungsian_lat,
+                ref_pengungsian.pengungsian_long,
+                ref_pengungsian.nama_pengungsian,
+                ref_pengungsian.nama_desa_pengungsian,
+                ref_pengungsian.nama_kecamatan_pengungsian,
+                ref_pengungsian.nama_kabupaten_pengungsian,
+                ref_pengungsian.jarak_pengungsian
+            ORDER BY ref_desa.kode_desa ASC");
+        return response([
+            'data' => $data['filter']
         ]);
     }
 }
