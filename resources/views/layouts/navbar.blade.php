@@ -166,6 +166,7 @@
                     <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                     <a class="collapse-item" href="{{ url('user') }}">User</a>
                     <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
+                    <a class="collapse-item" href="{{ url('pendukung') }}">Pendukung</a>
                     <a class="collapse-item" href="{{ url('peta') }}">Peta</a>
                     <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>

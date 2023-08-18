@@ -22,6 +22,7 @@ use App\Http\Controllers\TransBanjir;
 use App\Http\Controllers\TransBocor;
 use App\Http\Controllers\WebController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\PendukungController;
 use App\Http\Controllers\petaController;
 use App\Models\jabatan;
 use Illuminate\Support\Facades\Route;
@@ -173,6 +174,12 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/peta', [petaController::class, 'index']);
     Route::get('peta/lihat/{id}', [petaController::class, 'lihat']);
     Route::get('/peta/status/{id}/{id1}', [petaController::class, 'status']);
+
+
+    Route::get('/pendukung', [PendukungController::class, 'index']);
+    Route::get('/pendukung/tambah', [PendukungController::class, 'tambah']);
+    Route::post('/pendukung/proses', [PendukungController::class, 'proses']);
+    Route::get('/pendukung/hapus/{id}', [PendukungController::class, 'hapus']);
 
     //Auth::routes();
 
