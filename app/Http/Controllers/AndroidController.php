@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\pendukung;
 use App\Models\peta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AndroidController extends Controller
 {
@@ -12,7 +14,14 @@ class AndroidController extends Controller
         // dd($data);
         return view('android.petabanjir.index', $data);
     }
-    // public function petabanjir_asli(){
-    //     return view('android.petabanjir.index_asli');
-    // }
+
+    public function tampilmenu($id){
+        // $data['pendukung'] = pendukung::where('keterangan', $id)->get();
+        // dd($data);
+        $data['berkas'] = pendukung::where('keterangan',$id)->first();
+        $data['url'] = Storage::url($data['berkas']->berkas);
+        $data['tipedata'] = Storage::mimeType($data['berkas']->berkas);
+        // dd($data);
+        return view('transaksi.android.view', $data);
+    }
 }
