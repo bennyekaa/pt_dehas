@@ -14,7 +14,7 @@
     </head>
 <body>
     <img src="{{ asset($peta->nama_gambar) }}" height="100%" id="image">
-    <button class="btn btn-block btn-primary" onclick="ZoomIn()"> Zoom IN </button>
+    {{-- <button class="btn btn-block btn-primary" onclick="ZoomIn()"> Zoom IN </button>
     <button class="btn btn-block btn-primary" onclick="ZoomOut()"> Zoom Out </button>
     <script>
         let image = document.getElementById('image');
@@ -33,7 +33,7 @@
             image.style.height = (height - 500) + "px";
         }
     </script>
-    <script src="{{ asset('assets/jquery/jquery-3.1.1.min.js') }}"></script>
+    <script src="{{ asset('assets/jquery/jquery-3.1.1.min.js') }}"></script> --}}
 </body>
 
 </html>
