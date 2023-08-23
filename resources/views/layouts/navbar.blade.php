@@ -38,9 +38,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Input Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
         </li>
@@ -106,9 +106,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
         </li>
@@ -183,9 +183,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
         </li>
@@ -227,9 +227,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
         </li>
@@ -277,9 +277,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Waduk Banjir</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Waduk Bocor</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
         </li>

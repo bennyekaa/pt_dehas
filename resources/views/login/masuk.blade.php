@@ -34,8 +34,8 @@
                         <form action="{{ url('actionlogin') }}" method="post">
                             @csrf
                             <div class="form-outline mb-4" style="text-align: left">
-                                <label class="form-label">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Masukkan Email" />
+                                <label class="form-label">Username / Email</label>
+                                <input type="text" id="email" name="email" class="form-control form-control-lg" placeholder="Masukkan Email" />
                             </div>
 
                             <div class="form-outline mb-4" style="text-align: left">

@@ -18,4 +18,9 @@ class DataMukaAir extends Model
     {
         return $this->belongsTo(Role::class, "id_role", "id_role");
     }
+
+    public function peta()
+    {
+        return $this->belongsTo(peta::class, "id_peta", "id_peta");
+    }
 }

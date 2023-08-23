@@ -18,4 +18,9 @@ class DataBanjirBocor extends Model
     {
         return $this->belongsTo(KategoriBocor::class, "id_kategori_bocor", "id_kategori_bocor");
     }
+
+    public function peta()
+    {
+        return $this->belongsTo(peta::class, "id_peta", "id_peta");
+    }
 }

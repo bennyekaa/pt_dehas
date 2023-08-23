@@ -21,6 +21,9 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>No</th>
+                                    @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
+                                        <th>Kondisi Peta</th>
+                                    @endif
                                     <th>Nama Kategori</th>
                                     <th>Lokasi</th>
                                     <th>Tinggi MAW (Meter)</th>
@@ -54,6 +57,9 @@
                                 @foreach ($bocor as $item)
                                     <tr>
                                         <td>{{ $i++ }} </td>
+                                        @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
+                                            <td>{{ $item->peta->nama_peta }} </td>
+                                        @endif
                                         <td>{{ $item->nama_kategori }} </td>
                                         <td>{{ $item->lokasi }} </td>
                                         <td>{{ $item->ukuran }} </td>

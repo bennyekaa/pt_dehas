@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    @if (session('role') == 0)
+                    @if (session('nama_role') == 'OPERATOR')
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                             <a class="btn btn-primary" href="{{ url('transaksi/mukaair/tambah') }}" style="float: left;"> +
                                 Input
@@ -26,6 +26,9 @@
                                     <th>Tinggi Air</th>
                                     <th>Debit Keluar</th>
                                     <th>Status Bendungan</th>
+                                    @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
+                                        <th>Kondisi Peta</th>
+                                    @endif
                                     <th>Dibuat Pada</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
@@ -68,6 +71,9 @@
                                             <td>
                                                 <div class="alert alert-danger" status="alert"> BAHAYA</div>
                                             </td>
+                                        @endif
+                                        @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
+                                            <td>{{ $item->peta->nama_peta }} </td>
                                         @endif
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->created_by }}</td>
