@@ -370,7 +370,7 @@ class ApiController extends Controller
                 'a.nama_role as role_bocor',
                 'data_banjir_bocor.lokasi',
                 'data_banjir_bocor.ukuran',
-                'data_banjir_bocor.tinggi_MAW',
+                'data_banjir_bocor.tinggi_air as tinggi_MAW',
                 'data_banjir_bocor.debit',
                 'data_banjir_bocor.kekuatan',
                 'data_banjir_bocor.diameter',
