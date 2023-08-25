@@ -25,16 +25,23 @@
 
                         <div class="row mb-3" id="div_didih" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi Didih Pasir</label>
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="didihlokasi" class="form-control">
+                                    <input type="number" step="any" name="didihtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Ukuran</label>
+                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="ukuran" class="form-control">
+                                    <input type="text" name="didihlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Diameter</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="didihdiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
                                 </div>
                             </div>
 
@@ -60,16 +67,23 @@
 
                         <div class="row mb-3" id="div_gempa" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi Gempa</label>
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="gempalokasi" class="form-control">
+                                    <input type="number" step="any" name="gempatinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="gempalokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Kekuatan</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="kekuatan" class="form-control">
+                                    <input type="number" step="any" name="kekuatan" class="form-control" placeholder="Masukkan SR *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -93,11 +107,19 @@
 
                         <div class="row mb-3" id="div_badai" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-5 col-form-label text-md-end">TINGGI MAW DARI MERCU PELIMPAH (Meter)</label>
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="tinggi_MAW" class="form-control">
+                                    <input type="number" step="any" name="badaitinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="badailokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                </div>
+                            </div>
+
                             <div class="col-md-12">
                                 <label for="file" name="badaiupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
                                 <div class="col-md-8">
@@ -118,21 +140,28 @@
 
                         <div class="row mb-3" id="div_longsor" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="longsortinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="longsorlokasi" class="form-control">
+                                    <input type="text" name="longsorlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Panjang</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="longsorpanjang" class="form-control">
+                                    <input type="number" step="any" name="longsorpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Labar</label>
+                                <label class="col-md-4 col-form-label text-md-end">Lebar</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="longsorlebar" class="form-control">
+                                    <input type="number" step="any" name="longsorlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -155,15 +184,22 @@
 
                         <div class="row mb-3" id="div_lubang" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="lubangtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="lubanglokasi" class="form-control">
+                                    <input type="text" name="lubanglokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Diameter</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="lubangdiameter" class="form-control">
+                                    <input type="number" step="any" name="lubangdiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -186,27 +222,34 @@
 
                         <div class="row mb-3" id="div_penurunan" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="penurunantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="penurunanlokasi" class="form-control">
+                                    <input type="text" name="penurunanlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Tinggi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="penurunantinggi" class="form-control">
+                                    <input type="number" step="any" name="penurunantinggi" class="form-control" placeholder="Masukkan Tinggi *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Panjang</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="penurunanpanjang" class="form-control">
+                                    <input type="number" step="any" name="penurunanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lebar</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="penurunanlebar" class="form-control">
+                                    <input type="number" step="any" name="penurunanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -229,15 +272,22 @@
 
                         <div class="row mb-3" id="div_pusaran" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="pusarantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pusaranlokasi" class="form-control">
+                                    <input type="text" name="pusaranlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Diameter</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pusarandiameter" class="form-control">
+                                    <input type="number" step="any" name="pusarandiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -260,17 +310,19 @@
 
                         <div class="row mb-3" id="div_rembesan" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="rembesantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="rembesanlokasi" class="form-control">
+                                    <input type="text" name="rembesanlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Debit</label>
-                                <div class="col-md-8">
-                                    <input type="text" name="debit" class="form-control">
-                                </div>
-                            </div>
+
                             <div class="col-md-12">
                                 <label for="file" name="rembesanupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
                                 <div class="col-md-8">
@@ -291,22 +343,29 @@
 
                         <div class="row mb-3" id="div_retakan" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="retakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="retakanlokasi" class="form-control">
+                                    <input type="text" name="retakanlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Panjang</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="retakanpanjang" class="form-control">
+                                    <input type="number" step="any" name="retakanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
 
                                 <label class="col-md-4 col-form-label text-md-end">Lebar</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="retakanlebar" class="form-control">
+                                    <input type="number" step="any" name="retakanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -329,22 +388,29 @@
 
                         <div class="row mb-3" id="div_pergerakan" style="display: none">
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="pergerakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pergerakanlokasi" class="form-control">
+                                    <input type="text" name="pergerakanlokasi" class="form-control" placeholder="Masukkan Lokasi">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Panjang</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pergerakanpanjang" class="form-control">
+                                    <input type="number" step="any" name="pergerakanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Lebar</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pergerakanlebar" class="form-control">
+                                    <input type="number" step="any" name="pergerakanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
                                 </div>
                             </div>
 

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid" id="container-wrapper">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Data Bocor</h1>
+            <h1 class="h3 mb-0 text-gray-800">Data Indikasi Masalah</h1>
         </div>
 
         <div class="row">
@@ -12,7 +12,7 @@
                     @if (session('nama_role') == 'OPERATOR')
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                             <a class="btn btn-primary" href="{{ url('transaksi/bocor/tambah') }}" style="float: left;"> +
-                                Input Data Waduk Bocor
+                                Input Data Indikasi
                             </a>
                         </div>
                     @endif
@@ -21,14 +21,15 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>No</th>
+                                    <th>Dibuat Pada</th>
                                     @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
                                         <th>Kondisi Peta</th>
                                     @endif
                                     <th>Nama Kategori</th>
                                     <th>Lokasi</th>
-                                    <th>Tinggi MAW (Meter)</th>
+                                    <th>Elevasi Muka Air Waduk (Meter)</th>
                                     <th>Debit (m3/Detik)</th>
-                                    <th>Ukuran (Meter)</th>
+                                    {{-- <th>Ukuran (Meter)</th> --}}
                                     <th>Kekuatan (SR)</th>
                                     <th>Diameter (Meter)</th>
                                     <th>Tinggi (Meter)</th>
@@ -40,12 +41,11 @@
                                     <th>Foto</th>
                                     <th>Foto</th>
                                     <th>Foto</th>
-                                    <th>Dibuat Pada</th>
-                                    <th>Dibuat Oleh</th>
+                                    {{-- <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
                                     <th>Diupdate Oleh</th>
                                     <th>Diupdate BPBD Pada</th>
-                                    <th>Diupdate BPBD </th>
+                                    <th>Diupdate BPBD </th> --}}
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -57,13 +57,14 @@
                                 @foreach ($bocor as $item)
                                     <tr>
                                         <td>{{ $i++ }} </td>
+                                        <td>{{ $item->created_at }}</td>
                                         @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
                                             <td>{{ $item->peta->nama_peta }} </td>
                                         @endif
                                         <td>{{ $item->nama_kategori }} </td>
                                         <td>{{ $item->lokasi }} </td>
-                                        <td>{{ $item->ukuran }} </td>
-                                        <td>{{ $item->tinggi_MAW }} </td>
+                                        {{-- <td>{{ $item->ukuran }} </td> --}}
+                                        <td>{{ $item->tinggi_air }} </td>
                                         <td>{{ $item->debit }} </td>
                                         <td>{{ $item->kekuatan }} </td>
                                         <td>{{ $item->diameter }} </td>
@@ -121,12 +122,11 @@
                                         @else
                                             <td></td>
                                         @endif
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->created_by }}</td>
+                                        {{-- <td>{{ $item->created_by }}</td>
                                         <td>{{ $item->updated_at }}</td>
                                         <td>{{ $item->updated_by }}</td>
                                         <td>{{ $item->updated_at_bpbd }}</td>
-                                        <td>{{ $item->updated_by_bpbd }}</td>
+                                        <td>{{ $item->updated_by_bpbd }}</td> --}}
                                         <td>
                                             <div class="btn-group">
                                                 @if (session('nama_role') == 'OPERATOR')

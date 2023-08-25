@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\BendunganBendungan;
+use App\Models\WadukBendungan;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -20,7 +21,7 @@ class TransBocor extends Controller
 
     public function index($stat)
     {
-        $data['bocor'] = DataBanjirBocor::Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at')->get();
+        $data['bocor'] = DataBanjirBocor::Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
         session()->put('banjir_bocor', url()->full());
         // $data['bocor'] = DB::table('data_banjir_bocor')
         //     ->join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')
@@ -37,6 +38,29 @@ class TransBocor extends Controller
 
     public function proses(Request $request)
     {
+        $tinggi_air = 0;
+        if(!empty($request->didihtinggiair)){
+            $tinggi_air = $request->didihtinggiair;
+        }elseif(!empty($request->gempatinggiair)){
+            $tinggi_air = $request->gempatinggiair;
+        }elseif(!empty($request->badaitinggiair)){
+            $tinggi_air = $request->badaitinggiair;
+        }elseif(!empty($request->longsortinggiair)){
+            $tinggi_air = $request->longsortinggiair;
+        }elseif(!empty($request->lubangtinggiair)){
+            $tinggi_air = $request->lubangtinggiair;
+        }elseif(!empty($request->penurunantinggiair)){
+            $tinggi_air = $request->penurunantinggiair;
+        }elseif(!empty($request->pusarantinggiair)){
+            $tinggi_air = $request->pusarantinggiair;
+        }elseif(!empty($request->rembesantinggiair)){
+            $tinggi_air = $request->rembesantinggiair;
+        }elseif(!empty($request->retakantinggiair)){
+            $tinggi_air = $request->retakantinggiair;
+        }elseif(!empty($request->pergerakantinggiair)){
+            $tinggi_air = $request->pergerakantinggiair;
+        }
+
         $lokasi = "";
         if (!empty($request->didihlokasi)) {
             $lokasi = $request->didihlokasi;
@@ -61,10 +85,17 @@ class TransBocor extends Controller
         }
 
         $diameter = "";
-        if (!empty($request->lubangdiameter)) {
+        if (!empty($request->didihdiameter)) {
+            $diameter = $request->didihdiameter;
+        } elseif (!empty($request->lubangdiameter)) {
             $diameter = $request->lubangdiameter;
         } elseif (!empty($request->pusarandiameter)) {
             $diameter = $request->pusarandiameter;
+        }
+
+        $tinggi = "";
+        if (!empty($request->penurunantinggi)) {
+            $tinggi = $request->penurunantinggi;
         }
 
         $panjang = "";
@@ -237,18 +268,44 @@ class TransBocor extends Controller
             $file_5 = Storage::putFile('/public/berkas', $request->pergerakan_data_file5);
         }
 
+        $master_muka_air = WadukBendungan::all();
+        $cari_status = DB::select("SELECT * FROM ref_waduk WHERE " . $tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+        $h1 = $tinggi_air - $cari_status[0]->ambang;
+        $h2 = $tinggi_air - $cari_status[0]->ambang_1;
+        $h1_result = '';
+        $h2_result = '';
+        if ($h1 <= 0) {
+            $h1_result = 0;
+        } else {
+            $h1_result = $h1;
+        }
+        if ($h2 <= 0) {
+            $h2_result = 0;
+        } else {
+            $h2_result = $h2;
+        }
+        $htotal = 0;
+        if ($h1 <= 0) {
+            $htotal = 0;
+        } else {
+            $hitung1 = ((pow($h1_result, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+            $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
+            $htotal = $hitung1 + $hitung2;
+        }
+
         $bocor = new DataBanjirBocor();
         $bocor->id_banjir_bocor =  Str::uuid();
         $bocor->id_kategori_bocor = $request->kategori;
         $bocor->id_role = session('id_role');
         $bocor->aktif = 1;
         $bocor->lokasi = $lokasi;
-        $bocor->tinggi_MAW = $request->tinggi_MAW;
-        $bocor->debit = $request->debit;
-        $bocor->ukuran = $request->ukuran;
+        $bocor->tinggi_air = $tinggi_air;
+        // $bocor->tinggi_MAW = $request->tinggi_MAW;
+        $bocor->debit = round($htotal, 2);
+        // $bocor->ukuran = $request->ukuran;
         $bocor->kekuatan = $request->kekuatan;
         $bocor->diameter = $diameter;
-        $bocor->tinggi = $request->penurunantinggi;
+        $bocor->tinggi = $tinggi;
         $bocor->panjang = $panjang;
         $bocor->lebar = $lebar;
         $bocor->keterangan = $keterangan;

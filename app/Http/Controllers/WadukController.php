@@ -32,6 +32,12 @@ class WadukController extends Controller
         if($request->fungsi == 'Import'){
             // dd($request->all());
             try {
+
+                // linux
+                // $path1 = $request->file('data_file')->store('temp');
+                // $path = storage_path('app') . '/' . $path1;
+                // \Excel::import(new WadukImport, $path);
+
                 $file = $request->file('data_file')->getRealPath();
                 Excel::import(new WadukImport, $file);
 

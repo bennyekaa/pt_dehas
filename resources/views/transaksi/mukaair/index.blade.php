@@ -22,17 +22,17 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Dibuat Pada</th>
                                     <th>Muka Air</th>
-                                    <th>Tinggi Air</th>
+                                    {{-- <th>Tinggi Air</th> --}}
                                     <th>Debit Keluar</th>
                                     <th>Status Bendungan</th>
                                     @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
                                         <th>Kondisi Peta</th>
                                     @endif
-                                    <th>Dibuat Pada</th>
-                                    <th>Dibuat Oleh</th>
+                                    {{-- <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
-                                    <th>Diupdate Oleh</th>
+                                    <th>Diupdate Oleh</th> --}}
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -43,7 +43,8 @@
                                 @foreach ($mukaair as $item)
                                     <tr>
                                         <td>{{ $i++ }} </td>
-                                        <td>{{ $item->muka_air }} </td>
+                                        <td>{{ $item->created_at }}</td>
+                                        {{-- <td>{{ $item->muka_air }} </td> --}}
                                         <td>{{ $item->tinggi_air }} </td>
                                         <td>{{ $item->debit_air }} </td>
                                         @if ($item->status == 0)
@@ -75,10 +76,9 @@
                                         @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
                                             <td>{{ $item->peta->nama_peta }} </td>
                                         @endif
-                                        <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->created_by }}</td>
+                                        {{-- <td>{{ $item->created_by }}</td>
                                         <td>{{ $item->updated_at }}</td>
-                                        <td>{{ $item->updated_by }}</td>
+                                        <td>{{ $item->updated_by }}</td> --}}
                                         <td>
                                             <div class="btn-group">
                                                 @if (session('nama_role') == 'OPERATOR')

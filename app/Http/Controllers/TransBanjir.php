@@ -18,7 +18,7 @@ class TransBanjir extends Controller
 {
     public function index($stat)
     {
-        $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at')->get();
+        $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
         session()->put('banjir_mukaair', url()->full());
         // dd($data);
         return view('transaksi.mukaair.index', $data);
@@ -41,14 +41,40 @@ class TransBanjir extends Controller
             try {
                 $master_muka_air = WadukBendungan::all();
                 $cari_status = DB::select("SELECT * FROM ref_waduk WHERE " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
-                $hitung_muka_air = $master_muka_air->first()->ambang + $request->tinggi_air;
-                $hitung_debit = pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 1.5);
-                // dd($hitung_debit);
+                $h1 = $request->tinggi_air-$cari_status[0]->ambang;
+                $h2 = $request->tinggi_air-$cari_status[0]->ambang_1;
+                $h1_result = '';
+                $h2_result = '';
+                if($h1 <= 0){
+                    $h1_result = 0;
+                }else{
+                    $h1_result = $h1;
+                }
+                if($h2 <= 0){
+                    $h2_result = 0;
+                }else{
+                    $h2_result = $h2;
+                }
+                $htotal = 0;
+                if($h1 <= 0){
+                    $htotal = 0;
+                }else{
+                    $hitung1 = ((pow($h1_result, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                    $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
+                    $htotal = $hitung1+$hitung2;
+                }
+                // $hitung_muka_air = $master_muka_air->first()->ambang + $request->tinggi_air;
+                // // $hitung_debit = (pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 3) / 2);
+                // $hitung_debit_1 = (pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 3) / 2);
+                // $hitung_debit_2 = (pow(($master_muka_air->first()->c_1 * $master_muka_air->first()->lebar_1 * $request->tinggi_air), 3) / 2);
+                // $hitung_total = $hitung_debit_1+$hitung_debit_2;
+                // dd(round($hitung_total, 2));
                 $mukaair = new DataMukaAir();
                 $mukaair->id_banjir_muka_air =  Str::uuid();
-                $mukaair->muka_air = $hitung_muka_air;
+                // $mukaair->muka_air = $hitung_muka_air;
                 $mukaair->tinggi_air = $request->tinggi_air;
-                $mukaair->debit_air = round($hitung_debit, 2);
+                $mukaair->debit_air = round($htotal, 2);
+                // $mukaair->debit_air = round($hitung_debit, 2);
                 $mukaair->id_role = session('id_role');
                 $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;

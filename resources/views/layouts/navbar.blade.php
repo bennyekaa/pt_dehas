@@ -113,12 +113,12 @@
             </div>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ url('laporan') }}">
                 <i class="fas fa-fw fa-book"></i>
                 <span>Laporan</span>
             </a>
-        </li>
+        </li> --}}
     @elseif(session('nama_role') == 'DEVELOPER')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
@@ -190,12 +190,12 @@
             </div>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ url('laporan') }}">
                 <i class="fas fa-fw fa-book"></i>
                 <span>Laporan</span>
             </a>
-        </li>
+        </li> --}}
     @elseif (session('nama_role') == 'BALAI')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
