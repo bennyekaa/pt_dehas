@@ -62,11 +62,11 @@
                                             </td>
                                         @elseif ($item->status == 3)
                                             <td>
-                                                <div class="alert alert-info" status="alert"> SIAGA</div>
+                                                <div class="alert alert-warning" status="alert"> SIAGA</div>
                                             </td>
                                         @elseif ($item->status == 4)
                                             <td>
-                                                <div class="alert alert-warning" status="alert"> AWAS</div>
+                                                <div class="alert alert-danger" status="alert"> AWAS</div>
                                             </td>
                                         @else
                                             <td>
