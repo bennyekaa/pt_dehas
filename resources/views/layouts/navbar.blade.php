@@ -20,12 +20,12 @@
                 <span>Detail Bendungan</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
                 <i class="fas fa-fw fa-map-marked"></i>
                 <span>Kelola Maps</span>
             </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
@@ -58,12 +58,12 @@
             </a>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
                 <i class="fas fa-fw fa-map-marked"></i>
                 <span>Kelola Maps</span>
             </a>
-        </li>
+        </li> --}}
 
         <!-- <li class="nav-item">
         <a class="nav-link" href="{{ url('import') }}">
@@ -133,12 +133,12 @@
             </a>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
                 <i class="fas fa-fw fa-map-marked"></i>
                 <span>Kelola Maps</span>
             </a>
-        </li>
+        </li> --}}
 
         <!-- <li class="nav-item">
         <a class="nav-link" href="{{ url('import') }}">
@@ -209,12 +209,12 @@
                 <span>Detail Bendungan</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
                 <i class="fas fa-fw fa-map-marked"></i>
                 <span>Kelola Maps</span>
             </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
@@ -259,12 +259,12 @@
                 <span>Detail Bendungan</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::segment(1) == 'map' ? 'active' : '' }}" href="{{ url('map') }}">
                 <i class="fas fa-fw fa-map-marked"></i>
                 <span>Kelola Maps</span>
             </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
