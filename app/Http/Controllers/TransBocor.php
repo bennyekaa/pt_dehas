@@ -38,26 +38,27 @@ class TransBocor extends Controller
 
     public function proses(Request $request)
     {
+        // dd($request->all());
         $tinggi_air = 0;
-        if(!empty($request->didihtinggiair)){
+        if (!empty($request->didihtinggiair)) {
             $tinggi_air = $request->didihtinggiair;
-        }elseif(!empty($request->gempatinggiair)){
+        } elseif (!empty($request->gempatinggiair)) {
             $tinggi_air = $request->gempatinggiair;
-        }elseif(!empty($request->badaitinggiair)){
+        } elseif (!empty($request->badaitinggiair)) {
             $tinggi_air = $request->badaitinggiair;
-        }elseif(!empty($request->longsortinggiair)){
+        } elseif (!empty($request->longsortinggiair)) {
             $tinggi_air = $request->longsortinggiair;
-        }elseif(!empty($request->lubangtinggiair)){
+        } elseif (!empty($request->lubangtinggiair)) {
             $tinggi_air = $request->lubangtinggiair;
-        }elseif(!empty($request->penurunantinggiair)){
+        } elseif (!empty($request->penurunantinggiair)) {
             $tinggi_air = $request->penurunantinggiair;
-        }elseif(!empty($request->pusarantinggiair)){
+        } elseif (!empty($request->pusarantinggiair)) {
             $tinggi_air = $request->pusarantinggiair;
-        }elseif(!empty($request->rembesantinggiair)){
+        } elseif (!empty($request->rembesantinggiair)) {
             $tinggi_air = $request->rembesantinggiair;
-        }elseif(!empty($request->retakantinggiair)){
+        } elseif (!empty($request->retakantinggiair)) {
             $tinggi_air = $request->retakantinggiair;
-        }elseif(!empty($request->pergerakantinggiair)){
+        } elseif (!empty($request->pergerakantinggiair)) {
             $tinggi_air = $request->pergerakantinggiair;
         }
 
@@ -270,56 +271,63 @@ class TransBocor extends Controller
 
         $master_muka_air = WadukBendungan::all();
         $cari_status = DB::select("SELECT * FROM ref_waduk WHERE " . $tinggi_air . " BETWEEN batas_bawah AND batas_atas");
-        $h1 = $tinggi_air - $cari_status[0]->ambang;
-        $h2 = $tinggi_air - $cari_status[0]->ambang_1;
-        $h1_result = '';
-        $h2_result = '';
-        if ($h1 <= 0) {
-            $h1_result = 0;
+        if (empty($tinggi_air)) {
+            return redirect(session('banjir_bocor'))->with('error', 'Tinggi Muka Air Mohon Diisi');
+        } elseif (empty($cari_status)) {
+            return redirect(session('banjir_bocor'))->with('error', 'Tinggi Muka Air Tidak Boleh Dibawah Batas Bawah');
         } else {
-            $h1_result = $h1;
-        }
-        if ($h2 <= 0) {
-            $h2_result = 0;
-        } else {
-            $h2_result = $h2;
-        }
-        $htotal = 0;
-        if ($h1 <= 0) {
-            $htotal = 0;
-        } else {
-            $hitung1 = ((pow($h1_result, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
-            $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
-            $htotal = $hitung1 + $hitung2;
-        }
 
-        $bocor = new DataBanjirBocor();
-        $bocor->id_banjir_bocor =  Str::uuid();
-        $bocor->id_kategori_bocor = $request->kategori;
-        $bocor->id_role = session('id_role');
-        $bocor->aktif = 1;
-        $bocor->lokasi = $lokasi;
-        $bocor->tinggi_air = $tinggi_air;
-        // $bocor->tinggi_MAW = $request->tinggi_MAW;
-        $bocor->debit = round($htotal, 2);
-        // $bocor->ukuran = $request->ukuran;
-        $bocor->kekuatan = $request->kekuatan;
-        $bocor->diameter = $diameter;
-        $bocor->tinggi = $tinggi;
-        $bocor->panjang = $panjang;
-        $bocor->lebar = $lebar;
-        $bocor->keterangan = $keterangan;
-        $bocor->file_1 = $file_1;
-        $bocor->file_2 = $file_2;
-        $bocor->file_3 = $file_3;
-        $bocor->file_4 = $file_4;
-        $bocor->file_5 = $file_5;
-        $bocor->id_peta = session('peta');
-        $bocor->created_at = date('Y-m-d H:i:s.U');
-        $bocor->created_by = session('id_role');
-        // dd($bocor);
-        $bocor->save();
-        return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Ditambah');
+            $h1 = $tinggi_air - $cari_status[0]->ambang;
+            $h2 = $tinggi_air - $cari_status[0]->ambang_1;
+            $h1_result = '';
+            $h2_result = '';
+            if ($h1 <= 0) {
+                $h1_result = 0;
+            } else {
+                $h1_result = $h1;
+            }
+            if ($h2 <= 0) {
+                $h2_result = 0;
+            } else {
+                $h2_result = $h2;
+            }
+            $htotal = 0;
+            if ($h1 <= 0) {
+                $htotal = 0;
+            } else {
+                $hitung1 = ((pow($h1_result, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
+                $htotal = $hitung1 + $hitung2;
+            }
+
+            $bocor = new DataBanjirBocor();
+            $bocor->id_banjir_bocor =  Str::uuid();
+            $bocor->id_kategori_bocor = $request->kategori;
+            $bocor->id_role = session('id_role');
+            $bocor->aktif = 1;
+            $bocor->lokasi = $lokasi;
+            $bocor->tinggi_air = $tinggi_air;
+            // $bocor->tinggi_MAW = $request->tinggi_MAW;
+            $bocor->debit = round($htotal, 2);
+            // $bocor->ukuran = $request->ukuran;
+            $bocor->kekuatan = $request->kekuatan;
+            $bocor->diameter = $diameter;
+            $bocor->tinggi = $tinggi;
+            $bocor->panjang = $panjang;
+            $bocor->lebar = $lebar;
+            $bocor->keterangan = $keterangan;
+            $bocor->file_1 = $file_1;
+            $bocor->file_2 = $file_2;
+            $bocor->file_3 = $file_3;
+            $bocor->file_4 = $file_4;
+            $bocor->file_5 = $file_5;
+            $bocor->id_peta = session('peta');
+            $bocor->created_at = date('Y-m-d H:i:s.U');
+            $bocor->created_by = session('id_role');
+            // dd($bocor);
+            $bocor->save();
+            return redirect(session('banjir_bocor'))->with('success', 'Data Berhasil Ditambah');
+        }
     }
 
     public function get_status($id)
@@ -343,7 +351,7 @@ class TransBocor extends Controller
                 $notif->id_referensi = decrypt($id);
                 $notif->role_bocor = $balai->role_bocor;
                 $notif->aktif = 1;
-                $notif->pesan_default = "Data Baru ".$bendungan->nama_bendungan . " Pada ".$bocor->created_at;
+                $notif->pesan_default = "Data Baru " . $bendungan->nama_bendungan . " Pada " . $bocor->created_at;
                 // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
                 // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
                 $notif->created_at = date('Y-m-d H:i:s.U');
@@ -351,7 +359,7 @@ class TransBocor extends Controller
                 $bocor->save();
                 $notif->save();
                 return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BALAI');
-            }elseif($role == 'PENDUDUK'){
+            } elseif ($role == 'PENDUDUK') {
                 $penduduk = Role::where('nama_role', $role)->first();
                 $mukaair = DataBanjirBocor::find(decrypt($id));
                 $mukaair->id_role = $penduduk->id_role;
@@ -370,7 +378,8 @@ class TransBocor extends Controller
         }
     }
 
-    public function tanda($id, $status){
+    public function tanda($id, $status)
+    {
         try {
             if ($status == 1) {
                 // $lanjut = Role::where('role_bocor', 3)->first();
@@ -472,7 +481,7 @@ class TransBocor extends Controller
                 $bocor->save();
                 $notif->save();
                 return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
-            }elseif($status == 3){
+            } elseif ($status == 3) {
                 $bpbd = Role::where('nama_role', 'BPBD')->first();
                 $bendungan = BendunganBendungan::first();
                 $bocor = DataBanjirBocor::find(decrypt($id));
@@ -522,7 +531,7 @@ class TransBocor extends Controller
                 $bocor->save();
                 $notif->save();
                 return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
-            }elseif($status == 4){
+            } elseif ($status == 4) {
                 $bpbd = Role::where('nama_role', 'BPBD')->first();
                 $bendungan = BendunganBendungan::first();
                 $bocor = DataBanjirBocor::find(decrypt($id));

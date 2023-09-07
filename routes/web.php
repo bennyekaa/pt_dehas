@@ -143,7 +143,7 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/banjir', [BanjirController::class, 'index']);
 
 
-    //EXPORT DESA
+    //eksport DESA
     Route::get('/desa', [DesaController::class, 'index']);
     Route::get('/desa/export_excel', [DesaController::class, 'export_excel']);
     Route::post('/desa/import_excel', [DesaController::class, 'import_excel']);

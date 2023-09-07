@@ -27,7 +27,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="didihtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="didihtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -69,7 +69,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="gempatinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="gempatinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -109,7 +109,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="badaitinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="badaitinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -142,7 +142,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="longsortinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="longsortinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -186,7 +186,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="lubangtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="lubangtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -224,7 +224,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="penurunantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="penurunantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -274,7 +274,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pusarantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="pusarantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -312,7 +312,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="rembesantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="rembesantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -345,7 +345,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="retakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="retakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
@@ -390,7 +390,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pergerakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus required>
+                                    <input type="number" step="any" name="pergerakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
                                 </div>
                             </div>
 
