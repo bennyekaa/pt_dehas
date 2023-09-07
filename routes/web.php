@@ -44,6 +44,7 @@ Route::post('/actionlogin', [LoginController::class, 'actionlogin']);
 
 Route::prefix('android')->group(function () {
     Route::get('menu/{id}', [AndroidController::class, 'tampilmenu']);
+    Route::get('peta/{id}', [AndroidController::class, 'tampilmap']);
     Route::prefix('peta_banjir')->group(function () {
         Route::get('index', [AndroidController::class, 'petabanjir']);
     });

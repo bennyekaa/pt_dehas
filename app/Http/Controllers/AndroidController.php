@@ -25,4 +25,12 @@ class AndroidController extends Controller
         // dd($data);
         return view('transaksi.android.view', $data);
     }
+
+    public function tampilmap($id){
+        // $data['pendukung'] = pendukung::where('keterangan', $id)->get();
+        // dd($data);
+        $data['peta'] = peta::where('id_peta',$id)->first();
+        // dd($data);
+        return view('android.notif.index', $data);
+    }
 }
