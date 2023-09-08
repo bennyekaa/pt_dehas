@@ -692,6 +692,23 @@ class ApiController extends Controller
         ]);
     }
 
+    public function list_peta()
+    {
+        $data['peta'] = peta::all();
+        if (isset($data['peta'])) {
+            return response([
+                // 'success' => true,
+                // 'message' => 'List Data',
+                'data' => $data['peta']
+            ]);
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'Data tidak sesuai',
+            ]);
+        }
+    }
+
     public function desa_filter()
     {
         $data['filter'] = DB::select("SELECT

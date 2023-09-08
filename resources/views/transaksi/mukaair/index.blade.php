@@ -49,7 +49,7 @@
                                         <td>{{ $item->debit_air }} </td>
                                         @if ($item->status == 0)
                                             <td>
-                                                <div class="alert alert-success" status="alert"> NORMAL</div>
+                                                <div class="alert alert-info" status="alert"> NORMAL</div>
                                             </td>
                                         @elseif ($item->status == 1)
                                             <td>
@@ -58,7 +58,7 @@
                                             </td>
                                         @elseif ($item->status == 2)
                                             <td>
-                                                <div class="alert alert-secondary" status="alert"> WASPADA 2</div>
+                                                <div class="alert alert-success" status="alert"> WASPADA 2</div>
                                             </td>
                                         @elseif ($item->status == 3)
                                             <td>
