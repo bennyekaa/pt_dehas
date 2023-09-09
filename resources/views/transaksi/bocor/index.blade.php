@@ -57,7 +57,7 @@
                                 @foreach ($bocor as $item)
                                     <tr>
                                         <td>{{ $i++ }} </td>
-                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->bocor_created_at }}</td>
                                         @if (session('nama_role') == 'BALAI' || session('nama_role') == 'BPBD')
                                             <td>{{ $item->peta->nama_peta }} </td>
                                         @endif
@@ -140,26 +140,54 @@
                                                     </a>
                                                 @elseif(session('nama_role') == 'BALAI')
                                                     <div class="dropdown">
-                                                        <a class="btn btn-primary dropdown-toggle" href="#"
-                                                            role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false"> Kirim Pemberitahuan
-                                                            Dengan Status
+                                                        <a class="btn btn-primary dropdown-toggle"
+                                                            title="Pilih Peta Kondisi" href="#" role="button"
+                                                            id="dropdownMenuLink" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false"> Pilih Peta
                                                         </a>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item"
-                                                                href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/1"
-                                                                title="Kirim Tanda WASPADA 1">WASPADA 1</a>
-                                                            <a class="dropdown-item"
-                                                                href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/2"
-                                                                title="Kirim Tanda WASPADA 2">WASPADA 2</a>
-                                                            <a class="dropdown-item"
-                                                                href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/3"
-                                                                title="Kirim Tanda SIAGA">SIAGA</a>
-                                                            <a class="dropdown-item"
-                                                                href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/4"
-                                                                title="Kirim Tanda AWAS">AWAS</a>
+                                                            @foreach ($peta as $map)
+                                                                <a class="btn btn-dark" title="Lihat Peta"
+                                                                    href="{{ url('peta/lihat') }}/{{ encrypt($item->id_peta) }}"
+                                                                    target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}/1"
+                                                                    title="{{ $map->nama_peta }}">
+                                                                    {{ $map->nama_peta }}
+                                                                </a>
+
+                                                                {{-- <a class="dropdown-item"
+                                                                    href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}/1"
+                                                                    title="{{ $map->nama_peta }}">{{ $map->nama_peta }}</a> --}}
+                                                            @endforeach
                                                         </div>
                                                     </div>
+                                                    @if (!empty($item->id_peta))
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-primary dropdown-toggle" href="#"
+                                                                role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false"> Kirim
+                                                                Pemberitahuan
+                                                                Dengan Status
+                                                            </a>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/1"
+                                                                    title="Kirim Tanda WASPADA 1">WASPADA 1</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/2"
+                                                                    title="Kirim Tanda WASPADA 2">WASPADA 2</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/3"
+                                                                    title="Kirim Tanda SIAGA">SIAGA</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('transaksi/bocor/tandakirim') }}/{{ encrypt($item->id_banjir_bocor) }}/4"
+                                                                    title="Kirim Tanda AWAS">AWAS</a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 @elseif(session('nama_role') == 'BPBD')
                                                     <a class="btn btn-primary" title="Kirim Pemberitahuan Ke Penduduk"
                                                         href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}/PENDUDUK">

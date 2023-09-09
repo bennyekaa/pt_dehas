@@ -12,7 +12,7 @@
                             @csrf
                             <input type="hidden" name="fungsi" value="Tambah">
                             <div class="row mb-3">
-                                <label for="tinggi_air" class="col-md-4 col-form-label text-md-end">Input Elevasi Muka Air Waduk (*meter)</label>
+                                <label for="tinggi_air" class="col-md-4 col-form-label text-md-end">Input Elevasi Muka Air Waduk (m)</label>
                                 <div class="col-md-6">
                                     <input type="number" step="any" name="tinggi_air" autofocus required>
                                     {{-- <select class="form-control select2" name="id_waduk" id="list_mukaair">

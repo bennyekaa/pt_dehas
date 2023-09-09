@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\DataBanjirBocor;
+use App\Models\DataMukaAir;
 use App\Models\peta;
 use Illuminate\Http\Request;
 
@@ -20,16 +22,33 @@ class petaController extends Controller
         return view('master.peta.lihat', $data);
     }
 
-    public function status($id, $set){
+    public function status($id, $kirim, $set){
         $peta = peta::find(decrypt($id));
-        $peta->aktif = $set;
-        $peta->updated_at = now();
-        $peta->updated_by = session('username');
-        $peta->save();
-        if($set == 1){
-            peta::where('id_peta','<>',decrypt($id))->update(['aktif' => 0]);
+        // $peta->aktif = $set;
+        // $peta->updated_at = date('Y-m-d H:i:s.U');
+        // $peta->updated_by = session('username');
+        // dd(decrypt($id));
+        $check = DataBanjirBocor::where('id_banjir_bocor',decrypt($kirim))->count();
+        if($check > 0){
+            $data = DataBanjirBocor::find(decrypt($kirim));
+            $data->id_peta = $peta->id_peta;
+            $data->updated_at = date('Y-m-d H:i:s.U');
+            $data->updated_by = 'Generate';
+            $data->save();
+        }else{
+            $data = DataMukaAir::find(decrypt($kirim));
+            // dd($data);
+            $data->id_peta = $peta->id_peta;
+            $data->updated_at = date('Y-m-d H:i:s.U');
+            $data->updated_by = 'Generate';
+            $data->save();
         }
-        session()->put('peta', decrypt($id));
-        return redirect(session('halaman_peta'))->with('success', 'Peta Aktif Diubah');
+        // $peta->save();
+        // if($set == 1){
+        //     peta::where('id_peta','<>',decrypt($id))->update(['aktif' => 0]);
+        // }
+        // return response()->json(['message' => 'Status berhasil diperbarui']);
+        // session()->put('peta', decrypt($id));
+        return redirect(session('banjir_mukaair'))->with('success', 'Peta Telah Dipilih');
     }
 }

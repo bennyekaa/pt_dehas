@@ -90,7 +90,7 @@
                     <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                     <a class="collapse-item" href="{{ url('user') }}">User</a>
                     <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
-                    <a class="collapse-item" href="{{ url('peta') }}">Peta</a>
+                    {{-- <a class="collapse-item" href="{{ url('peta') }}">Peta</a> --}}
                     <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>
                 </div>
@@ -167,7 +167,7 @@
                     <a class="collapse-item" href="{{ url('user') }}">User</a>
                     <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
                     <a class="collapse-item" href="{{ url('pendukung') }}">Pendukung</a>
-                    <a class="collapse-item" href="{{ url('peta') }}">Peta</a>
+                    {{-- <a class="collapse-item" href="{{ url('peta') }}">Peta</a> --}}
                     <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>
                 </div>
@@ -232,19 +232,6 @@
                         href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster"
-                aria-expanded="true" aria-controls="collapseMaster">
-                <i class="far fa-fw fa-window-maximize"></i>
-                <span>Master</span>
-            </a>
-            <div id="collapseMaster" class="collapse" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Master</h6>
-                    <a class="collapse-item" href="{{ url('peta') }}">Peta</a>
-                </div>
         </li>
     @elseif (session('nama_role') == 'BPBD')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">

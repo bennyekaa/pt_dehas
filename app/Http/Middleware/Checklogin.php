@@ -19,12 +19,12 @@ class Checklogin
     {
         // dd(session()->all());
         if (Session::get('login') == 1) {
+            // dd(session()->all());
             if(empty(session('device'))){
                 return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
             }else{
                 return $next($request);
             }
-            // dd(session()->all());
             // dd(substr(shell_exec('getmac'), 159,20));
         } else {
             return redirect('/login');

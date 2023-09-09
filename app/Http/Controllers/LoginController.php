@@ -43,7 +43,7 @@ class LoginController extends Controller
                 // dd($count_device - $device_set);
                 $nama_role = $role->role->nama_role;
                 $device = Log::where('id_user', $role->id_user)->where('keterangan', request()->header('user_agent'))->where('aktif', 1)->first();
-                $peta = peta::where('aktif', 1)->first();
+                // $peta = peta::where('aktif', 1)->first();
                 //dd($device);
                 // $device = Log::where('id_log', $role->log->first()->id_log)->where('mac_add', trim(substr(shell_exec('getmac'), 159, 20)))->get();
                 // dd($device);
@@ -69,7 +69,7 @@ class LoginController extends Controller
                             'mac_aktif'  => $device->aktif,
                             'id_desa'  => $user->id_desa,
                             'total_device'  => $count_device,
-                            'peta'  => $peta->id_peta,
+                            // 'peta'  => $peta->id_peta,
                             'kategori_peta'  => $peta->kategori,
                             'login' => 1
                         ]);
@@ -93,8 +93,8 @@ class LoginController extends Controller
                         'mac_aktif'  => $device->aktif,
                         'id_desa'  => $user->id_desa,
                         'total_device'  => $count_device,
-                        'peta'  => $peta->id_peta,
-                        'kategori_peta'  => $peta->kategori,
+                        // 'peta'  => $peta->id_peta,
+                        // 'kategori_peta'  => $peta->kategori,
                         'login' => 1
                     ]);
                     return redirect('/')->with('success', 'Selamat Datang');

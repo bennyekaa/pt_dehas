@@ -5,17 +5,17 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Masukkan Kategori Bocor Bendungan</div>
+                <div class="card-header">Masukkan Kategori Masalah Yang Terjadi Di Bendungan</div>
                 <div class="card-body">
                     <form action="/transaksi/bocor/proses" method="post" enctype="multipart/form-data">
 
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="kategori" class="col-md-4 col-form-label text-md-end">Kategori Bocor</label>
+                            <label for="kategori" class="col-md-4 col-form-label text-md-end">Input Kategori</label>
                             <div class="col-md-12">
                                 <select name="kategori" id="kategori" class="form-control col-md-6 select2">
-                                    <option value="">--Pilih Kategori Bocor--</option>
+                                    <option value="">--Klik Disini--</option>
                                     @foreach ($kategori as $val)
                                     <option value="{{ $val->id_kategori_bocor }}">{{ $val->nama_kategori }}</option>
                                     @endforeach
@@ -640,7 +640,7 @@
             console.log('a');
             $('#div_penurunan').show();
         }
-        if (nama.trim() == 'PUSARAN AIR DI HULU') {
+        if (nama.trim() == 'PUSARAN AIR DI WADUK') {
             console.log('a');
             $('#div_pusaran').show();
         }

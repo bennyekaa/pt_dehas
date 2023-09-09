@@ -60,3 +60,29 @@
 
     </div>
 @endsection
+<script>
+    $(document).ready(function() {
+        $('a.btn-success').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href'); // URL pembaruan
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token
+                },
+                success: function(response) {
+                    if (response.message === 'Status berhasil diperbarui') {
+                        // Ubah status di tampilan tanpa me-reload halaman
+                        var alert = $(this).closest('tr').find('.alert');
+                        if (alert.hasClass('alert-success')) {
+                            alert.removeClass('alert-success').addClass('alert-danger').text('Tidak Aktif');
+                        } else {
+                            alert.removeClass('alert-danger').addClass('alert-success').text('Aktif');
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>

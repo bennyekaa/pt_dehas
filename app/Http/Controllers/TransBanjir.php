@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Exception;
 use App\Models\Notif;
+use App\Models\peta;
 use App\Models\Role;
 use App\Models\WadukBendungan;
 use DB;
@@ -19,6 +20,7 @@ class TransBanjir extends Controller
     public function index($stat)
     {
         $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
+        $data['peta'] = peta::all();
         session()->put('banjir_mukaair', url()->full());
         // dd($data);
         return view('transaksi.mukaair.index', $data);
@@ -78,7 +80,7 @@ class TransBanjir extends Controller
                 $mukaair->id_role = session('id_role');
                 $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;
-                $mukaair->id_peta = session('peta');
+                // $mukaair->id_peta = session('peta');
                 $mukaair->created_at = date('Y-m-d H:i:s.U');
                 $mukaair->created_by = session('nama');
                 $mukaair->save();
@@ -114,6 +116,7 @@ class TransBanjir extends Controller
                 $batas_siaga = DB::select("SELECT * FROM ref_waduk WHERE status = 3");
                 $batas_awas = DB::select("SELECT * FROM ref_waduk WHERE status = 4");
                 $balai = Role::where('nama_role', $role)->first();
+                // session()->put("current_id", decrypt($id));
                 $bendungan = BendunganBendungan::first();
                 $mukaair = DataMukaAir::find(decrypt($id));
                 $mukaair->id_role = $balai->id_role;

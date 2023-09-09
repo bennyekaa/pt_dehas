@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\BendunganBendungan;
+use App\Models\peta;
 use App\Models\WadukBendungan;
 use Exception;
 use Illuminate\Support\Str;
@@ -21,7 +22,8 @@ class TransBocor extends Controller
 
     public function index($stat)
     {
-        $data['bocor'] = DataBanjirBocor::Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+        $data['bocor'] = DataBanjirBocor::select('*','data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+        $data['peta'] = peta::all();
         session()->put('banjir_bocor', url()->full());
         // $data['bocor'] = DB::table('data_banjir_bocor')
         //     ->join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')
@@ -321,7 +323,7 @@ class TransBocor extends Controller
             $bocor->file_3 = $file_3;
             $bocor->file_4 = $file_4;
             $bocor->file_5 = $file_5;
-            $bocor->id_peta = session('peta');
+            // $bocor->id_peta = session('peta');
             $bocor->created_at = date('Y-m-d H:i:s.U');
             $bocor->created_by = session('id_role');
             // dd($bocor);
@@ -342,6 +344,7 @@ class TransBocor extends Controller
             if ($role == 'BALAI') {
                 $balai = Role::where('nama_role', $role)->first();
                 $bendungan = BendunganBendungan::first();
+                // session()->put("current_id", decrypt($id));
                 $bocor = DataBanjirBocor::find(decrypt($id));
                 $bocor->id_role = $balai->id_role;
                 $bocor->updated_at = date('Y-m-d H:i:s.U');
