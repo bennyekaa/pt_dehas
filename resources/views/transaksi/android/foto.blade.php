@@ -18,13 +18,17 @@
     Not supported by your browser. --}}
     @if (!empty($url1))
     <img src="{{ $url1 }}" class="img-fluid" alt="Responsive image">
-    @elseif(!empty($url2))
+    @endif
+    @if(!empty($url2))
     <img src="{{ $url2 }}" class="img-fluid" alt="Responsive image">
-    @elseif(!empty($url3))
+    @endif
+    @if(!empty($url3))
     <img src="{{ $url3 }}" class="img-fluid" alt="Responsive image">
-    @elseif(!empty($url4))
+    @endif
+    @if(!empty($url4))
     <img src="{{ $url4 }}" class="img-fluid" alt="Responsive image">
-    @elseif(!empty($url5))
+    @endif
+    @if(!empty($url5))
     <img src="{{ $url5 }}" class="img-fluid" alt="Responsive image">
     @endif
 
