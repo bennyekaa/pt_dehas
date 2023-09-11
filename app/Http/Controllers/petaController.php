@@ -78,6 +78,6 @@ class petaController extends Controller
         // }
         // return response()->json(['message' => 'Status berhasil diperbarui']);
         // session()->put('peta', decrypt($id));
-        return redirect(session('android_map'))->with('success', 'Peta Telah Dipilih');
+        return redirect(session('android_map'));
     }
 }
