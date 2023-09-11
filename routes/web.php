@@ -45,6 +45,7 @@ Route::post('/actionlogin', [LoginController::class, 'actionlogin']);
 Route::prefix('android')->group(function () {
     Route::get('menu/{id}', [AndroidController::class, 'tampilmenu']);
     Route::get('foto/{id}', [AndroidController::class, 'tampilfoto']);
+    Route::get('peta/pilih/{id}', [AndroidController::class, 'tampilpetapilih']);
     Route::get('peta/{id}', [AndroidController::class, 'tampilmap']);
     Route::prefix('peta_banjir')->group(function () {
         Route::get('index', [AndroidController::class, 'petabanjir']);
@@ -175,7 +176,8 @@ Route::middleware('checklogin')->group(function () {
 
     Route::get('/peta', [petaController::class, 'index']);
     Route::get('peta/lihat/{id}', [petaController::class, 'lihat']);
-    Route::get('/peta/status/{id}/{id1}/{id2}', [petaController::class, 'status']);
+    Route::get('/peta/status/{id}/{id1}', [petaController::class, 'status']);
+    Route::get('/peta/android/status/{id}/{id1}', [petaController::class, 'statusAndroid']);
 
 
     Route::get('/pendukung', [PendukungController::class, 'index']);

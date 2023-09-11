@@ -27,10 +27,6 @@ class DesaController extends Controller
         return view('master.importdesa');
     }
 
-    public function export()
-    {
-    }
-
     public function proses_excel(Request $request)
     {
         if ($request->fungsi == 'Import') {

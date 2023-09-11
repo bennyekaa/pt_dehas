@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataBanjirBocor;
+use App\Models\DataMukaAir;
 use App\Models\pendukung;
 use App\Models\peta;
 use App\Models\Web_custom;
@@ -16,6 +17,32 @@ class AndroidController extends Controller
         $data['peta'] = peta::where('aktif', 1)->first();
         // dd($data);
         return view('android.petabanjir.index', $data);
+    }
+
+    public function tampilpetapilih($id){
+        $check = DataBanjirBocor::where('id_banjir_bocor', $id)->count();
+        if($check > 0){
+            $data['id'] = $id;
+            $data['trans'] = DataBanjirBocor::where('id_banjir_bocor', $id)->first();
+            $data['peta'] = peta::all();
+            if(empty($data['trans']->id_peta)){
+                $data['gambar'] = "";
+            }else{
+                $data['gambar'] = peta::find($data['trans']->id_peta);
+            }
+        }else{
+            $data['id'] = $id;
+            $data['trans'] = DataMukaAir::where('id_banjir_muka_air', $id)->first();
+            $data['peta'] = peta::all();
+            if (empty($data['trans']->id_peta)) {
+                $data['gambar'] = "";
+            } else {
+                $data['gambar'] = peta::find($data['trans']->id_peta);
+            }
+        }
+        // dd($data);
+        session()->put('android_map', url()->full());
+        return view('transaksi.android.peta', $data);
     }
 
     public function tampilmenu($id)
