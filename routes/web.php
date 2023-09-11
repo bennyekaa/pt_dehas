@@ -52,6 +52,8 @@ Route::prefix('android')->group(function () {
     });
 });
 
+Route::get('/peta/android/status/{id}/{id1}', [petaController::class, 'statusAndroid']);
+
 Route::middleware('checklogin')->group(function () {
     Route::get('/', [HomeController::class, 'index']);
 
@@ -177,7 +179,7 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/peta', [petaController::class, 'index']);
     Route::get('peta/lihat/{id}', [petaController::class, 'lihat']);
     Route::get('/peta/status/{id}/{id1}', [petaController::class, 'status']);
-    Route::get('/peta/android/status/{id}/{id1}', [petaController::class, 'statusAndroid']);
+
 
 
     Route::get('/pendukung', [PendukungController::class, 'index']);
