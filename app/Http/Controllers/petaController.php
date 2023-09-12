@@ -22,7 +22,7 @@ class petaController extends Controller
         return view('master.peta.lihat', $data);
     }
 
-    public function status($id, $kirim, $set){
+    public function status($id, $kirim){
         $peta = peta::find(decrypt($id));
         // $peta->aktif = $set;
         // $peta->updated_at = date('Y-m-d H:i:s.U');
@@ -50,5 +50,34 @@ class petaController extends Controller
         // return response()->json(['message' => 'Status berhasil diperbarui']);
         // session()->put('peta', decrypt($id));
         return redirect(session('banjir_mukaair'))->with('success', 'Peta Telah Dipilih');
+    }
+    public function statusAndroid($id, $kirim){
+        $peta = peta::find($id);
+        // $peta->aktif = $set;
+        // $peta->updated_at = date('Y-m-d H:i:s.U');
+        // $peta->updated_by = session('username');
+        // dd(decrypt($id));
+        $check = DataBanjirBocor::where('id_banjir_bocor',$kirim)->count();
+        if($check > 0){
+            $data = DataBanjirBocor::find($kirim);
+            $data->id_peta = $peta->id_peta;
+            $data->updated_at = date('Y-m-d H:i:s.U');
+            $data->updated_by = 'Generate';
+            $data->save();
+        }else{
+            $data = DataMukaAir::find($kirim);
+            // dd($data);
+            $data->id_peta = $peta->id_peta;
+            $data->updated_at = date('Y-m-d H:i:s.U');
+            $data->updated_by = 'Generate';
+            $data->save();
+        }
+        // $peta->save();
+        // if($set == 1){
+        //     peta::where('id_peta','<>',decrypt($id))->update(['aktif' => 0]);
+        // }
+        // return response()->json(['message' => 'Status berhasil diperbarui']);
+        // session()->put('peta', decrypt($id));
+        return redirect(session('android_map'));
     }
 }
