@@ -323,7 +323,7 @@ class TransBocor extends Controller
             $bocor->file_3 = $file_3;
             $bocor->file_4 = $file_4;
             $bocor->file_5 = $file_5;
-            // $bocor->id_peta = session('peta');
+            $bocor->id_peta = '3734e646e63b0bf4713d99ac203f33c3';
             $bocor->created_at = date('Y-m-d H:i:s.U');
             $bocor->created_by = session('id_role');
             // dd($bocor);

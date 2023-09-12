@@ -70,7 +70,7 @@ class LoginController extends Controller
                             'id_desa'  => $user->id_desa,
                             'total_device'  => $count_device,
                             // 'peta'  => $peta->id_peta,
-                            'kategori_peta'  => $peta->kategori,
+                            // 'kategori_peta'  => $peta->kategori,
                             'login' => 1
                         ]);
                         return redirect('/')->with('success', 'Selamat Datang');
@@ -140,8 +140,8 @@ class LoginController extends Controller
                             'mac_aktif'  => $device->aktif,
                             'id_desa'  => $user->id_desa,
                             'total_device'  => $count_device,
-                            'peta'  => $peta->id_peta,
-                            'kategori_peta'  => $peta->kategori,
+                            // 'peta'  => $peta->id_peta,
+                            // 'kategori_peta'  => $peta->kategori,
                             'login' => 1
                         ]);
                         return redirect('/')->with('success', 'Selamat Datang');
@@ -164,8 +164,8 @@ class LoginController extends Controller
                         'mac_aktif'  => $device->aktif,
                         'id_desa'  => $user->id_desa,
                         'total_device'  => $count_device,
-                        'peta'  => $peta->id_peta,
-                        'kategori_peta'  => $peta->kategori,
+                        // 'peta'  => $peta->id_peta,
+                        // 'kategori_peta'  => $peta->kategori,
                         'login' => 1
                     ]);
                     return redirect('/')->with('success', 'Selamat Datang');

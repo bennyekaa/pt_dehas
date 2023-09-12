@@ -51,11 +51,13 @@
                 <div class="card mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <!-- <a class="btn btn-primary" href="/desa/tambah" style="float: left;"> + Tambah Desa Baru</a> -->
-                        <div class="btn-group">
-                            <!-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                        EXCEL</a> -->
-                            <a href="{{ url('/importdesa') }}" class="btn btn-primary my-3">IMPORT EXCEL</a>
-                        </div>
+                        @if (session('role') == 'DEVELOPER')
+                            <div class="btn-group">
+                                <!-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
+                                    EXCEL</a> -->
+                                <a href="{{ url('/importdesa') }}" class="btn btn-primary my-3">IMPORT EXCEL</a>
+                            </div>
+                        @endif
                     </div>
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
@@ -93,11 +95,12 @@
                                 <th>Laki - Laki</th>
                                 <th>Perempuan</th>
                                 <th>Total L/P</th> --}}
-                                    <th>Dibuat Pada</th>
+                                    {{-- <th>Dibuat Pada</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
                                     <th>Diupdate Oleh</th>
-                                    <th>Action</th>
+                                    <th>Action</th> --}}
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -162,10 +165,10 @@
                                 <td>{{ $p->laki_laki }} </td>
                                 <td>{{ $p->perempuan }} </td>
                                 <td>{{ $p->total_LP }} </td> --}}
-                                        <td>{{ $p->created_at }}</td>
+                                        {{-- <td>{{ $p->created_at }}</td>
                                         <td>{{ $p->created_by }}</td>
                                         <td>{{ $p->updated_at }}</td>
-                                        <td>{{ $p->updated_by }}</td>
+                                        <td>{{ $p->updated_by }}</td> --}}
                                         <td>
                                             <div class="btn-group">
                                                 <a class="btn btn-warning" title="Edit"
@@ -173,8 +176,8 @@
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <!-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a> -->
+                                                        <i class="fa fa-trash"></i>
+                                                    </a> -->
                                             </div>
                                     </tr>
                                     </td>

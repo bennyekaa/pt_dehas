@@ -96,7 +96,7 @@
                 </div>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
                 aria-expanded="true" aria-controls="collapseTrans">
                 <i class="fab fa-fw fa-wpforms"></i>
@@ -111,7 +111,7 @@
                         href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
-        </li>
+        </li> --}}
 
         {{-- <li class="nav-item">
             <a class="nav-link" href="{{ url('laporan') }}">
@@ -162,18 +162,18 @@
                     <a class="collapse-item" href="{{ url('device') }}">Device</a>
                     <a class="collapse-item" href="{{ url('kategoribocor') }}">Kategori Bocor</a>
                     <a class="collapse-item" href="{{ url('pengungsian') }}">Pengungsian</a>
-                    <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a>
+                    {{-- <a class="collapse-item" href="{{ url('statusbocor') }}">Status Bocor</a> --}}
                     <a class="collapse-item" href="{{ url('titikkumpul') }}">Titik Kumpul</a>
                     <a class="collapse-item" href="{{ url('user') }}">User</a>
                     <a class="collapse-item" href="{{ url('jabatan') }}">Jabatan</a>
-                    <a class="collapse-item" href="{{ url('pendukung') }}">Pendukung</a>
+                    {{-- <a class="collapse-item" href="{{ url('pendukung') }}">Pendukung</a> --}}
                     {{-- <a class="collapse-item" href="{{ url('peta') }}">Peta</a> --}}
                     <a class="collapse-item" href="{{ url('waduk') }}">Waduk</a>
                     <a class="collapse-item" href="{{ url('web') }}">Website</a>
                 </div>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
                 aria-expanded="true" aria-controls="collapseTrans">
                 <i class="fab fa-fw fa-wpforms"></i>
@@ -188,7 +188,7 @@
                         href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
                 </div>
             </div>
-        </li>
+        </li> --}}
 
         {{-- <li class="nav-item">
             <a class="nav-link" href="{{ url('laporan') }}">

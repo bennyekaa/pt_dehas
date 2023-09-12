@@ -69,7 +69,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        {{-- <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end">Tinggi Banjir</label>
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control" name="banjir" placeholder="Tinggi Banjir" value="{{$desa->banjir}}" required autofocus>
@@ -228,7 +228,7 @@
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control" name="total_LP" placeholder="Total L&P" value="{{$desa->total_LP}}" required autofocus>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">

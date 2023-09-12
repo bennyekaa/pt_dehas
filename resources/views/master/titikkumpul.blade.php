@@ -23,10 +23,10 @@
                                 <th>Nama Kecamatan</th>
                                 <th>Nama Kabupaten</th>
                                 <th>Jarak ke Titik Kumpul</th>
-                                <th>Dibuat Pada</th>
+                                {{-- <th>Dibuat Pada</th>
                                 <th>Dibuat Oleh</th>
                                 <th>Diupdate Pada</th>
-                                <th>Diupdate Oleh</th>
+                                <th>Diupdate Oleh</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -44,10 +44,10 @@
                                 <td>{{ $p->nama_kecamatan }} </td>
                                 <td>{{ $p->nama_kabupaten }} </td>
                                 <td>{{ $p->jarak_ke_tk }} KM</td>
-                                <td>{{ $p->created_at }}</td>
+                                {{-- <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->created_by }}</td>
                                 <td>{{ $p->updated_at }}</td>
-                                <td>{{ $p->updated_by }}</td>
+                                <td>{{ $p->updated_by }}</td> --}}
                                 <td>
                                     <div class="btn-group">
                                         <a class="btn btn-warning" title="Edit" href="/titikkumpul/edit/{{ encrypt($p->id_titik_kumpul) }}">
