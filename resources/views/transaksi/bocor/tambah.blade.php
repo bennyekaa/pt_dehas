@@ -25,28 +25,28 @@
 
                         <div class="row mb-3" id="div_didih" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="didihtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="didihtinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="didihlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="didihlokasi" class="form-control" >
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Diameter</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Diameter *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="didihdiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
+                                    <input type="number" step="any" name="didihdiameter" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="file" name="didihupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="didihupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="didih_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="didih_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -57,7 +57,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="didihketerangan"></textarea>
                                 </div>
@@ -67,27 +67,27 @@
 
                         <div class="row mb-3" id="div_gempa" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="gempatinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="gempatinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="gempalokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="gempalokasi" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Kekuatan</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Kekuatan *SR</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="kekuatan" class="form-control" placeholder="Masukkan SR *(angka)">
+                                    <input type="number" step="any" name="kekuatan" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="gempaupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="gempaupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="gempa_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="gempa_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -98,7 +98,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="gempaketerangan"></textarea>
                                 </div>
@@ -107,21 +107,21 @@
 
                         <div class="row mb-3" id="div_badai" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="badaitinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="badaitinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="badailokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="badailokasi" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label for="file" name="badaiupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="badaiupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="badai_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="badai_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="badaiketerangan"></textarea>
                                 </div>
@@ -140,32 +140,32 @@
 
                         <div class="row mb-3" id="div_longsor" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="longsortinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="longsortinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="longsorlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="longsorlokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Panjang</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Panjang *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="longsorpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
+                                    <input type="number" step="any" name="longsorpanjang" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lebar</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lebar *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="longsorlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
+                                    <input type="number" step="any" name="longsorlebar" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="longsorupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="longsorupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="longsor_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="longsor_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -175,7 +175,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="longsorketerangan"></textarea>
                                 </div>
@@ -184,26 +184,26 @@
 
                         <div class="row mb-3" id="div_lubang" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="lubangtinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="lubangtinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="lubanglokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="lubanglokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Diameter</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Diameter *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="lubangdiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
+                                    <input type="number" step="any" name="lubangdiameter" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="lubangupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="lubangupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="lubang_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="lubang_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -213,7 +213,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="lubangketerangan"></textarea>
                                 </div>
@@ -222,38 +222,38 @@
 
                         <div class="row mb-3" id="div_penurunan" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="penurunantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="penurunantinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="penurunanlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="penurunanlokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Tinggi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Tinggi *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="penurunantinggi" class="form-control" placeholder="Masukkan Tinggi *(angka)">
+                                    <input type="number" step="any" name="penurunantinggi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Panjang</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Panjang *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="penurunanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
+                                    <input type="number" step="any" name="penurunanpanjang" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lebar</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lebar *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="penurunanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
+                                    <input type="number" step="any" name="penurunanlebar" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="penurunanupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="penurunanupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="penurunan_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="penurunan_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -263,7 +263,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="penurunanketerangan"></textarea>
                                 </div>
@@ -272,26 +272,26 @@
 
                         <div class="row mb-3" id="div_pusaran" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pusarantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="pusarantinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pusaranlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="pusaranlokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Diameter</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Diameter *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pusarandiameter" class="form-control" placeholder="Masukkan Diameter *(angka)">
+                                    <input type="number" step="any" name="pusarandiameter" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="pusaranupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="pusaranupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="pusaran_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="pusaran_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -301,7 +301,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="pusaranketerangan"></textarea>
                                 </div>
@@ -310,21 +310,21 @@
 
                         <div class="row mb-3" id="div_rembesan" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="rembesantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="rembesantinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="rembesanlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="rembesanlokasi" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label for="file" name="rembesanupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="rembesanupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="rembesan_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="rembesan_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -334,7 +334,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="rembesanketerangan"></textarea>
                                 </div>
@@ -343,33 +343,33 @@
 
                         <div class="row mb-3" id="div_retakan" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="retakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="retakantinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="retakanlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="retakanlokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Panjang</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Panjang *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="retakanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
+                                    <input type="number" step="any" name="retakanpanjang" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
 
-                                <label class="col-md-4 col-form-label text-md-end">Lebar</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lebar *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="retakanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
+                                    <input type="number" step="any" name="retakanlebar" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="file" name="rentakanupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label for="file" name="rentakanupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="retakan_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="retakan_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -379,7 +379,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="retakanketerangan"></textarea>
                                 </div>
@@ -388,34 +388,34 @@
 
                         <div class="row mb-3" id="div_pergerakan" style="display: none">
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Muka Air</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pergerakantinggiair" placeholder="Masukkan Tinggi Air *(angka)" autofocus>
+                                    <input type="number" step="any" name="pergerakantinggiair" autofocus>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lokasi</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="pergerakanlokasi" class="form-control" placeholder="Masukkan Lokasi">
+                                    <input type="text" name="pergerakanlokasi" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Panjang</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Panjang *meter</label>
                                 <div class="col-md-8">
-                                    <input type="number" step="any" name="pergerakanpanjang" class="form-control" placeholder="Masukkan Panjang *(angka)">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <label class="col-md-4 col-form-label text-md-end">Lebar</label>
-                                <div class="col-md-8">
-                                    <input type="number" step="any" name="pergerakanlebar" class="form-control" placeholder="Masukkan Lebar *(angka)">
+                                    <input type="number" step="any" name="pergerakanpanjang" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <label for="file" name="pergerakanupload" class="col-md-4 col-form-label text-md-end">Pilih File</label>
+                                <label class="col-md-4 col-form-label text-md-end">Input Lebar *meter</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="pergerakanlebar" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="file" name="pergerakanupload" class="col-md-4 col-form-label text-md-end">Upload Foto</label>
                                 <div class="col-md-8">
                                     <input type="file" class="form-control-file mb-3" name="pergerakan_data_file" accept="image/*" onchange="return fileValidation()">
                                     <input type="file" class="form-control-file mb-3" name="pergerakan_data_file2" accept="image/*" onchange="return fileValidation()">
@@ -425,7 +425,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Keterangan Tambahan</label>
+                                <label for="keterangan" class="col-md-4 col-form-label text-md-end">Input Keterangan Tambahan (Jika Ada)</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" name="pergerakanketerangan"></textarea>
                                 </div>
