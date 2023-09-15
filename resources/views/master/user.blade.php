@@ -38,34 +38,7 @@
                                         <td>{{ $p->email }} </td>
                                         <td>{{ $p->hp }} </td>
                                         <td>{{ $p->username }} </td>
-                                        <!-- <td>{{ $p->nama_role }} </td> -->
-                                        @if ($p->nama_role == 'ADMIN')
-                                            <td>
-                                                <div class="alert alert-secondary" role="alert"> ADMIN</div>
-                                            </td>
-                                        @elseif($p->nama_role == 'DEVELOPER')
-                                            <td>
-                                                <div class="alert alert-primary" role="alert" style="font-color:white;">
-                                                    DEVELOPER
-                                                </div>
-                                            </td>
-                                        @elseif($p->nama_role == 'POLISI')
-                                            <td>
-                                                <div class="alert alert-info" role="alert"> POLISI</div>
-                                            </td>
-                                        @elseif($p->nama_role == 'BALAI')
-                                            <td>
-                                                <div class="alert alert-success" role="alert"> BALAI</div>
-                                            </td>
-                                        @elseif($p->nama_role == 'OPERATOR')
-                                            <td>
-                                                <div class="alert alert-dark" role="alert"> OPERATOR</div>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <div class="alert alert-warning" role="alert"> PENDUDUK</div>
-                                            </td>
-                                        @endif
+                                        <td>{{ $p->nama_role }} </td>
                                         <td>{{ $p->total_device }} </td>
                                         <td>{{ $p->created_at }}</td>
                                         <td>{{ $p->created_by }}</td>

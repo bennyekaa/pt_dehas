@@ -8,7 +8,7 @@
                 <div class="card-header">{{('Tambah User Baru') }}</div>
 
                 <div class="card-body">
-                    <form action="{{url('actiondaftar')}}" method="post">
+                    <form action="{{url('user/store')}}" method="post">
 
                         @csrf
 
