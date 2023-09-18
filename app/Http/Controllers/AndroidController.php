@@ -83,9 +83,27 @@ class AndroidController extends Controller
 
     public function tampilmap($id)
     {
+        $check = DataBanjirBocor::where('id_banjir_bocor', $id)->count();
+        if ($check > 0) {
+            $data['id'] = $id;
+            $data['trans'] = DataBanjirBocor::where('id_banjir_bocor', $id)->first();
+            if (empty($data['trans']->id_peta)) {
+                $data['gambar'] = "";
+            } else {
+                $data['gambar'] = peta::find($data['trans']->id_peta);
+            }
+        } else {
+            $data['id'] = $id;
+            $data['trans'] = DataMukaAir::where('id_banjir_muka_air', $id)->first();
+            if (empty($data['trans']->id_peta)) {
+                $data['gambar'] = "";
+            } else {
+                $data['gambar'] = peta::find($data['trans']->id_peta);
+            }
+        }
         // $data['pendukung'] = pendukung::where('keterangan', $id)->get();
         // dd($data);
-        $data['peta'] = peta::where('id_peta', $id)->first();
+        // $data['peta'] = peta::where('id_peta', $id)->first();
         // dd($data);
         return view('android.notif.index', $data);
     }

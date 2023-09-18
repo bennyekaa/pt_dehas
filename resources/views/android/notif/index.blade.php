@@ -13,7 +13,7 @@
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     </head>
 <body>
-    <img src="{{ asset($peta->nama_gambar) }}" height="100%" id="image">
+    <img src="{{ asset($gambar->nama_gambar) }}" height="100%" id="image">
     {{-- <button class="btn btn-block btn-primary" onclick="ZoomIn()"> Zoom IN </button>
     <button class="btn btn-block btn-primary" onclick="ZoomOut()"> Zoom Out </button>
     <script>
