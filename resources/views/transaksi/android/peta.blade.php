@@ -57,15 +57,14 @@
                                                                 <i class="fa fa-check"></i>
                                                             </a>
                                                         </div> --}}
-                                                        <form id="updateStatusForm" method="POST"
+                                                        {{-- <form id="updateStatusForm" method="GET"
                                                             action="{{ url('peta/android/status') }}/{{ $item->id_peta }}/{{ $id }}">
-                                                            @csrf
+                                                            @csrf --}}
                                                             <label>
                                                                 <input type="checkbox" name="status"
-                                                                    id="statusCheckbox">
-                                                                Status
+                                                                    id="statusCheckbox{{$item->id_peta}}" data-idpeta="{{ $item->id_peta }}">
                                                             </label>
-                                                        </form>
+                                                        {{-- </form> --}}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -89,7 +88,7 @@
     <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('assets/js/ruang-admin.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/ruang-admin.min.js') }}"></script> --}}
 
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
 
@@ -103,18 +102,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#statusCheckbox').change(function() {
+            $('[id^="statusCheckbox"]').change(function() {
                 var isChecked = $(this).is(':checked');
 
+                var idPeta = $(this).data('idpeta');
+
+                console.log(idPeta);
+
                 $.ajax({
-                    type: 'POST',
-                    url: '{{ route('route_name') }}', // Ganti dengan nama rute yang sesuai
+                    type: 'GET',
+                    url: "{{ URL('peta/android/status') }}/" + idPeta + "/{{ $id }}", // Ganti dengan nama rute yang sesuai
                     data: {
                         _token: '{{ csrf_token() }}',
-                        status: isChecked ? 1 : 0, // Mengirim status ke server
+                        status: isChecked ? 1 : 0,
                     },
                     success: function(response) {
-                        // Tanggapan dari server jika diperlukan
+                        location.reload();
                     },
                     error: function(xhr, status, error) {
                         // Penanganan kesalahan jika diperlukan
