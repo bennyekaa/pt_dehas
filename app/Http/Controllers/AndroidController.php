@@ -30,7 +30,7 @@ class AndroidController extends Controller
             }else{
                 $data['gambar'] = peta::find($data['trans']->id_peta);
             }
-        }elseif($check == 0){
+        }else{
             $data['id'] = $id;
             $data['trans'] = DataMukaAir::where('id_banjir_muka_air', $id)->first();
             $data['peta'] = peta::all();
@@ -40,7 +40,7 @@ class AndroidController extends Controller
                 $data['gambar'] = peta::find($data['trans']->id_peta);
             }
         }
-        dd($data);
+        // dd($data);
         session()->put('android_map', url()->full());
         return view('transaksi.android.peta', $data);
     }
