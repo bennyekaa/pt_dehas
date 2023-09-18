@@ -49,7 +49,7 @@ class petaController extends Controller
         // }
         // return response()->json(['message' => 'Status berhasil diperbarui']);
         // session()->put('peta', decrypt($id));
-        return redirect(session('banjir_mukaair'))->with('success', 'Peta Telah Dipilih');
+        return redirect(session('current'))->with('success', 'Peta Telah Dipilih');
     }
     public function statusAndroid($id, $kirim){
         $peta = peta::find($id);

@@ -51,12 +51,21 @@
                                                     <td>{{ $i++ }} </td>
                                                     <td>{{ $item->nama_peta }} </td>
                                                     <td>
-                                                        <div class="btn-group">
+                                                        {{-- <div class="btn-group">
                                                             <a class="btn btn-primary" title="Aktifkan"
                                                                 href="{{ url('peta/android/status')}}/{{$item->id_peta}}/{{$id}}">
                                                                 <i class="fa fa-check"></i>
                                                             </a>
-                                                        </div>
+                                                        </div> --}}
+                                                        <form id="updateStatusForm" method="POST"
+                                                            action="{{ url('peta/android/status') }}/{{ $item->id_peta }}/{{ $id }}">
+                                                            @csrf
+                                                            <label>
+                                                                <input type="checkbox" name="status"
+                                                                    id="statusCheckbox">
+                                                                Status
+                                                            </label>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -92,6 +101,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#statusCheckbox').change(function() {
+                var isChecked = $(this).is(':checked');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('route_name') }}', // Ganti dengan nama rute yang sesuai
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        status: isChecked ? 1 : 0, // Mengirim status ke server
+                    },
+                    success: function(response) {
+                        // Tanggapan dari server jika diperlukan
+                    },
+                    error: function(xhr, status, error) {
+                        // Penanganan kesalahan jika diperlukan
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

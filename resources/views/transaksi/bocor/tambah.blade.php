@@ -34,7 +34,7 @@
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="didihlokasi" class="form-control" >
+                                    <input type="text" name="didihlokasi" class="form-control">
                                 </div>
                             </div>
 

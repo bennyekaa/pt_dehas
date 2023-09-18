@@ -441,36 +441,38 @@ class ApiController extends Controller
                 ]);
             } elseif ($bocor > 0) {
                 if ($request->status == 1) {
-                    $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
-                    $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
-                    $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
+                    // $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
+                    // $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
+                    // $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 1";
                     DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                        'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                        // 'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                     ]);
                     return response()->json([
                         'status' => true,
                         'message' => 'update success'
                     ]);
                 } elseif ($request->status == 2) {
-                    $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
-                    $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 2";
+                    // $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    // $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    // $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " STATUS WASPADA 2";
                     DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                        'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                        // 'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                     ]);
                     return response()->json([
                         'status' => true,
                         'message' => 'update success'
                     ]);
                 } elseif ($request->status == 3) {
-                    $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
-                    $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
-                    $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . "STATUS SIAGA";
+                    // $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                    // $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(ZONA EVAKUASI) segera MENGUNGSI";
+                    // $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . "STATUS SIAGA";
                     DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                        'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                     ]);
                     return response()->json([
                         'status' => true,
@@ -478,12 +480,12 @@ class ApiController extends Controller
                     ]);
                 } elseif ($request->status == 4) {
                     // dd($request->all());
-                    $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
-                    $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . "STATUS AWAS";
+                    // $pesan_pemda = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                    // $pesan_umum = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(ZONA EVAKUASI 1 dan ZONA EVAKUASI 2) segera MENGUNGSI";
+                    // $pesan = $bendungan->nama_bendungan . " Pada " . $bocor_get->created_at . "STATUS AWAS";
                     DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                        'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                     ]);
                     return response()->json([
                         'status' => true,

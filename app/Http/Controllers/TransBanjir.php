@@ -22,6 +22,7 @@ class TransBanjir extends Controller
         $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
         $data['peta'] = peta::all();
         session()->put('banjir_mukaair', url()->full());
+        session()->put('current', url()->full());
         // dd($data);
         return view('transaksi.mukaair.index', $data);
     }

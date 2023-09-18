@@ -92,47 +92,54 @@
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 @elseif (session('nama_role') == 'BALAI')
-                                                    <div class="dropdown">
-                                                        <a class="btn btn-primary dropdown-toggle"
-                                                            title="Pilih Peta Kondisi" href="#" role="button"
-                                                            id="dropdownMenuLink" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false"> Pilih Peta
-                                                        </a>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                            @foreach ($peta as $map)
-                                                            <a class="btn btn-dark" title="Lihat Peta"
-                                                                href="{{ url('peta/lihat') }}/{{ encrypt($map->id_peta) }}"
-                                                                target="_blank">
-                                                                <i class="fa fa-eye"></i>
+                                                    @if (session('menu') == 1)
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-primary dropdown-toggle"
+                                                                title="Pilih Peta Kondisi" href="#" role="button"
+                                                                id="dropdownMenuLink" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false"> Pilih Peta
                                                             </a>
-                                                            <a class="dropdown-item"
-                                                                    href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}/1"
-                                                                    title="{{ $map->nama_peta }}">
-                                                                    {{ $map->nama_peta }}
-                                                                </a>
-                                                                {{-- <a class="dropdown-item"
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                                @foreach ($peta as $map)
+                                                                    <a class="btn btn-dark" title="Lihat Peta"
+                                                                        href="{{ url('peta/lihat') }}/{{ encrypt($map->id_peta) }}"
+                                                                        target="_blank">
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a>
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}"
+                                                                        title="{{ $map->nama_peta }}">
+                                                                        {{ $map->nama_peta }}
+                                                                    </a>
+                                                                    {{-- <a class="dropdown-item"
                                                                     href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}/1"
                                                                     title="{{ $map->nama_peta }}">{{ $map->nama_peta }}</a> --}}
-                                                            @endforeach
+                                                                @endforeach
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    @if (!empty($item->id_peta))
-                                                        <a class="btn btn-primary" title="Kirim Ke BPBD"
-                                                            href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BPBD">
-                                                            <i class="fa fa-arrow-right"></i>
-                                                        </a>
+                                                        @if (!empty($item->id_peta))
+                                                            <a class="btn btn-primary" title="Kirim Ke BPBD"
+                                                                href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BPBD">
+                                                                <i class="fa fa-arrow-right"></i>
+                                                            </a>
+                                                        @endif
+                                                        {{-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
+                                                    href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </a> --}}
+                                                    @else
+                                                        <div class="alert alert-danger" status="alert">Tidak Memiliki Akses
+                                                        </div>
                                                     @endif
-                                                    {{-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
-                                                        href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a> --}}
                                                 @elseif(session('nama_role') == 'BPBD')
-                                                    <div class="dropdown">
-                                                        <a class="btn btn-primary" title="Kirim Pemberitahuan Ke Penduduk"
-                                                            href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/PENDUDUK">
-                                                            <i class="fa fa-arrow-right"></i>
-                                                        </a>
-                                                        {{-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    @if (session('menu') == 1)
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-primary"
+                                                                title="Kirim Pemberitahuan Ke Penduduk"
+                                                                href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/PENDUDUK">
+                                                                <i class="fa fa-arrow-right"></i>
+                                                            </a>
+                                                            {{-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item"
                                                                 href="{{ url('transaksi/mukaair/pesan') }}/{{ encrypt($item->id_banjir_muka_air) }}/2"
                                                                 title="Kirim Ke Bupati">Bupati</a>
@@ -141,7 +148,11 @@
                                                             <a class="dropdown-item"
                                                                 href="{{ url('transaksi/mukaair/pesan') }}/{{ encrypt($item->id_banjir_muka_air) }}/4">PENDUDUK</a>
                                                         </div> --}}
-                                                    </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="alert alert-danger" status="alert">Tidak Memiliki Akses
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
