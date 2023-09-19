@@ -424,7 +424,7 @@ class TransBocor extends Controller
                 // $lanjut = Role::where('role_bocor', 3)->first();
                 $bendungan = BendunganBendungan::first();
                 $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = 3;
+                $notif->role_bocor = 2;
                 $notif->status = $status;
                 $bocor->id_role = null;
                 $bocor->status = $status;
@@ -586,7 +586,7 @@ class TransBocor extends Controller
                 }
                 $bocor->updated_at = date('Y-m-d H:i:s.U');
                 $bocor->updated_by = session('nama');
-                $notif->role_bocor = 3;
+                $notif->role_bocor = 2;
                 $notif->updated_at = date('Y-m-d H:i:s.U');
                 $notif->updated_by = session('nama');
                 $bocor->save();
