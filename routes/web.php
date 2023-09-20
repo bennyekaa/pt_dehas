@@ -189,6 +189,10 @@ Route::middleware('checklogin')->group(function () {
 
     //Auth::routes();
 
+    Route::get('laporan', [LaporanController::class, 'index']);
+    Route::get('laporan/export', [LaporanController::class, 'export']);
+    Route::get('laporan/lihat', [LaporanController::class, 'lihat']);
+
     Route::prefix('transaksi')->group(function(){
         Route::prefix('mukaair')->group(function(){
             Route::get('index/{id}', [TransBanjir::class, 'index']);

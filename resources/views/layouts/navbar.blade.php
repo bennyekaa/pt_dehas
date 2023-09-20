@@ -153,8 +153,7 @@
                 <i class="far fa-fw fa-window-maximize"></i>
                 <span>Master</span>
             </a>
-            <div id="collapseMaster" class="collapse" aria-labelledby="headingMaster"
-                data-parent="#accordionSidebar">
+            <div id="collapseMaster" class="collapse" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Master</h6>
                     <a class="collapse-item" href="{{ url('bendungan') }}">Bendungan</a>
@@ -227,12 +226,30 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air
+                        Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi
+                        Masalah</a>
                 </div>
             </div>
         </li>
+        @if (session('menu') == 1)
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
+                    aria-expanded="true" aria-controls="collapseForm">
+                    <i class="fab fa-fw fa-wpforms"></i>
+                    <span>Cetak</span>
+                </a>
+                <div id="collapseForm" class="collapse" aria-labelledby="headingForm"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Laporan</h6>
+                        <a class="collapse-item" href="form_advanceds.html">Data Bendungan</a>
+                    </div>
+                </div>
+            </li>
+        @endif
     @elseif (session('nama_role') == 'BPBD')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
@@ -264,9 +281,11 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air Waduk</a>
+                        href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air
+                        Waduk</a>
                     <a class="collapse-item"
-                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi Masalah</a>
+                        href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi
+                        Masalah</a>
                 </div>
             </div>
         </li>
