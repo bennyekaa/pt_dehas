@@ -33,13 +33,13 @@ class LaporanExport implements FromView, WithDrawings, ShouldAutoSize
             for ($i = 1; $i <= 5; $i++) {
                 $imageColumn = 'file_' . $i;
                 if (!empty($item->$imageColumn)) {
-                    $imagePath = storage_path('app/' . $item->$imageColumn); // Adjust the path as needed
+                    $imagePath = public_path('storage/public/berkas/' . $item->$imageColumn); // Adjust the path as needed
                     $drawing = new Drawing();
                     $drawing->setName('Dokumentasi ' . $i);
                     $drawing->setDescription('Dokumentasi ' . $i);
                     $drawing->setPath($imagePath);
                     $drawing->setHeight(100); // Set the height of the image
-                    $drawing->setCoordinates('F' . $item->your_row_number); // Set the cell where the image should appear
+                    $drawing->setCoordinates('F' . $item->row); // Set the cell where the image should appear
                     $drawings[] = $drawing;
                 }
             }
