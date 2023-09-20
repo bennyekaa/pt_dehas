@@ -11,7 +11,6 @@
 
 <body>
     <div class="table-responsive">
-        <img src="{{asset('assets/img/logo/emblem.jpg')}}">
         <table class="table">
             <thead>
                 <tr>
@@ -34,15 +33,35 @@
                 @foreach ($laporan as $item)
                     <tr>
                         <td>{{ $i++ }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ empty($item->status_muka_air) ? $item->status_bocor : $item->status_muka_air }}</td>
+                        <td>{{ empty($item->tinggi_muka_air) ? $item->tinggi_bocor : $item->tinggi_muka_air }}</td>
+                        <td>{{ empty($item->debit_air) ? $item->debit : $item->debit_air }}</td>
+                        <td>{{ $item->pesan_default }}</td>
+                        <td>
+                            @if (!empty($item->file_1))
+                                <img src="{{ Storage::url($item->file_1) }}" class="img-fluid" alt="Responsive image">
+                            @endif
+                        </td>
+                        <td>
+                            @if (!empty($item->file_2))
+                                <img src="{{ Storage::url($item->file_2) }}" class="img-fluid" alt="Responsive image">
+                            @endif
+                        </td>
+                        <td>
+                            @if (!empty($item->file_3))
+                                <img src="{{ Storage::url($item->file_3) }}" class="img-fluid" alt="Responsive image">
+                            @endif
+                        </td>
+                        <td>
+                            @if (!empty($item->file_4))
+                                <img src="{{ Storage::url($item->file_4) }}" class="img-fluid" alt="Responsive image">
+                            @endif
+                        </td>
+                        <td>
+                            @if (!empty($item->file_5))
+                                <img src="{{ Storage::url($item->file_5) }}" class="img-fluid" alt="Responsive image">
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

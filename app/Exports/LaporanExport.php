@@ -69,7 +69,7 @@ FROM
 	LEFT JOIN
 	data_banjir_muka_air
 	ON
-		notif.id_referensi = data_banjir_muka_air.id_banjir_muka_air")
+		notif.id_referensi = data_banjir_muka_air.id_banjir_muka_air WHERE notif.status <> 0")
         ]);
     }
 }
