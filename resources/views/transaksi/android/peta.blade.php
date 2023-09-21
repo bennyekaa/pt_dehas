@@ -61,8 +61,8 @@
                                                             action="{{ url('peta/android/status') }}/{{ $item->id_peta }}/{{ $id }}">
                                                             @csrf --}}
                                                             <label>
-                                                                <input type="checkbox" name="status"
-                                                                    id="statusCheckbox{{$item->id_peta}}" data-idpeta="{{ $item->id_peta }}">
+                                                                <input type="checkbox" name="status" class="checkoption"
+                                                                    id="statusCheckbox{{$item->id_peta}}" data-idpeta="{{ $item->id_peta }}" {{$trans->id_peta == $item->id_peta ? 'checked' : ''}}>
                                                             </label>
                                                         {{-- </form> --}}
                                                     </td>
@@ -102,6 +102,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $('.checkoption').click(function() {
+              $('.checkoption').not(this).prop('checked', false);
+            });
+
+
             $('[id^="statusCheckbox"]').change(function() {
                 var isChecked = $(this).is(':checked');
 
@@ -124,6 +129,8 @@
                     }
                 });
             });
+
+
         });
     </script>
 </body>

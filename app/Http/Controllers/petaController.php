@@ -31,14 +31,14 @@ class petaController extends Controller
         $check = DataBanjirBocor::where('id_banjir_bocor',decrypt($kirim))->count();
         if($check > 0){
             $data = DataBanjirBocor::find(decrypt($kirim));
-            $data->id_peta = $id;
+            $data->id_peta = decrypt($id);
             $data->updated_at = date('Y-m-d H:i:s.U');
             $data->updated_by = 'Generate';
             $data->save();
         }else{
             $data = DataMukaAir::find(decrypt($kirim));
             // dd($data);
-            $data->id_peta = $id;
+            $data->id_peta = decrypt($id);
             $data->updated_at = date('Y-m-d H:i:s.U');
             $data->updated_by = 'Generate';
             $data->save();
