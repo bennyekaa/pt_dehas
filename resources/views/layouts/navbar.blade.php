@@ -234,7 +234,7 @@
                 </div>
             </div>
         </li>
-        @if (session('menu') == 1)
+        {{-- @if (session('menu') == 1)
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
                     aria-expanded="true" aria-controls="collapseForm">
@@ -249,7 +249,7 @@
                     </div>
                 </div>
             </li>
-        @endif
+        @endif --}}
     @elseif (session('nama_role') == 'BPBD')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
