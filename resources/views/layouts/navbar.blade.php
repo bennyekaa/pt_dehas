@@ -219,7 +219,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                 aria-expanded="true" aria-controls="collapseBootstrap">
                 <i class="far fa-fw fa-window-maximize"></i>
-                <span>Detail Data Waduk</span>
+                <span>Detail Data Waduk<span class="right badge badge-danger">{{session('total')}}</span></span>
             </a>
             <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
                 data-parent="#accordionSidebar">
@@ -227,10 +227,10 @@
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
                         href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air
-                        Waduk</a>
+                        Waduk<span class="right badge badge-danger">{{session('hitungmukaair')}}</span></a>
                     <a class="collapse-item"
                         href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi
-                        Masalah</a>
+                        Masalah<span class="right badge badge-danger">{{session('hitungbocor')}}</span></a>
                 </div>
             </div>
         </li>
@@ -274,7 +274,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                 aria-expanded="true" aria-controls="collapseBootstrap">
                 <i class="far fa-fw fa-window-maximize"></i>
-                <span>Detail Data Waduk</span>
+                <span>Detail Data Waduk<span class="right badge badge-danger">{{$total}}</span></span>
             </a>
             <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
                 data-parent="#accordionSidebar">
@@ -282,10 +282,10 @@
                     <h6 class="collapse-header">Detail Data Waduk</h6>
                     <a class="collapse-item"
                         href="{{ url('transaksi/mukaair/index') }}/{{ encrypt(session('id_role')) }}">Muka Air
-                        Waduk</a>
+                        Waduk<span class="right badge badge-danger">{{session('hitungmukaair')}}</span></a>
                     <a class="collapse-item"
                         href="{{ url('transaksi/bocor/index') }}/{{ encrypt(session('id_role')) }}">Indikasi
-                        Masalah</a>
+                        Masalah<span class="right badge badge-danger">{{session('hitungbocor')}}</span></a>
                 </div>
             </div>
         </li>

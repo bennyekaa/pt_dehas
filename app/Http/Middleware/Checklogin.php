@@ -23,6 +23,7 @@ class Checklogin
             if(empty(session('device'))){
                 return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
             }else{
+                // $hitungnotif = RiwayatPenghargaan::select(DB::raw('count(id_riwayat_penghargaan) as hitungpenghargaan'))->where('status_ajuan', '=', 1)->count();
                 return $next($request);
             }
             // dd(substr(shell_exec('getmac'), 159,20));

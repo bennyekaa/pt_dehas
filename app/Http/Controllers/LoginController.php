@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\DataBanjirBocor;
+use App\Models\DataMukaAir;
 use App\Models\Log;
 use App\Models\peta;
 use App\Models\UserBendungan;
@@ -74,6 +76,24 @@ class LoginController extends Controller
                             // 'kategori_peta'  => $peta->kategori,
                             'login' => 1
                         ]);
+                        $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->count();
+                        $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
+                        $total = $hitungbocor + $hitungmukaair;
+                        if (($hitungmukaair) > 0) {
+                            session()->put("hitungmukaair", $hitungmukaair);
+                        } else {
+                            session()->put("hitungmukaair", 0);
+                        }
+                        if (($hitungbocor) > 0) {
+                            session()->put("hitungbocor", $hitungbocor);
+                        } else {
+                            session()->put("hitungbocor", 0);
+                        }
+                        if (($total) > 0) {
+                            session()->put("total", $total);
+                        } else {
+                            session()->put("total", 0);
+                        }
                         return redirect('/')->with('success', 'Selamat Datang');
                         // update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
                         // Log::firstOrCreate('');
@@ -99,6 +119,24 @@ class LoginController extends Controller
                         // 'kategori_peta'  => $peta->kategori,
                         'login' => 1
                     ]);
+                    $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->count();
+                    $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
+                    $total = $hitungbocor + $hitungmukaair;
+                    if (($hitungmukaair) > 0) {
+                        session()->put("hitungmukaair", $hitungmukaair);
+                    } else {
+                        session()->put("hitungmukaair", 0);
+                    }
+                    if (($hitungbocor) > 0) {
+                        session()->put("hitungbocor", $hitungbocor);
+                    } else {
+                        session()->put("hitungbocor", 0);
+                    }
+                    if (($total) > 0) {
+                        session()->put("total", $total);
+                    } else {
+                        session()->put("total", 0);
+                    }
                     return redirect('/')->with('success', 'Selamat Datang');
                 }
             }
@@ -147,6 +185,24 @@ class LoginController extends Controller
                             // 'kategori_peta'  => $peta->kategori,
                             'login' => 1
                         ]);
+                        $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->count();
+                        $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
+                        $total = $hitungbocor + $hitungmukaair;
+                        if (($hitungmukaair) > 0) {
+                            session()->put("hitungmukaair", $hitungmukaair);
+                        } else {
+                            session()->put("hitungmukaair", 0);
+                        }
+                        if (($hitungbocor) > 0) {
+                            session()->put("hitungbocor", $hitungbocor);
+                        } else {
+                            session()->put("hitungbocor", 0);
+                        }
+                        if (($total) > 0) {
+                            session()->put("total", $total);
+                        } else {
+                            session()->put("total", 0);
+                        }
                         return redirect('/')->with('success', 'Selamat Datang');
                         // update(['mac_add' => trim(substr(shell_exec('getmac'), 159, 20))]);
                         // Log::firstOrCreate('');
@@ -172,6 +228,24 @@ class LoginController extends Controller
                         // 'kategori_peta'  => $peta->kategori,
                         'login' => 1
                     ]);
+                    $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->count();
+                    $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
+                    $total = $hitungbocor+$hitungmukaair;
+                    if (($hitungmukaair) > 0) {
+                        session()->put("hitungmukaair", $hitungmukaair);
+                    } else {
+                        session()->put("hitungmukaair", 0);
+                    }
+                    if (($hitungbocor) > 0) {
+                        session()->put("hitungbocor", $hitungbocor);
+                    } else {
+                        session()->put("hitungbocor", 0);
+                    }
+                    if (($total) > 0) {
+                        session()->put("total", $total);
+                    } else {
+                        session()->put("total", 0);
+                    }
                     return redirect('/')->with('success', 'Selamat Datang');
                 }
             }
