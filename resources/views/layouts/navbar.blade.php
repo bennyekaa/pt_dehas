@@ -274,7 +274,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                 aria-expanded="true" aria-controls="collapseBootstrap">
                 <i class="far fa-fw fa-window-maximize"></i>
-                <span>Detail Data Waduk<span class="right badge badge-danger">{{$total}}</span></span>
+                <span>Detail Data Waduk<span class="right badge badge-danger">{{session('total')}}</span></span>
             </a>
             <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap"
                 data-parent="#accordionSidebar">
