@@ -156,22 +156,31 @@ FROM
             // return view('laporan.cetak', $data);
 
 
-            // $view = \View::make('laporan.cetak', $data);
-            // $html = $view->render();
-            // // dd($html);
+            // $viewP = \View::make('laporan.cetak_atas', $data);
+            // $htmlP = $viewP->render();
+            $viewL = \View::make('laporan.cetak', $data);
+            $htmlL = $viewL->render();
 
-            // $pdf = new TCPDF;
+            // dd($html);
 
-            // $bMargin = $pdf::getBreakMargin();
-            // $auto_page_break = $pdf::getAutoPageBreak();
-            // $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+            $pdf = new TCPDF;
 
-            // $pdf::SetTitle('LAPORAN');
-            // $pdf::SetMargins(10, 5, 10, true);
-            // $pdf::AddPage();
-            // $pdf::writeHTML($html, true, false, true, false, '');
 
-            // PDF::Output('LAPORAN.pdf');
+            $bMargin = $pdf::getBreakMargin();
+            $auto_page_break = $pdf::getAutoPageBreak();
+            $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+
+            $pdf::SetTitle('LAPORAN');
+            $pdf::SetMargins(5, 0, 5, true);
+            //  $pdf::SetMargins($left, $top, $right = -1, $keepmargins = false)
+            // $pdf::AddPage('L');
+            // $pdf::writeHTML($htmlP, true, false, true, false, '');
+            $pdf::AddPage('L');
+            $pdf::writeHTML($htmlL, true, false, true, false, '');
+            // QRCODE,H : QR-CODE Best error correction
+            // $pdf::write2DBarcode('tes', 'QRCODE,H', 220, 50, 25, 25, $style, 'N');
+
+            PDF::Output('LAPORAN.pdf');
         } elseif (empty($request->selesai)) {
             $data['bendungan'] = BendunganBendungan::all()->first();
             $data['mulai'] = $request->mulai;
@@ -249,24 +258,33 @@ FROM
                     notif.id_referensi = data_banjir_muka_air.id_banjir_muka_air
             WHERE notif.status <> 0 AND notif.updated_at >= '" . $request->mulai . "' ORDER BY notif.updated_at ASC");
 
-            return view('laporan.cetak', $data);
+            // return view('laporan.cetak', $data);
 
-            // $view = \View::make('laporan.cetak', $data);
-            // $html = $view->render();
-            // // dd($html);
+            // $viewP = \View::make('laporan.cetak_atas', $data);
+            // $htmlP = $viewP->render();
+            $viewL = \View::make('laporan.cetak', $data);
+            $htmlL = $viewL->render();
 
-            // $pdf = new TCPDF;
+            // dd($html);
 
-            // $bMargin = $pdf::getBreakMargin();
-            // $auto_page_break = $pdf::getAutoPageBreak();
-            // $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+            $pdf = new TCPDF;
 
-            // $pdf::SetTitle('LAPORAN');
-            // $pdf::SetMargins(10, 5, 10, true);
-            // $pdf::AddPage();
-            // $pdf::writeHTML($html, true, false, true, false, '');
 
-            // PDF::Output('LAPORAN.pdf');
+            $bMargin = $pdf::getBreakMargin();
+            $auto_page_break = $pdf::getAutoPageBreak();
+            $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+
+            $pdf::SetTitle('LAPORAN');
+            $pdf::SetMargins(5, 0, 5, true);
+            // $pdf::SetMargins($left, $top, $right = -1, $keepmargins = false)
+            // $pdf::AddPage('L');
+            // $pdf::writeHTML($htmlP, true, false, true, false, '');
+            $pdf::AddPage('L');
+            $pdf::writeHTML($htmlL, true, false, true, false, '');
+            // QRCODE,H : QR-CODE Best error correction
+            // $pdf::write2DBarcode('tes', 'QRCODE,H', 220, 50, 25, 25, $style, 'N');
+
+            PDF::Output('LAPORAN.pdf');
         } else {
             $data['bendungan'] = BendunganBendungan::all()->first();
             $data['mulai'] = $request->mulai;
@@ -361,24 +379,33 @@ FROM
                     notif.id_referensi = data_banjir_muka_air.id_banjir_muka_air
             WHERE notif.status <> 0 AND notif.updated_at >= '" . $request->mulai . "' AND notif.updated_at <= '" . $request->selesai . "' ORDER BY notif.updated_at ASC");
 
-            return view('laporan.cetak', $data);
+            // return view('laporan.cetak', $data);
 
-            // $view = \View::make('laporan.cetak', $data);
-            // $html = $view->render();
-            // // dd($html);
+            // $viewP = \View::make('laporan.cetak_atas', $data);
+            // $htmlP = $viewP->render();
+            $viewL = \View::make('laporan.cetak', $data);
+            $htmlL = $viewL->render();
 
-            // $pdf = new TCPDF;
+            // dd($html);
 
-            // $bMargin = $pdf::getBreakMargin();
-            // $auto_page_break = $pdf::getAutoPageBreak();
-            // $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+            $pdf = new TCPDF;
 
-            // $pdf::SetTitle('LAPORAN');
-            // $pdf::SetMargins(10, 5, 10, true);
-            // $pdf::AddPage();
-            // $pdf::writeHTML($html, true, false, true, false, '');
 
-            // PDF::Output('LAPORAN.pdf');
+            $bMargin = $pdf::getBreakMargin();
+            $auto_page_break = $pdf::getAutoPageBreak();
+            $pdf::SetAutoPageBreak($auto_page_break, $bMargin);
+
+            $pdf::SetTitle('LAPORAN');
+            $pdf::SetMargins(5, 0, 5, true);
+            // $pdf::SetMargins($left, $top, $right = -1, $keepmargins = false)
+            // $pdf::AddPage('L');
+            // $pdf::writeHTML($htmlP, true, false, true, false, '');
+            $pdf::AddPage('L');
+            $pdf::writeHTML($htmlL, true, false, true, false, '');
+            // QRCODE,H : QR-CODE Best error correction
+            // $pdf::write2DBarcode('tes', 'QRCODE,H', 220, 50, 25, 25, $style, 'N');
+
+            PDF::Output('LAPORAN.pdf');
         }
     }
 

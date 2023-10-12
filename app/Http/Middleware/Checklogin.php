@@ -20,9 +20,11 @@ class Checklogin
         // dd(session()->all());
         if (Session::get('login') == 1) {
             // dd(session()->all());
-            if(empty(session('device'))){
+            if (empty(session('device'))) {
                 return redirect('/login')->with('error', 'Device Anda tidak terdaftar!!');
-            }else{
+            } elseif (session('role') == 'DEWA') {
+                return $next($request);
+            } else {
                 // $hitungnotif = RiwayatPenghargaan::select(DB::raw('count(id_riwayat_penghargaan) as hitungpenghargaan'))->where('status_ajuan', '=', 1)->count();
                 return $next($request);
             }

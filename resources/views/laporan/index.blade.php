@@ -8,7 +8,7 @@
                     <div class="card-header">Laporan</div>
 
                     <div class="card-body">
-                        <form action="{{ url('laporan/proses') }}" method="post">
+                        <form action="{{ url('laporan/proses') }}" method="post" target="_blank">
                             @csrf
                             {{-- <input type="hidden" name="id_user" value="{{$user->id_user}}"> --}}
                             {{-- <input type="hidden" name="fungsi" value="Edit"> --}}

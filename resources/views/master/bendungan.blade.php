@@ -8,10 +8,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <a class="btn btn-primary" href="/bendungan/tambah" style="float: left;"> + Tambah Data
-                            Bendungan</a>
-                    </div>
+                    @if (empty($bendungan))
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <a class="btn btn-primary" href="/bendungan/tambah" style="float: left;"> + Tambah Data
+                                Bendungan</a>
+                        </div>
+                    @endif
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                             <thead class="thead-light">

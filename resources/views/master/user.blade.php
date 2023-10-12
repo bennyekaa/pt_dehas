@@ -8,9 +8,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <a class="btn btn-primary" href="/user/tambah" style="float: left;"> + Tambah User Baru</a>
-                    </div>
+                    @if (session('nama_role') == 'DEWA')
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <a class="btn btn-primary" href="/user/tambah" style="float: left;"> + Tambah User Baru</a>
+                        </div>
+                    @endif
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                             <thead class="thead-light">
@@ -47,14 +49,14 @@
                                         <td>
                                             <div class="btn-group">
                                                 <a class="btn btn-info" title="Reset Password"
-                                                    href="{{'user/reset'}}/{{ encrypt($p->id_user) }}">
+                                                    href="{{ 'user/reset' }}/{{ encrypt($p->id_user) }}">
                                                     <i class="fa fa-arrows-h"></i>
                                                 </a>
                                                 <a class="btn btn-warning" title="Edit"
                                                     href="/user/edit/{{ encrypt($p->id_user) }}">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                @if (session('nama_role') == 'DEVELOPER')
+                                                @if (session('nama_role') == 'DEWA')
                                                     <a class="btn btn-danger alert_notif" title="Hapus"
                                                         href="/user/hapus/{{ encrypt($p->id_user) }}">
                                                         <i class="fa fa-trash"></i>

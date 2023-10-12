@@ -51,10 +51,10 @@
                 <div class="card mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <!-- <a class="btn btn-primary" href="/desa/tambah" style="float: left;"> + Tambah Desa Baru</a> -->
-                        @if (session('role') == 'DEVELOPER')
+                        @if (session('nama_role') == 'DEWA')
                             <div class="btn-group">
                                 <!-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                    EXCEL</a> -->
+                                        EXCEL</a> -->
                                 <a href="{{ url('/importdesa') }}" class="btn btn-primary my-3">IMPORT EXCEL</a>
                             </div>
                         @endif
@@ -100,7 +100,9 @@
                                     <th>Diupdate Pada</th>
                                     <th>Diupdate Oleh</th>
                                     <th>Action</th> --}}
-                                    <th>Aksi</th>
+                                    @if (session('nama_role') == 'DEWA')
+                                        <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,18 +171,20 @@
                                         <td>{{ $p->created_by }}</td>
                                         <td>{{ $p->updated_at }}</td>
                                         <td>{{ $p->updated_by }}</td> --}}
-                                        <td>
-                                            <div class="btn-group">
-                                                <a class="btn btn-warning" title="Edit"
-                                                    href="/desa/edit/{{ encrypt($p->id_desa) }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <!-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a> -->
-                                            </div>
+                                        @if (session('nama_role') == 'DEWA')
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-warning" title="Edit"
+                                                        href="/desa/edit/{{ encrypt($p->id_desa) }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <!-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </a> -->
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
-                                    </td>
                                 @endforeach
                             </tbody>
                         </table>

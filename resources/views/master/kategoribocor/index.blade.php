@@ -9,10 +9,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <a class="btn btn-primary" href="{{ url('kategoribocor/tambah') }}" style="float: left;"> + Tambah 
-                            Kategori</a>
-                    </div>
+                    @if (session('role') == 'DEWA')
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <a class="btn btn-primary" href="{{ url('kategoribocor/tambah') }}" style="float: left;"> + Tambah
+                                Kategori</a>
+                        </div>
+                    @endif
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                             <thead class="thead-light">
@@ -23,7 +25,9 @@
                                     <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
                                     <th>Diupdate Oleh</th>
-                                    <th>Action</th>
+                                    @if (session('role') == 'DEWA')
+                                        <th>Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,18 +42,20 @@
                                         <td>{{ $item->created_by }}</td>
                                         <td>{{ $item->updated_at }}</td>
                                         <td>{{ $item->updated_by }}</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a class="btn btn-warning" title="Edit"
-                                                    href="{{ url('kategoribocor/edit') }}/{{ encrypt($item->id_kategori_bocor) }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
-                                                    href="{{ url('kategoribocor/hapus') }}/{{ encrypt($item->id_kategori_bocor) }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        @if (session('role') == 'DEWA')
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-warning" title="Edit"
+                                                        href="{{ url('kategoribocor/edit') }}/{{ encrypt($item->id_kategori_bocor) }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
+                                                        href="{{ url('kategoribocor/hapus') }}/{{ encrypt($item->id_kategori_bocor) }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

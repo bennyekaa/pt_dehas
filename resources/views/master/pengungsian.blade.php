@@ -20,7 +20,7 @@
                     <div class="card mb-4">
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                             <!-- <a class="btn btn-primary" href="/pengungsian/tambah" style="float: left;"> + Tambah
-                                Pengungsian</a> -->
+                                        Pengungsian</a> -->
                         </div>
                         <div class="table-responsive p-3">
                             <table class="table align-items-center table-flush table-hover" id="dataTableHover">
@@ -38,7 +38,9 @@
                                         <th>Dibuat Oleh</th>
                                         <th>Diupdate Pada</th>
                                         <th>Diupdate Oleh</th> --}}
-                                        <th>Action</th>
+                                        @if (session('nama_role') == 'DEWA')
+                                            <th>Action</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,18 +61,20 @@
                                             <td>{{ $p->created_by }}</td>
                                             <td>{{ $p->updated_at }}</td>
                                             <td>{{ $p->updated_by }}</td> --}}
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-warning" title="Edit"
-                                                        href="/pengungsian/edit/{{ encrypt($p->id_pengungsian) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                    <!-- <a class="btn btn-danger alert_notif" title="Hapus"
-                                                        href="/pengungsian/hapus/{{ encrypt($p->id_pengungsian) }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a> -->
-                                                </div>
-                                            </td>
+                                            @if (session('nama_role') == 'DEWA')
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-warning" title="Edit"
+                                                            href="/pengungsian/edit/{{ encrypt($p->id_pengungsian) }}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <a class="btn btn-danger alert_notif" title="Hapus"
+                                                            href="/pengungsian/hapus/{{ encrypt($p->id_pengungsian) }}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>

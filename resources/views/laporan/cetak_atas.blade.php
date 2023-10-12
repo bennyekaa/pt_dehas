@@ -15,20 +15,20 @@
         <table class="table">
             <thead>
                 {{-- <caption colspan="10" style="text-align: center">LAPORAN HARIAN</caption> --}}
-                {{-- <tr>
-                    <td colspan="2">Nama Bendungan</td>
+                <tr>
+                    <td colspan="2" rowspan="3">Nama Bendungan</td>
                     <td>{{ $bendungan->nama_bendungan }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2">Unit Kerja</td>
+                    <td colspan="2" rowspan="3">Unit Kerja</td>
                     <td>{{ $bendungan->pengelola_bendungan }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2">Lokasi</td>
+                    <td colspan="2" rowspan="3">Lokasi</td>
                     <td>{{ $bendungan->lokasi_bendungan }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2">Hari / Tanggal</td>
+                    <td colspan="2" rowspan="3">Hari / Tanggal</td>
                     <td>
                         @if (empty($hari1))
                             {{ $hari2 }} / {{ date('d-m-Y', strtotime($selesai)) }}
@@ -38,8 +38,8 @@
                             {{ $hari1 }} / {{   date('d-m-Y', strtotime($mulai)) }} - {{ $hari2 }} / {{ date('d-m-Y', strtotime($selesai)) }}
                         @endif
                     </td>
-                </tr> --}}
-                <tr>
+                </tr>
+                {{-- <tr>
                     <th>No</th>
                     <th>Waktu Pencatatan</th>
                     <th>Status</th>
@@ -122,7 +122,7 @@
                         </td>
                     </tr>
                 @endforeach
-            </tbody>
+            </tbody> --}}
         </table>
     </div>
 </body>
