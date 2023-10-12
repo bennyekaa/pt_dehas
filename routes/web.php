@@ -190,6 +190,7 @@ Route::middleware('checklogin')->group(function () {
     //Auth::routes();
 
     Route::get('laporan', [LaporanController::class, 'index']);
+    Route::post('laporan/proses', [LaporanController::class, 'proses']);
     Route::get('laporan/export', [LaporanController::class, 'export']);
     Route::get('laporan/lihat', [LaporanController::class, 'lihat']);
 

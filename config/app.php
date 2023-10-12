@@ -198,6 +198,7 @@ return [
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
 
     ],
 
@@ -216,7 +217,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
-
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
 
     ])->toArray(),
 

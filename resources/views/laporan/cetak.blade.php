@@ -10,11 +10,38 @@
 </head>
 
 <body>
+    <img src="{{ asset('assets/img/Pemali Juana_1.jpg') }}">
     <div class="table-responsive">
         <table class="table">
             <thead>
+                <caption colspan="10" style="text-align: center">LAPORAN HARIAN</caption>
+                <tr>
+                    <td colspan="4">Nama Bendungan</td>
+                    <td>{{ $bendungan->nama_bendungan }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Unit Kerja</td>
+                    <td>{{ $bendungan->pengelola_bendungan }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Lokasi</td>
+                    <td>{{ $bendungan->lokasi_bendungan }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Hari / Tanggal</td>
+                    <td>
+                        @if (empty($hari1))
+                            {{ $hari2 }} / {{ date('d-m-Y', strtotime($selesai)) }}
+                        @elseif(empty($hari2))
+                            {{ $hari1 }} / {{ date('d-m-Y', strtotime($mulai)) }}
+                        @else
+                            {{ $hari1 }} / {{   date('d-m-Y', strtotime($mulai)) }} - {{ $hari2 }} / {{ date('d-m-Y', strtotime($selesai)) }}
+                        @endif
+                    </td>
+                </tr>
                 <tr>
                     <th>No</th>
+                    <th>Waktu Pencatatan</th>
                     <th>Status</th>
                     <th>Muka Air (Meter)</th>
                     <th>Debit Outflow (m3/detik)</th>
@@ -33,7 +60,38 @@
                 @foreach ($laporan as $item)
                     <tr>
                         <td>{{ $i++ }}</td>
-                        <td>{{ empty($item->status_muka_air) ? $item->status_bocor : $item->status_muka_air }}</td>
+                        <td>{{ date('d-m-Y H:i:s', strtotime($item->updated_at)) }}</td>
+                        <td>
+                            @if (empty($item->status_muka_air))
+                                @if ($item->status_bocor == 0)
+                                    {{ 'NORMAL' }}
+                                @elseif ($item->status_bocor == 1)
+                                    {{ 'WASPADA 1' }}
+                                @elseif($item->status_bocor == 2)
+                                    {{ 'WASPADA 2' }}
+                                @elseif($item->status_bocor == 3)
+                                    {{ 'SIAGA' }}
+                                @elseif($item->status_bocor == 4)
+                                    {{ 'AWAS' }}
+                                @else
+                                    {{ 'BAHAYA' }}
+                                @endif
+                            @else
+                                @if ($item->status_muka_air == 0)
+                                    {{ 'NORMAL' }}
+                                @elseif ($item->status_muka_air == 1)
+                                    {{ 'WASPADA 1' }}
+                                @elseif($item->status_muka_air == 2)
+                                    {{ 'WASPADA 2' }}
+                                @elseif($item->status_muka_air == 3)
+                                    {{ 'SIAGA' }}
+                                @elseif($item->status_muka_air == 4)
+                                    {{ 'AWAS' }}
+                                @else
+                                    {{ 'BAHAYA' }}
+                                @endif
+                            @endif
+                        </td>
                         <td>{{ empty($item->tinggi_muka_air) ? $item->tinggi_bocor : $item->tinggi_muka_air }}</td>
                         <td>{{ empty($item->debit_air) ? $item->debit : $item->debit_air }}</td>
                         <td>{{ $item->pesan_default }}</td>

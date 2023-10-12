@@ -234,7 +234,7 @@
                 </div>
             </div>
         </li>
-        {{-- @if (session('menu') == 1)
+        @if (session('menu') == 1)
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
                     aria-expanded="true" aria-controls="collapseForm">
@@ -245,11 +245,11 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Laporan</h6>
-                        <a class="collapse-item" href="form_advanceds.html">Data Bendungan</a>
+                        <a class="collapse-item" href="{{url('laporan')}}">Data Bendungan</a>
                     </div>
                 </div>
             </li>
-        @endif --}}
+        @endif
     @elseif (session('nama_role') == 'BPBD')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
