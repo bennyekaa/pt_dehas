@@ -36,11 +36,13 @@
                                     <th>Panjang (Meter)</th>
                                     <th>Lebar (Meter)</th>
                                     <th>Keterangan</th>
-                                    <th>Foto</th>
-                                    <th>Foto</th>
-                                    <th>Foto</th>
-                                    <th>Foto</th>
-                                    <th>Foto</th>
+                                    @if (session('nama_role') == 'BALAI')
+                                        <th>Foto</th>
+                                        <th>Foto</th>
+                                        <th>Foto</th>
+                                        <th>Foto</th>
+                                        <th>Foto</th>
+                                    @endif
                                     {{-- <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
                                     <th>Diupdate Oleh</th>
@@ -73,54 +75,56 @@
                                         <td>{{ $item->lebar }} </td>
                                         <td>{{ $item->keterangan }} </td>
                                         {{-- <td>file-upload {{$file++}} </td> --}}
-                                        @if (!empty($item->file_1))
-                                            <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
-                                                    href="{{ url('transaksi/bocor/view_berkas') }}/{{ encrypt($item->id_banjir_bocor) }}"
-                                                    target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a></td>
-                                        @else
-                                            <td></td>
-                                        @endif
-                                        @if (!empty($item->file_2))
-                                            {{-- <td>file-upload {{$file++}} </td> --}}
-                                            <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
-                                                    href="{{ url('transaksi/bocor/view_berkas2') }}/{{ encrypt($item->id_banjir_bocor) }}"
-                                                    target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a></td>
-                                            {{-- <td>file-upload {{$file++}} </td> --}}
-                                        @else
-                                            <td></td>
-                                        @endif
-                                        @if (!empty($item->file_3))
-                                            <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
-                                                    href="{{ url('transaksi/bocor/view_berkas3') }}/{{ encrypt($item->id_banjir_bocor) }}"
-                                                    target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a></td>
-                                            {{-- <td>file-upload {{$file++}} </td> --}}
-                                        @else
-                                            <td></td>
-                                        @endif
-                                        @if (!empty($item->file_4))
-                                            <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
-                                                    href="{{ url('transaksi/bocor/view_berkas4') }}/{{ encrypt($item->id_banjir_bocor) }}"
-                                                    target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a></td>
-                                            {{-- <td>file-upload {{$file++}} </td> --}}
-                                        @else
-                                            <td></td>
-                                        @endif
-                                        @if (!empty($item->file_5))
-                                            <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
-                                                    href="{{ url('transaksi/bocor/view_berkas5') }}/{{ encrypt($item->id_banjir_bocor) }}"
-                                                    target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a></td>
-                                        @else
-                                            <td></td>
+                                        @if (session('nama_role') == 'BALAI')
+                                            @if (!empty($item->file_1))
+                                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
+                                                        href="{{ url('transaksi/bocor/view_berkas') }}/{{ encrypt($item->id_banjir_bocor) }}"
+                                                        target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
+                                            @if (!empty($item->file_2))
+                                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
+                                                        href="{{ url('transaksi/bocor/view_berkas2') }}/{{ encrypt($item->id_banjir_bocor) }}"
+                                                        target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a></td>
+                                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                            @else
+                                                <td></td>
+                                            @endif
+                                            @if (!empty($item->file_3))
+                                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
+                                                        href="{{ url('transaksi/bocor/view_berkas3') }}/{{ encrypt($item->id_banjir_bocor) }}"
+                                                        target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a></td>
+                                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                            @else
+                                                <td></td>
+                                            @endif
+                                            @if (!empty($item->file_4))
+                                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
+                                                        href="{{ url('transaksi/bocor/view_berkas4') }}/{{ encrypt($item->id_banjir_bocor) }}"
+                                                        target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a></td>
+                                                {{-- <td>file-upload {{$file++}} </td> --}}
+                                            @else
+                                                <td></td>
+                                            @endif
+                                            @if (!empty($item->file_5))
+                                                <td><a class="btn btn-warning" title="Lihat Bukti Dukung"
+                                                        href="{{ url('transaksi/bocor/view_berkas5') }}/{{ encrypt($item->id_banjir_bocor) }}"
+                                                        target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
                                         @endif
                                         {{-- <td>{{ $item->created_by }}</td>
                                         <td>{{ $item->updated_at }}</td>
@@ -197,12 +201,18 @@
                                                     @endif
                                                 @elseif(session('nama_role') == 'BPBD')
                                                     @if (session('menu') == 1)
+                                                        <a class="btn btn-dark" title="Lihat Peta"
+                                                            href="{{ url('peta/lihat') }}/{{ encrypt($item->id_peta) }}"
+                                                            target="_blank">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
                                                         <a class="btn btn-primary" title="Kirim Pemberitahuan Ke Penduduk"
                                                             href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}/PENDUDUK">
                                                             <i class="fa fa-arrow-right"></i>
                                                         </a>
                                                     @else
-                                                        <div class="alert alert-danger" status="alert">Tidak Memiliki Akses
+                                                        <div class="alert alert-danger" status="alert">Tidak Memiliki
+                                                            Akses
                                                         </div>
                                                     @endif
                                                 @endif
