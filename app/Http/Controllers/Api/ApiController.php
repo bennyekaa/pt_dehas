@@ -366,6 +366,7 @@ class ApiController extends Controller
                 'data_banjir_muka_air.updated_at as updated_at_muka_air',
                 'data_banjir_muka_air.updated_by as updated_by_muka_air',
                 'data_banjir_muka_air.id_peta as id_peta_muka_air',
+                'data_banjir_muka_air.bendungan as bendungan_muka_air',
                 'pm.kategori as peta_muka_air',
                 'ref_kategori_bocor.nama_kategori',
                 'a.nama_role as role_bocor',
@@ -389,6 +390,7 @@ class ApiController extends Controller
                 'data_banjir_bocor.updated_at as updated_at_bocor',
                 'data_banjir_bocor.updated_by as updated_by_bocor',
                 'data_banjir_bocor.id_peta as id_peta_bocor',
+                'data_banjir_bocor.bendungan as bendungan_bocor',
                 'pb.kategori as peta_bocor'
             )
                 ->leftJoin('data_banjir_bocor', 'data_banjir_bocor.id_banjir_bocor', '=', 'notif.id_referensi')

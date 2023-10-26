@@ -97,9 +97,9 @@ class UserController extends Controller
 		$id_user =Str::uuid();
 		$check = UserBendungan::where('id_role', $request->id_role)->count();
 		try {
-			if ($check > 0) {
-				return redirect(('/user'))->with('error', 'Jabatan sudah digunakan');
-			}else {
+			// if ($check > 0) {
+			// 	return redirect(('/user'))->with('error', 'Jabatan sudah digunakan');
+			// }else {
 				DB::table('ref_user')->insert([
 					'id_user' => $id_user,
 					'nama' => $request->nama,
@@ -119,7 +119,7 @@ class UserController extends Controller
 					'created_at' => date('Y-m-d H:i:s.U'),
 					'created_by' => session('nama')
 				]);
-			}
+			// }
 
 		} catch (Exception $e) {
 

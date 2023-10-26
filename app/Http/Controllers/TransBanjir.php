@@ -82,6 +82,7 @@ class TransBanjir extends Controller
                 $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;
                 $mukaair->id_peta = '3734e646e63b0bf4713d99ac203f33c3';
+                $mukaair->bendungan = session('bendungan');
                 $mukaair->created_at = date('Y-m-d H:i:s.U');
                 $mukaair->created_by = session('nama');
                 $mukaair->save();

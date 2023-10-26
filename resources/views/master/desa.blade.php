@@ -54,7 +54,7 @@
                         @if (session('nama_role') == 'DEWA')
                             <div class="btn-group">
                                 <!-- <a href="/desa/export_excel" class="btn btn-success my-3" data-target="#importExcel">EXPORT
-                                        EXCEL</a> -->
+                                            EXCEL</a> -->
                                 <a href="{{ url('/importdesa') }}" class="btn btn-primary my-3">IMPORT EXCEL</a>
                             </div>
                         @endif
@@ -72,29 +72,7 @@
                                     <th>Kabupaten</th>
                                     <th>Jarak Dari Bendungan</th>
                                     <th>Kategori</th>
-                                    {{-- <th>Banjir (m)</th>
-                                <th>Kecepatan Max</th>
-                                <th>Waktu Tiba (jam)</th>
-                                <th>Waktu Surut (jam)</th>
-                                <th>Durasi Banjir (jam)</th>
-                                <th>Jumlah Jiwa</th>
-                                <th>Jumlah KK</th>
-                                <th>Rendah</th>
-                                <th>Sedang</th>
-                                <th>Tinggi</th>
-                                <th>Total</th>
-                                <th>KK</th>
-                                <th>Tidak Terdampak</th>
-                                <th>Zona Bahaya</th>
-                                <th>Balita</th>
-                                <th>Anak</th>
-                                <th>Muda</th>
-                                <th>Dewasa</th>
-                                <th>Manula</th>
-                                <th>Total Jiwa</th>
-                                <th>Laki - Laki</th>
-                                <th>Perempuan</th>
-                                <th>Total L/P</th> --}}
+                                    <th>Zona Bahaya</th>
                                     {{-- <th>Dibuat Pada</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Diupdate Pada</th>
@@ -144,29 +122,7 @@
                                                 <div class="alert alert-dark" role="alert"> WSA Total</div>
                                             </td>
                                         @endif
-                                        {{-- <td>{{ $p->banjir }} </td>
-                                <td>{{ $p->kec_max }} </td>
-                                <td>{{ $p->waktu_tiba }} </td>
-                                <td>{{ $p->waktu_surut }} </td>
-                                <td>{{ $p->durasi_banjir }} </td>
-                                <td>{{ $p->jumlah_jiwa }} </td>
-                                <td>{{ $p->jumlah_kk }} </td>
-                                <td>{{ $p->rendah }} </td>
-                                <td>{{ $p->sedang }} </td>
-                                <td>{{ $p->tinggi }} </td>
-                                <td>{{ $p->total }} </td>
-                                <td>{{ $p->kk }} </td>
-                                <td>{{ $p->tidak_terdampak }} </td>
-                                <td>{{ $p->zona_bahaya }} </td>
-                                <td>{{ $p->balita }} </td>
-                                <td>{{ $p->anak }} </td>
-                                <td>{{ $p->muda }} </td>
-                                <td>{{ $p->dewasa }} </td>
-                                <td>{{ $p->manula }} </td>
-                                <td>{{ $p->total_jiwa }} </td>
-                                <td>{{ $p->laki_laki }} </td>
-                                <td>{{ $p->perempuan }} </td>
-                                <td>{{ $p->total_LP }} </td> --}}
+                                        <td>{{ $p->zona_bahaya }} </td>
                                         {{-- <td>{{ $p->created_at }}</td>
                                         <td>{{ $p->created_by }}</td>
                                         <td>{{ $p->updated_at }}</td>
@@ -179,8 +135,8 @@
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                     <!-- <a class="btn btn-danger alert_notif" id="notif" title="Hapus" href="/desa/hapus/{{ encrypt($p->id_desa) }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a> -->
+                                                        <i class="fa fa-trash"></i>
+                                                    </a> -->
                                                 </div>
                                             </td>
                                         @endif
