@@ -19,7 +19,11 @@ class TransBanjir extends Controller
 {
     public function index($stat)
     {
-        $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
+        if(session('nama_role') == 'BALAI'){
+            $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
+        }else{
+            $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->where('bendungan', session('bendungan'))->orderBy('created_at', 'DESC')->get();
+        }
         $data['peta'] = peta::all();
         session()->put('banjir_mukaair', url()->full());
         session()->put('current', url()->full());
@@ -42,30 +46,90 @@ class TransBanjir extends Controller
         // }
         if ($request->fungsi == "Tambah") {
             try {
-                $master_muka_air = WadukBendungan::all();
-                $cari_status = DB::select("SELECT * FROM ref_waduk WHERE " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
-                $h1 = $request->tinggi_air-$cari_status[0]->ambang;
-                $h2 = $request->tinggi_air-$cari_status[0]->ambang_1;
-                $h1_result = '';
-                $h2_result = '';
-                if($h1 <= 0){
-                    $h1_result = 0;
-                }else{
-                    $h1_result = $h1;
-                }
-                if($h2 <= 0){
-                    $h2_result = 0;
-                }else{
-                    $h2_result = $h2;
-                }
-                $htotal = 0;
-                if($h1 <= 0){
+                if (session('bendungan') == 1) {
                     $htotal = 0;
-                }else{
-                    $hitung1 = ((pow($h1_result, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
-                    $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
-                    $htotal = $hitung1+$hitung2;
+                    $master_muka_air = WadukBendungan::all();
+                    $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '1' AND " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+                    $h1 = $request->tinggi_air - $cari_status[0]->ambang;
+                    $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                } elseif (session('bendungan') == 2) {
+                    $htotal = 0;
+                    $pintu1 = 0;
+                    $pintu2 = 0;
+                    $pintu3 = 0;
+                    $master_muka_air = WadukBendungan::all();
+                    $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '2' AND " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+                    // dd($cari_status);
+                    if (count($cari_status) > 1) {
+                        $h1 = $request->tinggi_air - $cari_status[1]->ambang;
+                        $h1_pintu = $request->tinggi_air - $cari_status[1]->ambang_berpintu;
+                        $ambang_bebas = ((pow($h1, 1.7584)) * 45.676);
+                        // $pintu1 = ((pow($h1, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
+                        $pintu1_1 = 3*$cari_status[1]->pintu_1;
+                        $pintu1_2 = 2*9.81*$h1_pintu;
+                        $pintu1_3 = sqrt($pintu1_2);
+                        $pintu1_hasil = $cari_status[1]->f*$pintu1_1*$pintu1_3;
+
+                        $pintu2_1 = 3 * $cari_status[1]->pintu_2;
+                        $pintu2_2 = 2 * 9.81 * $h1_pintu;
+                        $pintu2_3 = sqrt($pintu2_2);
+                        $pintu2_hasil = $cari_status[1]->f * $pintu2_1 * $pintu2_3;
+
+                        $pintu3_1 = 3 * $cari_status[1]->pintu_3;
+                        $pintu3_2 = 2 * 9.81 * $h1_pintu;
+                        $pintu3_3 = sqrt($pintu1_3);
+                        $pintu3_hasil = $cari_status[1]->f * $pintu3_1 * $pintu3_3;
+                        // $pintu1 = ((pow(2*9.81*$h1_pintu, 0.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);;
+                        // $pintu2 = ($cari_status[1]->f * (3 * $cari_status[1]->pintu_2) * (2 * sqrt(9.81 * $h1_pintu)));
+                        // $pintu3 = ($cari_status[1]->f * (3 * $cari_status[1]->pintu_3) * (2 * sqrt(9.81 * $h1_pintu)));
+                        $total_pintu = $pintu1_hasil + $pintu2_hasil + $pintu3_hasil;
+                        $htotal = $ambang_bebas + $total_pintu;
+                    } else {
+                        $h1 = $request->tinggi_air - $cari_status[0]->ambang;
+                        $h1_pintu = $request->tinggi_air - $cari_status[0]->ambang_berpintu;
+                        $ambang_bebas = ((pow($h1, 1.7584)) * 45.676);
+
+                        $pintu1_1 = 3 * $cari_status[0]->pintu_1;
+                        $pintu1_2 = 2 * 9.81 * $h1_pintu;
+                        $pintu1_3 = sqrt($pintu1_2);
+                        $pintu1_hasil = $cari_status[0]->f * $pintu1_1 * $pintu1_3;
+
+                        $pintu2_1 = 3 * $cari_status[0]->pintu_2;
+                        $pintu2_2 = 2 * 9.81 * $h1_pintu;
+                        $pintu2_3 = sqrt($pintu2_2);
+                        $pintu2_hasil = $cari_status[0]->f * $pintu2_1 * $pintu2_3;
+
+                        $pintu3_1 = 3 * $cari_status[0]->pintu_3;
+                        $pintu3_2 = 2 * 9.81 * $h1_pintu;
+                        $pintu3_3 = sqrt($pintu3_2);
+                        $pintu3_hasil = $cari_status[0]->f * $pintu3_1 * $pintu3_3;
+                        // $pintu1 = ($cari_status[0]->f * (3 * $cari_status[0]->pintu_1) * (2 * sqrt(9.81 * $h1_pintu)));
+                        // $pintu2 = ($cari_status[0]->f * (3 * $cari_status[0]->pintu_2) * (2 * sqrt(9.81 * $h1_pintu)));
+                        // $pintu3 = ($cari_status[0]->f * (3 * $cari_status[0]->pintu_3) * (2 * sqrt(9.81 * $h1_pintu)));
+                        $total_pintu = $pintu1_hasil + $pintu2_hasil + $pintu3_hasil;
+                        $htotal = $ambang_bebas + $total_pintu;
+                    }
+                    // dd($pintu3_hasil);
                 }
+                // $h1_result = '';
+                // $h2 = $request->tinggi_air-$cari_status[0]->ambang_1;
+                // $h2_result = '';
+                // if($h1 <= 0){
+                //     $h1_result = 0;
+                // }else{
+                //     $h1_result = $h1;
+                // }
+                // if($h2 <= 0){
+                //     $h2_result = 0;
+                // }else{
+                //     $h2_result = $h2;
+                // }
+                // if($h1 <= 0){
+                //     $htotal = 0;
+                // }else{
+                //     $hitung2 = ((pow($h2_result, 1.5)) * $cari_status[0]->c_1 * $cari_status[0]->lebar_1);
+                //     $htotal = $hitung1+$hitung2;
+                // }
                 // $hitung_muka_air = $master_muka_air->first()->ambang + $request->tinggi_air;
                 // // $hitung_debit = (pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 3) / 2);
                 // $hitung_debit_1 = (pow(($master_muka_air->first()->c * $master_muka_air->first()->lebar * $request->tinggi_air), 3) / 2);
@@ -81,7 +145,7 @@ class TransBanjir extends Controller
                 $mukaair->id_role = session('id_role');
                 $mukaair->status = $cari_status[0]->status;
                 $mukaair->aktif = 1;
-                $mukaair->id_peta = '3734e646e63b0bf4713d99ac203f33c3';
+                $mukaair->id_peta = '9ebfaf8539568e9389a9c0431f44836c';
                 $mukaair->bendungan = session('bendungan');
                 $mukaair->created_at = date('Y-m-d H:i:s.U');
                 $mukaair->created_by = session('nama');

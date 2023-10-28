@@ -14,7 +14,6 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Peta Banjir</th>
-                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -26,15 +25,6 @@
                                     <tr>
                                         <td>{{ $i++ }} </td>
                                         <td>{{ $item->nama_peta }} </td>
-                                        @if ($item->aktif == 1)
-                                            <td>
-                                                <div class="alert alert-success" role="alert">Aktif</div>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <div class="alert alert-danger" role="alert">Tidak Aktif</div>
-                                            </td>
-                                        @endif
                                         <td>
                                             <div class="btn-group">
                                                 <a class="btn btn-dark" title="Lihat Peta"

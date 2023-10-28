@@ -23,6 +23,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Dibuat Pada</th>
+                                    @if (session('nama_role') == 'BALAI')
+                                        <th>Bendungan</th>
+                                    @endif
                                     <th>Muka Air</th>
                                     {{-- <th>Tinggi Air</th> --}}
                                     <th>Debit Keluar</th>
@@ -44,6 +47,13 @@
                                     <tr>
                                         <td>{{ $i++ }} </td>
                                         <td>{{ $item->created_at }}</td>
+                                        @if (session('nama_role') == 'BALAI')
+                                            @if ($item->bendungan == 1)
+                                                <td>BENDUNGAN GONGSENG</td>
+                                            @else
+                                                <td>BENDUNGAN PACAL</td>
+                                            @endif
+                                        @endif
                                         {{-- <td>{{ $item->muka_air }} </td> --}}
                                         <td>{{ $item->tinggi_air }} </td>
                                         <td>{{ $item->debit_air }} </td>

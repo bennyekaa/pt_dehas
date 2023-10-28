@@ -25,6 +25,7 @@ class Checklogin
             } elseif (session('role') == 'DEWA') {
                 return $next($request);
             } else {
+                // dd(session()->all());
                 // $hitungnotif = RiwayatPenghargaan::select(DB::raw('count(id_riwayat_penghargaan) as hitungpenghargaan'))->where('status_ajuan', '=', 1)->count();
                 return $next($request);
             }
