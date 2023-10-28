@@ -14,7 +14,7 @@
     <link href="{{ asset('assets/css/ruang-admin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 </head>
-<section class="vh-100" style="background-image: url('assets/img/bendungan.jpg')">
+<section class="vh-100" style="background-image: url('assets/img/bendungan.jpg');background-size: auto 100%;">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">

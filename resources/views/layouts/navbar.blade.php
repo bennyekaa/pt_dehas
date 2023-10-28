@@ -1,7 +1,7 @@
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
         <div class="sidebar-brand-icon">
-            <img src="{{ asset('assets/img/logo/Pemali Juana_1.jpg') }}">
+            <img src="{{ asset('assets/img/logo/kop.jpg') }}">
         </div>
         {{-- <div class="sidebar-brand-text mx-3">PT Dehas</div> --}}
     </a>
