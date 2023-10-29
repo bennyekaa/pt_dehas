@@ -524,7 +524,7 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         try {
-            UserBendungan::create(['id_user' => Str::uuid(), 'nama' => $request->nama, 'email' => $request->email, 'hp' => $request->hp, 'username' => $request->username, 'password' => Hash::make($request->password), 'id_role' => '65877613b110ff8ae52069c50181c077', 'id_desa' => $request->id_desa, 'created_at' => now(), 'created_by' => 'Penduduk']);
+            UserBendungan::create(['id_user' => Str::uuid(), 'nama' => $request->nama, 'email' => $request->email, 'hp' => $request->hp, 'username' => $request->username, 'password' => Hash::make($request->password), 'id_role' => '65877613b110ff8ae52069c50181c077', 'id_desa' => $request->id_desa, 'bendungan' => $request->bendungan, 'created_at' => now(), 'created_by' => 'Penduduk']);
             return response()->json([
                 'status' => true,
                 'message' => 'register success'
