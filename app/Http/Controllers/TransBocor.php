@@ -24,8 +24,14 @@ class TransBocor extends Controller
     {
         if (session('nama_role') == 'BALAI') {
             $data['bocor'] = DataBanjirBocor::select('*', 'data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+        } elseif (session('nama_role') == 'BPBD') {
+            if (session('bendungan') == 1) {
+                $data['bocor'] = DataBanjirBocor::select('*', 'data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->where('bendungan_1', 2)->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+            } else {
+                $data['bocor'] = DataBanjirBocor::select('*', 'data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->where('bendungan_2', 2)->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+            }
         } else {
-            $data['bocor'] = DataBanjirBocor::select('*', 'data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->where('bendungan', session('bendungan'))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
+            $data['bocor'] = DataBanjirBocor::select('*', 'data_banjir_bocor.created_at AS bocor_created_at')->Join('ref_kategori_bocor', 'ref_kategori_bocor.id_kategori_bocor', '=', 'data_banjir_bocor.id_kategori_bocor')->where('data_banjir_bocor.id_role', decrypt($stat))->where('nama_bendungan', session('lokasi'))->orderBy('data_banjir_bocor.created_at', 'DESC')->get();
         }
         $data['peta'] = peta::all();
         session()->put('banjir_bocor', url()->full());
@@ -276,7 +282,7 @@ class TransBocor extends Controller
             $file_5 = Storage::putFile('/public/berkas', $request->pergerakan_data_file5);
         }
 
-        if (session('bendungan') == 1) {
+        if (session('lokasi') == 1) {
             $htotal = 0;
             $master_muka_air = WadukBendungan::all();
             $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '1' AND " . $tinggi_air . " BETWEEN batas_bawah AND batas_atas");
@@ -288,7 +294,7 @@ class TransBocor extends Controller
                 $h1 = $tinggi_air - $cari_status[0]->ambang;
                 $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
             }
-        } elseif (session('bendungan') == 2) {
+        } elseif (session('lokasi') == 2) {
             $htotal = 0;
             $pintu1 = 0;
             $pintu2 = 0;
@@ -405,8 +411,10 @@ class TransBocor extends Controller
         $bocor->file_3 = $file_3;
         $bocor->file_4 = $file_4;
         $bocor->file_5 = $file_5;
+        $bocor->bendungan_1 = 0;
+        $bocor->bendungan_2 = 0;
         $bocor->id_peta = '9ebfaf8539568e9389a9c0431f44836c';
-        $bocor->bendungan = session('bendungan');
+        $bocor->nama_bendungan = session('lokasi');
         $bocor->created_at = date('Y-m-d H:i:s.U');
         $bocor->created_by = session('id_role');
         // dd($bocor);
@@ -424,72 +432,155 @@ class TransBocor extends Controller
     public function kirim($id, $role)
     {
         try {
-            if ($role == 'BALAI') {
-                $balai = Role::where('nama_role', $role)->first();
-                $bocor = DataBanjirBocor::find(decrypt($id));
-                $bocor->id_role = $balai->id_role;
-                $kategori = $bocor->id_kategori_bocor;
-                $nama_bocor = KategoriBocor::find($kategori);
-                $bendungan = BendunganBendungan::first();
-                // session()->put("current_id", decrypt($id));
-                $bocor->updated_at = date('Y-m-d H:i:s.U');
-                $bocor->updated_by = session('nama');
-                $notif = new Notif();
-                $notif->id = Str::uuid();
-                $notif->id_referensi = decrypt($id);
-                $notif->role_bocor = $balai->role_bocor;
-                $notif->aktif = 1;
-                if ($nama_bocor->nomor == 1) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+            $bocor = DataBanjirBocor::find(decrypt($id));
+            if ($bocor->nama_bendungan == 1) {
+                $bendungan = BendunganBendungan::where('bendungan', 1)->first();
+                if ($role == 'BALAI') {
+                    $balai = Role::where('nama_role', $role)->first();
+                    $bocor->id_role = $balai->id_role;
+                    $bocor->bendungan_1 = 5;
+                    $bocor->bendungan_2 = 5;
+                    $kategori = $bocor->id_kategori_bocor;
+                    $nama_bocor = KategoriBocor::find($kategori);
+                    // session()->put("current_id", decrypt($id));
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif = new Notif();
+                    $notif->id = Str::uuid();
+                    $notif->id_referensi = decrypt($id);
+                    $notif->role_bocor = $balai->role_bocor;
+                    $notif->aktif = 1;
+                    if ($nama_bocor->nomor == 1) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 2) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 3) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 4) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 5) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 6) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 7) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 8) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 9) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 10) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    // $notif->pesan_default = "Data Baru " . $bendungan->nama_bendungan . " Pada " . $bocor->created_at;
+                    // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    $notif->created_at = date('Y-m-d H:i:s.U');
+                    $notif->created_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BALAI');
+                } elseif ($role == 'PENDUDUK') {
+                    $penduduk = Role::where('nama_role', $role)->first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $bocor->id_role = $penduduk->id_role;
+                    if(session('bendungan') == 1){
+                        $bocor->bendungan_1 = 4;
+                    }else{
+                        $bocor->bendungan_2 = 4;
+                    }
+                    $bocor->updated_at_bpbd = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by_bpbd = session('nama');
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $penduduk->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PENDUDUK');
                 }
-                if ($nama_bocor->nomor == 2) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+            } else {
+                $bendungan = BendunganBendungan::where('bendungan', 2)->first();
+                if ($role == 'BALAI') {
+                    $balai = Role::where('nama_role', $role)->first();
+                    $bocor->id_role = $balai->id_role;
+                    $bocor->bendungan_1 = 5;
+                    $bocor->bendungan_2 = 5;
+                    $kategori = $bocor->id_kategori_bocor;
+                    $nama_bocor = KategoriBocor::find($kategori);
+                    // session()->put("current_id", decrypt($id));
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif = new Notif();
+                    $notif->id = Str::uuid();
+                    $notif->id_referensi = decrypt($id);
+                    $notif->role_bocor = $balai->role_bocor;
+                    $notif->aktif = 1;
+                    if ($nama_bocor->nomor == 1) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 2) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 3) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 4) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 5) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 6) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 7) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 8) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 9) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    if ($nama_bocor->nomor == 10) {
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
+                    }
+                    // $notif->pesan_default = "Data Baru " . $bendungan->nama_bendungan . " Pada " . $bocor->created_at;
+                    // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    $notif->created_at = date('Y-m-d H:i:s.U');
+                    $notif->created_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BALAI');
+                } elseif ($role == 'PENDUDUK') {
+                    $penduduk = Role::where('nama_role', $role)->first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $bocor->id_role = $penduduk->id_role;
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 4;
+                    } else {
+                        $bocor->bendungan_2 = 4;
+                    }
+                    $bocor->updated_at_bpbd = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by_bpbd = session('nama');
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $penduduk->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PENDUDUK');
                 }
-                if ($nama_bocor->nomor == 3) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 4) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 5) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 6) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 7) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 8) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 9) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                if ($nama_bocor->nomor == 10) {
-                    $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . "  TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at;
-                }
-                // $notif->pesan_default = "Data Baru " . $bendungan->nama_bendungan . " Pada " . $bocor->created_at;
-                // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
-                // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
-                $notif->created_at = date('Y-m-d H:i:s.U');
-                $notif->created_by = session('nama');
-                $bocor->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BALAI');
-            } elseif ($role == 'PENDUDUK') {
-                $penduduk = Role::where('nama_role', $role)->first();
-                $mukaair = DataBanjirBocor::find(decrypt($id));
-                $mukaair->id_role = $penduduk->id_role;
-                $mukaair->updated_at_bpbd = date('Y-m-d H:i:s.U');
-                $mukaair->updated_by_bpbd = session('nama');
-                $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = $penduduk->role_bocor;
-                $notif->updated_at = date('Y-m-d H:i:s.U');
-                $notif->updated_by = session('nama');
-                $mukaair->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PENDUDUK');
             }
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());
@@ -500,695 +591,1388 @@ class TransBocor extends Controller
     {
         try {
             $bocor = DataBanjirBocor::find(decrypt($id));
-            $kategori = $bocor->id_kategori_bocor;
-            $nama_bocor = KategoriBocor::find($kategori);
-            if ($status == 1) {
-                // $lanjut = Role::where('role_bocor', 3)->first();
-                $bendungan = BendunganBendungan::first();
-                $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = 2;
-                $notif->status = $status;
-                $bocor->id_role = null;
-                $bocor->status = $status;
-                $status_pemda = "";
-                $status_umum = "";
-                if ($status == 0) {
-                    $status_pemda = null;
-                    $status_umum = null;
-                    $notif->pesan_default = null;
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 1) {
-                    $status_pemda = null;
-                    $status_umum = null;
+            if ($bocor->nama_bendungan == 1) {
+                $bendungan = BendunganBendungan::where('bendungan', 1)->first();
+                $kategori = $bocor->id_kategori_bocor;
+                $nama_bocor = KategoriBocor::find($kategori);
+                if ($status == 1) {
+                    // $lanjut = Role::where('role_bocor', 3)->first();
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = 2;
+                    $notif->status = $status;
+                    $bocor->id_role = null;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
 
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
 
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        $status_pemda = null;
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan, tetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian Untuk Wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau MASYARAKAT Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    }
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = 2;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PU PUSAT');
                 } elseif ($status == 2) {
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    $status_pemda = null;
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan, tetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian Untuk Wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau MASYARAKAT Di Wilayah ZONA HIJAU segera MENGUNGSI";
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 3) {
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 4) {
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                }
-                $bocor->updated_at = date('Y-m-d H:i:s.U');
-                $bocor->updated_by = session('nama');
-                $notif->role_bocor = 2;
-                $notif->updated_at = date('Y-m-d H:i:s.U');
-                $notif->updated_by = session('nama');
-                $bocor->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PU PUSAT');
-            } elseif ($status == 2) {
-                $bpbd = Role::where('nama_role', 'BPBD')->first();
-                $bendungan = BendunganBendungan::first();
-                $bocor = DataBanjirBocor::find(decrypt($id));
-                $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->status = $status;
-                $bocor->id_role = $bpbd->id_role;
-                $bocor->status = $status;
-                $status_pemda = "";
-                $status_umum = "";
-                if ($status == 0) {
-                    $status_pemda = null;
-                    $status_umum = null;
-                    $notif->pesan_default = null;
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 1) {
-                    $status_pemda = null;
-                    $status_umum = null;
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
 
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PENGUNGSIAN PRIORITAS 1) segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+                } elseif ($status == 3) {
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+                } elseif ($status == 4) {
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
+                }
+            } else {
+                $bendungan = BendunganBendungan::where('bendungan', 2)->first();
+                $kategori = $bocor->id_kategori_bocor;
+                $nama_bocor = KategoriBocor::find($kategori);
+                if ($status == 1) {
+                    // $lanjut = Role::where('role_bocor', 3)->first();
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = 2;
+                    $notif->status = $status;
+                    $bocor->id_role = null;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        $status_pemda = null;
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan, tetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian Untuk Wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau MASYARAKAT Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = 2;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke PU PUSAT');
                 } elseif ($status == 2) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
 
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PENGUNGSIAN PRIORITAS 1) segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
                 } elseif ($status == 3) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PENGUNGSIAN PRIORITAS 1) segera MENGUNGSI";
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
 
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
                 } elseif ($status == 4) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                    $bpbd = Role::where('nama_role', 'BPBD')->first();
+                    $bendungan = BendunganBendungan::first();
+                    $bocor = DataBanjirBocor::find(decrypt($id));
+                    $notif = Notif::where('id_referensi', decrypt($id))->first();
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->status = $status;
+                    $bocor->id_role = $bpbd->id_role;
+                    $bocor->status = $status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($status == 0) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        $notif->pesan_default = null;
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 1) {
+                        $status_pemda = null;
+                        $status_umum = null;
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        if ($nama_bocor->nomor == 1) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 2) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 3) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 4) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 5) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 6) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 7) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 8) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 9) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        if ($nama_bocor->nomor == 10) {
+                            $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
+                        }
+                        // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
                     }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
+                    $bocor->updated_at = date('Y-m-d H:i:s.U');
+                    $bocor->updated_by = session('nama');
+                    $notif->role_bocor = $bpbd->role_bocor;
+                    $notif->updated_at = date('Y-m-d H:i:s.U');
+                    $notif->updated_by = session('nama');
+                    $bocor->save();
+                    $notif->save();
+                    return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
                 }
-                $bocor->updated_at = date('Y-m-d H:i:s.U');
-                $bocor->updated_by = session('nama');
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->updated_at = date('Y-m-d H:i:s.U');
-                $notif->updated_by = session('nama');
-                $bocor->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
-            } elseif ($status == 3) {
-                $bpbd = Role::where('nama_role', 'BPBD')->first();
-                $bendungan = BendunganBendungan::first();
-                $bocor = DataBanjirBocor::find(decrypt($id));
-                $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->status = $status;
-                $bocor->id_role = $bpbd->id_role;
-                $bocor->status = $status;
-                $status_pemda = "";
-                $status_umum = "";
-                if ($status == 0) {
-                    $status_pemda = null;
-                    $status_umum = null;
-                    $notif->pesan_default = null;
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 1) {
-                    $status_pemda = null;
-                    $status_umum = null;
-
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 2) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 3) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 4) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                }
-                $bocor->updated_at = date('Y-m-d H:i:s.U');
-                $bocor->updated_by = session('nama');
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->updated_at = date('Y-m-d H:i:s.U');
-                $notif->updated_by = session('nama');
-                $bocor->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
-            } elseif ($status == 4) {
-                $bpbd = Role::where('nama_role', 'BPBD')->first();
-                $bendungan = BendunganBendungan::first();
-                $bocor = DataBanjirBocor::find(decrypt($id));
-                $notif = Notif::where('id_referensi', decrypt($id))->first();
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->status = $status;
-                $bocor->id_role = $bpbd->id_role;
-                $bocor->status = $status;
-                $status_pemda = "";
-                $status_umum = "";
-                if ($status == 0) {
-                    $status_pemda = null;
-                    $status_umum = null;
-                    $notif->pesan_default = null;
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 1) {
-                    $status_pemda = null;
-                    $status_umum = null;
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 1";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 1";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 2) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera  terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS WASPADA 2";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " STATUS WASPADA 2";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 3) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS SIAGA";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS SIAGA";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                } elseif ($status == 4) {
-                    $status_pemda = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
-                    $status_umum = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
-                    if ($nama_bocor->nomor == 1) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA DIDIH PASIR Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 2) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA GEMPA BUMI Pada Lokasi " . $bocor->lokasi . " Dengan Kekuatan " . $bocor->kekuatan . " SR\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 3) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA HUJAN BADAI DENGAN INTENSITAS TINGGI Pada Lokasi " . $bocor->lokasi . "\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 4) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LONGSOR ATAU EROSI BESAR PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 5) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA LUBANG BENAM Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 6) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PENURUNAN ATAU SETTLEMENT Pada Lokasi " . $bocor->lokasi . " Dengan Tinggi " . $bocor->tinggi . "M, Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 7) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA PUSARAN AIR DI WADUK Pada Lokasi " . $bocor->lokasi . " Dengan Diameter " . $bocor->diameter . " M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 8) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA REMBESAN Pada Lokasi " . $bocor->lokasi . " Dengan Debit Air " . $bocor->debit . " m3/Detik\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 9) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN PADA TUBUH BENDUNGAN Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    if ($nama_bocor->nomor == 10) {
-                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->updated_at . " TERJADI INDIKASI MASALAH Dengan Rincian:\nADANYA RETAKAN ATAU PERGERAKAN PADA STRUKTUR BETON Pada Lokasi " . $bocor->lokasi . " Dengan Panjang " . $bocor->panjang . " M dan Lebar " . $bocor->lebar . "M\nTMA = " . $bocor->tinggi_air . " mdpl Waktu Pencatatan " . $bocor->created_at . " DENGAN STATUS AWAS";
-                    }
-                    // $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $bocor->created_at . "STATUS AWAS";
-                    $notif->pesan_pemda = $status_pemda;
-                    $notif->pesan_umum = $status_umum;
-                }
-                $bocor->updated_at = date('Y-m-d H:i:s.U');
-                $bocor->updated_by = session('nama');
-                $notif->role_bocor = $bpbd->role_bocor;
-                $notif->updated_at = date('Y-m-d H:i:s.U');
-                $notif->updated_by = session('nama');
-                $bocor->save();
-                $notif->save();
-                return redirect(session('banjir_bocor'))->with('success', 'Data Terkirim Ke BPBD');
             }
         } catch (Exception $e) {
             return redirect(session('banjir_bocor'))->with('error', $e->getMessage());

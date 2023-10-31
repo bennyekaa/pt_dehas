@@ -24,6 +24,7 @@
                                     <th>#</th>
                                     <th>Dibuat Pada</th>
                                     @if (session('nama_role') == 'BALAI')
+                                        <th>Kondisi Peta</th>
                                         <th>Bendungan</th>
                                     @endif
                                     <th>Muka Air</th>
@@ -48,7 +49,8 @@
                                         <td>{{ $i++ }} </td>
                                         <td>{{ $item->created_at }}</td>
                                         @if (session('nama_role') == 'BALAI')
-                                            @if ($item->bendungan == 1)
+                                            <td>{{ $item->peta->nama_peta }}</td>
+                                            @if ($item->nama_bendungan == 1)
                                                 <td>BENDUNGAN GONGSENG</td>
                                             @else
                                                 <td>BENDUNGAN PACAL</td>
@@ -109,18 +111,18 @@
                                                                 id="dropdownMenuLink" data-toggle="dropdown"
                                                                 aria-haspopup="true" aria-expanded="false"> Pilih Peta
                                                             </a>
-                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                            <div class="dropdown-menu">
                                                                 @foreach ($peta as $map)
-                                                                    <a class="btn btn-dark" title="Lihat Peta"
-                                                                        href="{{ url('peta/lihat') }}/{{ encrypt($map->id_peta) }}"
-                                                                        target="_blank">
-                                                                        <i class="fa fa-eye"></i>
-                                                                    </a>
                                                                     <a class="dropdown-item"
                                                                         href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}"
                                                                         title="{{ $map->nama_peta }}">
                                                                         {{ $map->nama_peta }}
                                                                     </a>
+                                                                    {{-- <a class="btn btn-dark btn-sm" title="Lihat Peta"
+                                                                        href="{{ url('peta/lihat') }}/{{ encrypt($map->id_peta) }}"
+                                                                        target="_blank">
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a> --}}
                                                                     {{-- <a class="dropdown-item"
                                                                     href="{{ url('peta/status') }}/{{ encrypt($map->id_peta) }}/{{ encrypt($item->id_banjir_muka_air) }}/1"
                                                                     title="{{ $map->nama_peta }}">{{ $map->nama_peta }}</a> --}}

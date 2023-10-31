@@ -20,7 +20,8 @@ class BendunganController extends Controller
     public function detailbendungan()
     {
         // mengambil data dari table bendungan
-        $data['bendungan'] = DB::table('ref_bendungan')->first();
+        $data['bendungan'] = BendunganBendungan::all();
+        // dd($data);
         return view('beranda.detailbendungan', $data);
     }
 

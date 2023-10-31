@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BendunganBendungan;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -12,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         // return view('beranda.index');
-        $data['bendungan'] = DB::table('ref_bendungan')->first();
+        $data['bendungan'] = BendunganBendungan::all();
         return view('beranda.detailbendungan', $data);
     }
 
