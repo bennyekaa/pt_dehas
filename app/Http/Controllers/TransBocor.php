@@ -493,9 +493,9 @@ class TransBocor extends Controller
                     $penduduk = Role::where('nama_role', $role)->first();
                     $bocor = DataBanjirBocor::find(decrypt($id));
                     $bocor->id_role = $penduduk->id_role;
-                    if(session('bendungan') == 1){
+                    if (session('bendungan') == 1) {
                         $bocor->bendungan_1 = 4;
-                    }else{
+                    } else {
                         $bocor->bendungan_2 = 4;
                     }
                     $bocor->updated_at_bpbd = date('Y-m-d H:i:s.U');
@@ -762,6 +762,11 @@ class TransBocor extends Controller
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
                     $notif->role_bocor = 2;
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
                     $bocor->save();
@@ -935,6 +940,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1106,6 +1116,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1276,6 +1291,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1452,6 +1472,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = 2;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1626,6 +1651,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1797,6 +1827,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');
@@ -1967,6 +2002,11 @@ class TransBocor extends Controller
                     }
                     $bocor->updated_at = date('Y-m-d H:i:s.U');
                     $bocor->updated_by = session('nama');
+                    if (session('bendungan') == 1) {
+                        $bocor->bendungan_1 = 2;
+                    } else {
+                        $bocor->bendungan_2 = 2;
+                    }
                     $notif->role_bocor = $bpbd->role_bocor;
                     $notif->updated_at = date('Y-m-d H:i:s.U');
                     $notif->updated_by = session('nama');

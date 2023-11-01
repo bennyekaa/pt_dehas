@@ -321,11 +321,11 @@ class TransBanjir extends Controller
                     $bpbd = Role::where('nama_role', $role)->first();
                     $mukaair = DataMukaAir::find(decrypt($id));
                     $mukaair->id_role = $bpbd->id_role;
-                    if (session('bendungan') == 2) {
+                    // if (session('bendungan') == 2) {
                         $mukaair->bendungan_1 = 6;
-                    } else {
+                    // } else {
                         $mukaair->bendungan_2 = 6;
-                    }
+                    // }
                     $mukaair->updated_at = date('Y-m-d H:i:s.U');
                     $mukaair->updated_by = session('nama');
                     $notif = Notif::where('id_referensi', decrypt($id))->first();
