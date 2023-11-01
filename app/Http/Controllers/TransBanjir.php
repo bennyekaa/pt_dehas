@@ -23,9 +23,10 @@ class TransBanjir extends Controller
             $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->orderBy('created_at', 'DESC')->get();
         } elseif (session('nama_role') == 'BPBD') {
             if (session('bendungan') == 1) {
-                $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->where('bendungan_1', 6)->orderBy('created_at', 'DESC')->get();
+                $data['mukaair'] = DataMukaAir::where('bendungan_1', 6)->orderBy('created_at', 'DESC')->get();
+                // $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->where('bendungan_1', 6)->orderBy('created_at', 'DESC')->get();
             } else {
-                $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->where('bendungan_2', 6)->orderBy('created_at', 'DESC')->get();
+                $data['mukaair'] = DataMukaAir::where('bendungan_2', 6)->orderBy('created_at', 'DESC')->get();
             }
         } else {
             $data['mukaair'] = DataMukaAir::where('id_role', decrypt($stat))->where('nama_bendungan', session('lokasi'))->orderBy('created_at', 'DESC')->get();

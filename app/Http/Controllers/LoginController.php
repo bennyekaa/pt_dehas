@@ -106,12 +106,20 @@ class LoginController extends Controller
                                 $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             } else if ($user->lokasi == 1) {
-                                $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
-                                $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
+                                $hitungmukaair = DataMukaAir::where('bendungan_1', 0)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_1', 0)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             } else if ($user->lokasi == 2) {
-                                $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
-                                $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
+                                $hitungmukaair = DataMukaAir::where('bendungan_2', 0)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_2', 0)->count();
+                                $total = $hitungbocor + $hitungmukaair;
+                            } elseif ($user->bendungan == 1) {
+                                $hitungmukaair = DataMukaAir::where('bendungan_1', 6)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_1', 2)->count();
+                                $total = $hitungbocor + $hitungmukaair;
+                            } elseif ($user->bendungan == 2) {
+                                $hitungmukaair = DataMukaAir::where('bendungan_2', 6)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_2', 2)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             }
                             if (($hitungmukaair) > 0) {
@@ -161,12 +169,20 @@ class LoginController extends Controller
                             $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         } else if ($user->lokasi == 1) {
-                            $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
-                            $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
+                            $hitungmukaair = DataMukaAir::where('bendungan_1', 0)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_1', 0)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         } else if ($user->lokasi == 2) {
-                            $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
-                            $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
+                            $hitungmukaair = DataMukaAir::where('bendungan_2', 0)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_2', 0)->count();
+                            $total = $hitungbocor + $hitungmukaair;
+                        } elseif ($user->bendungan == 1) {
+                            $hitungmukaair = DataMukaAir::where('bendungan_1', 6)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_1', 2)->count();
+                            $total = $hitungbocor + $hitungmukaair;
+                        } elseif ($user->bendungan == 2) {
+                            $hitungmukaair = DataMukaAir::where('bendungan_2', 6)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_2', 2)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         }
                         if (($hitungmukaair) > 0) {
@@ -239,12 +255,20 @@ class LoginController extends Controller
                                 $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             } else if ($user->lokasi == 1) {
-                                $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
-                                $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
+                                $hitungmukaair = DataMukaAir::where('bendungan_1', 0)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_1', 0)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             } else if ($user->lokasi == 2) {
-                                $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
-                                $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
+                                $hitungmukaair = DataMukaAir::where('bendungan_2', 0)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_2', 0)->count();
+                                $total = $hitungbocor + $hitungmukaair;
+                            } elseif ($user->bendungan == 1) {
+                                $hitungmukaair = DataMukaAir::where('bendungan_1', 6)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_1', 2)->count();
+                                $total = $hitungbocor + $hitungmukaair;
+                            } elseif ($user->bendungan == 2) {
+                                $hitungmukaair = DataMukaAir::where('bendungan_2', 6)->count();
+                                $hitungbocor = DataBanjirBocor::where('bendungan_2', 2)->count();
                                 $total = $hitungbocor + $hitungmukaair;
                             }
                             if (($hitungmukaair) > 0) {
@@ -294,12 +318,20 @@ class LoginController extends Controller
                             $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         } else if ($user->lokasi == 1) {
-                            $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
-                            $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_1', 1)->count();
+                            $hitungmukaair = DataMukaAir::where('bendungan_1', 0)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_1', 0)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         } else if ($user->lokasi == 2) {
-                            $hitungmukaair = DataMukaAir::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
-                            $hitungbocor = DataBanjirBocor::where('id_role', $user->id_role)->where('bendungan_2', 2)->count();
+                            $hitungmukaair = DataMukaAir::where('bendungan_2', 0)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_2', 0)->count();
+                            $total = $hitungbocor + $hitungmukaair;
+                        }elseif($user->bendungan == 1){
+                            $hitungmukaair = DataMukaAir::where('bendungan_1', 6)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_1', 2)->count();
+                            $total = $hitungbocor + $hitungmukaair;
+                        }elseif($user->bendungan == 2){
+                            $hitungmukaair = DataMukaAir::where('bendungan_2', 6)->count();
+                            $hitungbocor = DataBanjirBocor::where('bendungan_2', 2)->count();
                             $total = $hitungbocor + $hitungmukaair;
                         }
                         if (($hitungmukaair) > 0) {
