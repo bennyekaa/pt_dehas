@@ -293,7 +293,12 @@ class TransBocor extends Controller
                 return redirect(session('banjir_bocor'))->with('error', 'Tinggi Muka Air Tidak Boleh Dibawah Batas Bawah');
             } else {
                 $h1 = $tinggi_air - $cari_status[0]->ambang;
-                $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                if($cari_status[0]->variabel == 60){
+                    $htotal = ((4*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
+                }else{
+                    $htotal = ((8*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
+                }
+                // $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
             }
         } elseif (session('lokasi') == 2) {
             $htotal = 0;

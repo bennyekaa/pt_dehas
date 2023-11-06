@@ -95,14 +95,19 @@
                                         <td>
                                             <div class="btn-group">
                                                 @if (session('nama_role') == 'OPERATOR')
-                                                    <a class="btn btn-primary" title="Kirim Ke Balai"
-                                                        href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BALAI">
-                                                        <i class="fa fa-arrow-right"></i>
-                                                    </a>
-                                                    <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
-                                                        href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
+                                                    @if (session('menu') == 1)
+                                                        <a class="btn btn-primary" title="Kirim Ke Balai"
+                                                            href="{{ url('transaksi/mukaair/kirim') }}/{{ encrypt($item->id_banjir_muka_air) }}/BALAI">
+                                                            <i class="fa fa-arrow-right"></i>
+                                                        </a>
+                                                        <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
+                                                            href="{{ url('transaksi/mukaair/hapus') }}/{{ encrypt($item->id_banjir_muka_air) }}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    @else
+                                                        <div class="alert alert-danger" status="alert">Tidak Memiliki Akses
+                                                        </div>
+                                                    @endif
                                                 @elseif (session('nama_role') == 'BALAI')
                                                     @if (session('menu') == 1)
                                                         <div class="dropdown">

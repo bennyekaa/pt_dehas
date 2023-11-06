@@ -58,7 +58,12 @@ class TransBanjir extends Controller
                     $master_muka_air = WadukBendungan::all();
                     $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '1' AND " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
                     $h1 = $request->tinggi_air - $cari_status[0]->ambang;
-                    $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                    // $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                    if ($cari_status[0]->variabel == 60) {
+                        $htotal = ((4 * $cari_status[0]->lebar * $cari_status[0]->variabel) / 100);
+                    } else {
+                        $htotal = ((8 * $cari_status[0]->lebar * $cari_status[0]->variabel) / 100);
+                    }
                 } elseif (session('lokasi') == 2) {
                     $htotal = 0;
                     $pintu1 = 0;
