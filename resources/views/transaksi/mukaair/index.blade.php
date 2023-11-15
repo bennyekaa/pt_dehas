@@ -27,6 +27,7 @@
                                         <th>Kondisi Peta</th>
                                         <th>Bendungan</th>
                                     @endif
+                                    <th>Inflow</th>
                                     <th>Muka Air</th>
                                     {{-- <th>Tinggi Air</th> --}}
                                     <th>Debit Keluar</th>
@@ -57,6 +58,7 @@
                                             @endif
                                         @endif
                                         {{-- <td>{{ $item->muka_air }} </td> --}}
+                                        <td>{{ $item->inflow }} </td>
                                         <td>{{ $item->tinggi_air }} </td>
                                         <td>{{ $item->debit_air }} </td>
                                         @if ($item->status == 0)

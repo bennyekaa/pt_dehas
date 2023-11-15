@@ -352,6 +352,7 @@ class ApiController extends Controller
                 'notif.role_bocor as notif_role_bocor',
                 'notif.status as status_notif',
                 'notif.aktif as aktif_notif',
+                'notif.role_notif',
                 'notif.pesan_default',
                 'notif.pesan_pemda',
                 'notif.pesan_umum',
@@ -432,6 +433,7 @@ class ApiController extends Controller
             $mukaair_get = DataMukaAir::where('id_banjir_muka_air', $request->id)->first();
             $bocor = DataBanjirBocor::where('id_banjir_bocor', $request->id)->count();
             $bocor_get = DataBanjirBocor::where('id_banjir_bocor', $request->id)->first();
+            $role_notif = $request->role_notif;
             $pesan = null;
             $pesan_pemda = null;
             $pesan_umum = null;
@@ -439,7 +441,7 @@ class ApiController extends Controller
                 if (empty($request->role_bendungan_1)) {
                     DataMukaAir::where('id_banjir_muka_air', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_muka_air' => $request->role_muka_air, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                        'role_muka_air' => $request->role_muka_air, 'role_notif' => $request->role_notif, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                     ]);
                     return response()->json([
                         'status' => true,
@@ -448,7 +450,7 @@ class ApiController extends Controller
                 } elseif (empty($request->role_bendungan_2)) {
                     DataMukaAir::where('id_banjir_muka_air', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_muka_air' => $request->role_muka_air, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                        'role_muka_air' => $request->role_muka_air, 'role_notif' => $request->role_notif, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                     ]);
                     return response()->json([
                         'status' => true,
@@ -457,7 +459,7 @@ class ApiController extends Controller
                 } else {
                     DataMukaAir::where('id_banjir_muka_air', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                     Notif::where('id_referensi', $request->id)->update([
-                        'role_muka_air' => $request->role_muka_air, 'updated_at' => now(), 'updated_by' => 'Android Apps'
+                        'role_muka_air' => $request->role_muka_air, 'role_notif' => $request->role_notif, 'updated_at' => now(), 'updated_by' => 'Android Apps'
                     ]);
                     return response()->json([
                         'status' => true,
@@ -475,7 +477,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -485,7 +487,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -495,7 +497,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -510,7 +512,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -520,7 +522,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -530,7 +532,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -545,7 +547,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -555,7 +557,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -565,7 +567,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -581,7 +583,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -591,7 +593,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -601,7 +603,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -619,7 +621,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -629,7 +631,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -639,7 +641,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'AndroidApps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 1, 'updated_at' => now(), 'updated_by' => 'Android Apps'
-                                'role_bocor' => $request->role_bocor, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 1, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -654,7 +656,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -664,7 +666,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -674,7 +676,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 2, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 2, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -689,7 +691,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -699,7 +701,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -709,7 +711,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 3, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 3, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -725,7 +727,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_2' => $request->role_bendungan_2, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -735,7 +737,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,
@@ -745,7 +747,7 @@ class ApiController extends Controller
                             DataBanjirBocor::where('id_banjir_bocor', $request->id)->update(['id_role' => $request->id_role, 'bendungan_1' => $request->role_bendungan_1, 'bendungan_2' => $request->role_bendungan_2, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'Android Apps']);
                             Notif::where('id_referensi', $request->id)->update([
                                 // 'role_bocor' => $request->role_bocor, 'status' => 4, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
-                                'role_bocor' => $request->role_bocor, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
+                                'role_bocor' => $request->role_bocor, 'role_notif' => $request->role_notif, 'status' => 4, 'pesan_default' => $pesan, 'pesan_pemda' => $pesan_pemda, 'pesan_umum' => $pesan_umum, 'updated_at' => now(), 'updated_by' => 'AndroidApps'
                             ]);
                             return response()->json([
                                 'status' => true,

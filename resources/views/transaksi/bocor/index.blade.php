@@ -28,6 +28,7 @@
                                     @endif
                                     <th>Nama Kategori</th>
                                     <th>Lokasi</th>
+                                    <th>Inflow</th>
                                     <th>Elevasi Muka Air Waduk (Meter)</th>
                                     <th>Debit (m3/Detik)</th>
                                     {{-- <th>Ukuran (Meter)</th> --}}
@@ -72,6 +73,7 @@
                                         <td>{{ $item->nama_kategori }} </td>
                                         <td>{{ $item->lokasi }} </td>
                                         {{-- <td>{{ $item->ukuran }} </td> --}}
+                                        <td>{{ $item->inflow }} </td>
                                         <td>{{ $item->tinggi_air }} </td>
                                         <td>{{ $item->debit }} </td>
                                         <td>{{ $item->kekuatan }} </td>

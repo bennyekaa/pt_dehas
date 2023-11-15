@@ -30,6 +30,12 @@
                                     <input type="number" step="any" name="didihtinggiair" autofocus>
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
+                                </div>
+                            </div>
 
                             <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
@@ -70,6 +76,12 @@
                                 <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
                                     <input type="number" step="any" name="gempatinggiair" autofocus>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
                                 </div>
                             </div>
 
@@ -114,6 +126,13 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
                                     <input type="text" name="badailokasi" class="form-control">
@@ -143,6 +162,13 @@
                                 <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
                                     <input type="number" step="any" name="longsortinggiair" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
                                 </div>
                             </div>
 
@@ -191,6 +217,13 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
                                     <input type="text" name="lubanglokasi" class="form-control">
@@ -225,6 +258,13 @@
                                 <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
                                     <input type="number" step="any" name="penurunantinggiair" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
                                 </div>
                             </div>
 
@@ -279,6 +319,13 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
                                     <input type="text" name="pusaranlokasi" class="form-control">
@@ -317,6 +364,13 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label class="col-md-4 col-form-label text-md-end">Input Lokasi</label>
                                 <div class="col-md-8">
                                     <input type="text" name="rembesanlokasi" class="form-control">
@@ -346,6 +400,13 @@
                                 <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
                                     <input type="number" step="any" name="retakantinggiair" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
                                 </div>
                             </div>
 
@@ -391,6 +452,13 @@
                                 <label class="col-md-4 col-form-label text-md-end">Input Muka Air *meter</label>
                                 <div class="col-md-8">
                                     <input type="number" step="any" name="pergerakantinggiair" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="any" name="inflow" >
                                 </div>
                             </div>
 

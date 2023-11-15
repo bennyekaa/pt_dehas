@@ -24,6 +24,19 @@
                                     </select> --}}
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <label for="tinggi_air" class="col-md-4 col-form-label text-md-end">Input Inflow</label>
+                                <div class="col-md-6">
+                                    <input type="number" step="any" name="inflow">
+                                    {{-- <select class="form-control select2" name="id_waduk" id="list_mukaair">
+                                        <option value="">--Masukkan Muka Air--</option>
+                                        @foreach ($mukaair as $item)
+                                            <option value="{{ $item->id_waduk }}">
+                                                {{ $item->muka_air }}</option>
+                                        @endforeach
+                                    </select> --}}
+                                </div>
+                            </div>
 
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">

@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <img src="{{ asset('assets/img/Pemali Juana_1.jpg') }}">
+    <img src="{{ asset('assets/img/kop.png') }}">
     <div class="table-responsive">
         <table class="table">
             <thead>
