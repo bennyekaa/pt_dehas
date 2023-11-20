@@ -121,6 +121,10 @@ class LoginController extends Controller
                                 $hitungmukaair = DataMukaAir::where('bendungan_2', 6)->count();
                                 $hitungbocor = DataBanjirBocor::where('bendungan_2', 2)->count();
                                 $total = $hitungbocor + $hitungmukaair;
+                            }else{
+                                $hitungmukaair = 0;
+                                $hitungbocor = 0;
+                                $total = $hitungbocor + $hitungmukaair;
                             }
                             if (($hitungmukaair) > 0) {
                                 session()->put("hitungmukaair", $hitungmukaair);

@@ -292,13 +292,20 @@ class TransBocor extends Controller
             } elseif (empty($cari_status)) {
                 return redirect(session('banjir_bocor'))->with('error', 'Tinggi Muka Air Tidak Boleh Dibawah Batas Bawah');
             } else {
-                $h1 = $tinggi_air - $cari_status[0]->ambang;
-                if($cari_status[0]->variabel == 60){
-                    $htotal = ((4*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
-                }else{
-                    $htotal = ((8*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
-                }
+                // $h1 = $tinggi_air - $cari_status[0]->ambang;
+                // if($cari_status[0]->variabel == 60){
+                //     $htotal = ((4*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
+                // }else{
+                //     $htotal = ((8*$cari_status[0]->lebar*$cari_status[0]->variabel)/100);
+                // }
                 // $htotal = ((pow($h1, 1.5)) * $cari_status[0]->c * $cari_status[0]->lebar);
+                // $htotal = 0;
+                // $master_muka_air = WadukBendungan::all();
+                // $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '1' AND " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+                $satu = pow($request->tinggi_air, 2);
+                $dua = $cari_status[0]->variabel_1 * $satu;
+                $tiga = $cari_status[0]->variabel_2 * $request->tinggi_air;
+                $htotal = $dua + $tiga + $cari_status[0]->variabel_3;
             }
         } elseif (session('lokasi') == 2) {
             $htotal = 0;
