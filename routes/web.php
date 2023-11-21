@@ -64,7 +64,7 @@ Route::middleware('checklogin')->group(function () {
     route::get('/import', [ImportController::class, 'import']);
 
     // detail Bendungan
-    route::get('/detailbendungan', [BendunganController::class, 'detailbendungan']);
+route::get('/detailbendungan', [BendunganController::class, 'detailbendungan']);
 
     //route CRUD USER
     Route::get('/user', [UserController::class, 'index']);

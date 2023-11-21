@@ -10,12 +10,15 @@
             <div class="col-lg-12">
                 <div class="card mb-4">
                     @if (session('nama_role') == 'OPERATOR')
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <a class="btn btn-primary" href="{{ url('transaksi/mukaair/tambah') }}" style="float: left;"> +
-                                Input
-                                Data
-                                Waduk</a>
-                        </div>
+                        @if (session('menu') != 1)
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <a class="btn btn-primary" href="{{ url('transaksi/mukaair/tambah') }}" style="float: left;">
+                                    +
+                                    Input
+                                    Data
+                                    Waduk</a>
+                            </div>
+                        @endif
                     @endif
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
