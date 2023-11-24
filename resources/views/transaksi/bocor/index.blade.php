@@ -9,14 +9,14 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    @if (session('nama_role') == 'OPERATOR')
-                        @if (session('menu') != 1)
+                    @if (session('nama_role') == 'INPUT')
+                        {{-- @if (session('menu') != 1) --}}
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <a class="btn btn-primary" href="{{ url('transaksi/bocor/tambah') }}" style="float: left;"> +
                                     Input Data Indikasi
                                 </a>
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     @endif
                     <div class="table-responsive p-3">
                         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
@@ -143,7 +143,16 @@
                                         <td>{{ $item->updated_by_bpbd }}</td> --}}
                                         <td>
                                             <div class="btn-group">
-                                                @if (session('nama_role') == 'OPERATOR')
+                                                @if (session('nama_role') == 'INPUT')
+                                                        <a class="btn btn-primary" title="Kirim Ke Operator"
+                                                            href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}/OPERATOR">
+                                                            <i class="fa fa-arrow-right"></i>
+                                                        </a>
+                                                        <a class="btn btn-danger alert_notif" id="notif" title="Hapus"
+                                                            href="{{ url('transaksi/bocor/hapus') }}/{{ encrypt($item->id_banjir_bocor) }}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                @elseif (session('nama_role') == 'OPERATOR')
                                                     @if (session('menu') == 1)
                                                         <a class="btn btn-primary" title="Kirim Ke Balai"
                                                             href="{{ url('transaksi/bocor/kirim') }}/{{ encrypt($item->id_banjir_bocor) }}/BALAI">

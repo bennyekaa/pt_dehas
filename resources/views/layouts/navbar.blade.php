@@ -7,7 +7,7 @@
     </a>
     <hr class="sidebar-divider my-0">
 
-    @if (session('nama_role') == 'OPERATOR')
+    @if (session('nama_role') == 'OPERATOR' || session('nama_role') == 'INPUT')
         {{-- <li class="nav-item {{ Request::segment(1) == '/' ? 'active' : '' }}">
     <a class="nav-link" href="{{ url('/') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>

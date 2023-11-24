@@ -54,7 +54,9 @@ class TransBanjir extends Controller
         if ($request->fungsi == "Tambah") {
             try {
                 if (session('lokasi') == 1) {
-                    if (empty($tinggi_air)) {
+                    // dd($request->all());
+                    $cari_status = DB::select("SELECT * FROM ref_waduk WHERE bendungan = '1' AND " . $request->tinggi_air . " BETWEEN batas_bawah AND batas_atas");
+                    if (empty($request->tinggi_air)) {
                         return redirect(session('banjir_mukaair'))->with('error', 'Tinggi Muka Air Mohon Diisi');
                     } elseif (empty($cari_status)) {
                         return redirect(session('banjir_mukaair'))->with('error', 'Tinggi Muka Air Tidak Boleh Dibawah Batas Bawah');
@@ -201,7 +203,123 @@ class TransBanjir extends Controller
     {
         try {
             $mukaair = DataMukaAir::find(decrypt($id));
-            if ($role == 'BALAI') {
+            if($role == 'OPERATOR'){
+                $batas_normal = DB::select("SELECT * FROM ref_waduk WHERE status = 0");
+                $batas_waspada1 = DB::select("SELECT * FROM ref_waduk WHERE status = 1");
+                $batas_waspada2 = DB::select("SELECT * FROM ref_waduk WHERE status = 2");
+                $batas_siaga = DB::select("SELECT * FROM ref_waduk WHERE status = 3");
+                $batas_awas = DB::select("SELECT * FROM ref_waduk WHERE status = 4");
+                $operator = Role::where('nama_role', $role)->first();
+                // dd($batas_normal);
+                // session()->put("current_id", decrypt($id));
+                if ($mukaair->nama_bendungan == 1) {
+                    $bendungan = BendunganBendungan::where('bendungan', 1)->first();
+                    $mukaair->id_role = $operator->id_role;
+                    $mukaair->bendungan_1 = 0;
+                    $mukaair->bendungan_2 = 0;
+                    $mukaair->updated_at = date('Y-m-d H:i:s.U');
+                    $mukaair->updated_by = session('nama');
+                    $notif = new Notif();
+                    $notif->id = Str::uuid();
+                    $notif->id_referensi = decrypt($id);
+                    $notif->role_muka_air = $operator->role_muka_air;
+                    $notif->aktif = 1;
+                    $notif->status = $mukaair->status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($mukaair->status == 0) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 1) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    }
+                    // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->tinggi_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    $notif->created_at = date('Y-m-d H:i:s.U');
+                    $notif->created_by = session('nama');
+                    $mukaair->save();
+                    $notif->save();
+                    return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke OPERATOR');
+                } else if ($mukaair->nama_bendungan == 2) {
+                    $bendungan = BendunganBendungan::where('bendungan', 2)->first();
+                    $mukaair->id_role = $operator->id_role;
+                    $mukaair->bendungan_1 = 0;
+                    $mukaair->bendungan_2 = 0;
+                    $mukaair->updated_at = date('Y-m-d H:i:s.U');
+                    $mukaair->updated_by = session('nama');
+                    $notif = new Notif();
+                    $notif->id = Str::uuid();
+                    $notif->id_referensi = decrypt($id);
+                    $notif->role_muka_air = $operator->role_muka_air;
+                    $notif->aktif = 1;
+                    $notif->status = $mukaair->status;
+                    $status_pemda = "";
+                    $status_umum = "";
+                    if ($mukaair->status == 0) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS NORMAL";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 1) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 1";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 2) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 2\ntelah muncul indikasi potensi keruntuhan bendungan,\ntetapi belum ada bahaya yang segera terjadi\nMemerlukan Pengungsian untuk wilayah ZONA HIJAU Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS WASPADA 2\nDi Himbau Masyarakat Di Wilayah ZONA HIJAU segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 3) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS SIAGA\ntelah Pada Kondisi ini Kemungkinan Bendungan Dapat Runtuh,\nSaat ini sedang dilakukan upaya-upaya perbaikan\nMemerlukan Pengungsian untuk wilayah Zona KUNING Pada Peta BAHAYA BANJIR DI HILLIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS SIAGA\nDi Himbau Masyarakat Di Wilayah ZONA KUNING(PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    } elseif ($mukaair->status == 4) {
+                        $status_pemda = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS AWAS\ntelah Pada Kondisi ini Kemungkinan Bendungan Akan Runtuh\nMemerlukan Pengungsian untuk wilayah ZONA MERAH Pada Peta BAHAYA BANJIR DI HILIR " . strtoupper($bendungan->nama_bendungan);
+                        $status_umum = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " \nSTATUS AWAS\nDi Himbau Masyarakat Di Wilayah ZONA MERAH(PRIORITAS PENGUNGSIAN 2 dan PRIORITAS PENGUNGSIAN 1) segera MENGUNGSI";
+                        $notif->pesan_default = $bendungan->nama_bendungan . " Pada " . $mukaair->created_at . " Dengan Rincian : \n1. TMA = " . $mukaair->tinggi_air . " mdl, Waktu " . $mukaair->updated_at . "\n2. Batas Normal = " . $batas_normal[0]->batas_atas . " mdl\n3. Batas Waspada 1 = " . $batas_waspada1[0]->batas_atas . " mdl\n4. Batas Waspada 2 = " . $batas_waspada2[0]->batas_atas . " mdl\n5. Batas Siaga = " . $batas_siaga[0]->batas_atas . " mdl\n6. Batas Awas = " . $batas_awas[0]->batas_atas . " mdl\n7. Puncak Bendungan = " . $batas_normal[0]->puncak . " mdl";
+                        $notif->pesan_pemda = $status_pemda;
+                        $notif->pesan_umum = $status_umum;
+                    }
+                    // $notif->pesan_pemda = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->tinggi_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    // $notif->pesan_umum = $bendungan->nama_bendungan." Pada ".$mukaair->created_at." Dengan Rincian : \n1. TMA = ".$mukaair->muka_air." mdl, Waktu ".$mukaair->updated_at."\n2. Batas Normal = ".$batas_normal[0]->batas_atas+$batas_normal[0]->ambang." mdl\n3. Batas Waspada 1 = ".$batas_waspada1[0]->batas_atas+$batas_normal[0]->ambang." mdl\n4. Batas Waspada 2 = ".$batas_waspada2[0]->batas_atas+$batas_normal[0]->ambang." mdl\n5. Batas Siaga = ".$batas_siaga[0]->batas_atas+$batas_normal[0]->ambang." mdl\n6. Batas Awas = ".$batas_awas[0]->batas_atas+$batas_normal[0]->ambang." mdl\n7. Puncak Bendungan = ".$batas_awas[0]->puncak+$batas_normal[0]->ambang. " mdl\n8. Outflow ".$mukaair->debit_air." m^3/detik waktu ".$mukaair->created_at;
+                    $notif->created_at = date('Y-m-d H:i:s.U');
+                    $notif->created_by = session('nama');
+                    $mukaair->save();
+                    $notif->save();
+                    return redirect(session('banjir_mukaair'))->with('success', 'Data Terkirim Ke OPERATOR');
+                }
+            }elseif ($role == 'BALAI') {
                 $batas_normal = DB::select("SELECT * FROM ref_waduk WHERE status = 0");
                 $batas_waspada1 = DB::select("SELECT * FROM ref_waduk WHERE status = 1");
                 $batas_waspada2 = DB::select("SELECT * FROM ref_waduk WHERE status = 2");
